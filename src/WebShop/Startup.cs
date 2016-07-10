@@ -47,6 +47,8 @@
         {
           options.Filters.Add(new ApiExceptionFilterAttribute());
         })
+        .AddViews()
+        .AddRazorViewEngine()
         .AddApiExplorer()
         .AddAuthorization(options => options.AddPolicy("OwnerOnly",
                                       policy => policy.RequireClaim(ClaimTypes.Email, "admin@it.io")))
