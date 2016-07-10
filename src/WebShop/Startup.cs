@@ -4,6 +4,7 @@
   using Data;
   using Data.Context;
   using Infrastructure;
+  using Infrastructure.Attributes;
   using Infrastructure.DeploymentEnvironment;
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
@@ -14,7 +15,6 @@
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
 
-  // memory cache
   // environment on index page
 
   public class Startup
@@ -41,10 +41,11 @@
     {
       services.AddOptions();
       services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+      services.AddMemoryCache();
 
-      services.AddMvcCore(o =>
+      services.AddMvcCore(options =>
         {
-          // api exception filter
+          options.Filters.Add(new ApiExceptionFilterAttribute());
         })
         .AddApiExplorer()
         .AddAuthorization(options => options.AddPolicy("OwnerOnly",
@@ -83,7 +84,6 @@
       services.AddTransient<IShopDbInitializer, ShopDbInitializer>();
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
     {
       loggerFactory.AddConsole(Configuration.GetSection("Logging"));
