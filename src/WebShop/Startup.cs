@@ -4,6 +4,7 @@
   using Data;
   using Data.Context;
   using Infrastructure;
+  using Infrastructure.DeploymentEnvironment;
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -78,7 +79,7 @@
         .AddEntityFrameworkStores<ShopDbContext>()
         .AddDefaultTokenProviders();
 
-      //services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
+      services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
       services.AddTransient<IShopDbInitializer, ShopDbInitializer>();
     }
 
@@ -88,8 +89,8 @@
       loggerFactory.AddConsole(Configuration.GetSection("Logging"));
       loggerFactory.AddDebug();
 
-      //var deploymentEnv = app.ApplicationServices.GetService<IDeploymentEnvironment>();
-      //deploymentEnv.Initialize();
+      var deploymentEnv = app.ApplicationServices.GetService<IDeploymentEnvironment>();
+      deploymentEnv.Initialize();
 
 
       if (env.IsDevelopment())
