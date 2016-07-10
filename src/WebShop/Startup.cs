@@ -3,6 +3,7 @@
   using System.Security.Claims;
   using Data;
   using Data.Context;
+  using Infrastructure;
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -37,6 +38,9 @@
 
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddOptions();
+      services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
       services.AddMvcCore(o =>
         {
           // api exception filter
