@@ -113,7 +113,7 @@
         // /some/route/foo.bar will return 404
         // /some/route/foobar will map to spa (index page)
         // https://github.com/aspnet/JavaScriptServices/blob/dev/samples/angular/MusicStore/Startup.cs#L84
-        //routes.MapSpaFallbackRoute("spa-fallback", new { controller = "Home", action = "Index" });
+        routes.MapSpaFallbackRoute("spa-fallback", new { controller = "Home", action = "Index" });
       });
     }
   }
