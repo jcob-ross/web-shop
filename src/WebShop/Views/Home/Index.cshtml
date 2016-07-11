@@ -7,22 +7,22 @@
   <environment names="Development,Staging,Production">
     <base href="/">
     <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">
-    <link href="/spa/css/app.css" rel="stylesheet">
+    <link href="/spa/css/global.css" rel="stylesheet">
   </environment>
 }
 
-<app-main>Loading...</app-main>
+<app-main></app-main>
 
 @section scripts
 {
   <environment names="Development">
-    <script type="text/javascript" src="/spa/js/polyfills.js"></script>
-    <script type="text/javascript" src="/spa/js/vendor.js"></script>
-    <script type="text/javascript" src="/spa/js/app.js"></script>
+    <script type="text/javascript" src="/spa/polyfills.bundle.js"></script>
+    <script type="text/javascript" src="/spa/vendor.bundle.js"></script>
+    <script type="text/javascript" src="/spa/main.bundle.js"></script>
   </environment>
   <environment names="Staging,Production">
-    <script type="text/javascript" src="/spa/js/polyfills.js.gz"></script>
-    <script type="text/javascript" src="/spa/js/vendor.js.gz"></script>
-    <script type="text/javascript" src="/spa/js/app.js.gz"></script>
+    <script type="text/javascript" src="/spa/polyfills.bundle.js.gz"></script>
+    <script type="text/javascript" src="/spa/vendor.bundle.js.gz"></script>
+    <script type="text/javascript" src="/spa/main.bundle.js.gz"></script>
   </environment>
 }

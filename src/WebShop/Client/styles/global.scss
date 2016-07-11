@@ -1,0 +1,10 @@
+// styles in src/style directory are applied to the whole page
+// imported in main.ts / extract-text-webpack-plugin
+body {
+    background: #0147A7;
+    color: #fff;
+    overflow: hidden;
+}
+a {
+    color: #03A9F4;
+}

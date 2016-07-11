@@ -6,10 +6,10 @@ namespace WebShop.Data.Context
 
   public class ShopDbInitializer : IShopDbInitializer
   {
-    private readonly ShopDbContext _dbContext;
+    private readonly PosgresDbContext _dbContext;
     private readonly UserManager<ShopUser> _userManager;
 
-    public ShopDbInitializer(ShopDbContext dbContext, UserManager<ShopUser> userManager)
+    public ShopDbInitializer(PosgresDbContext dbContext, UserManager<ShopUser> userManager)
     {
       if (null == dbContext)
         throw new ArgumentNullException(nameof(dbContext));

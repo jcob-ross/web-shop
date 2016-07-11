@@ -1,11 +1,13 @@
 ﻿namespace WebShop
 {
+  using System.Globalization;
   using System.Security.Claims;
   using Data;
   using Data.Context;
   using Infrastructure;
   using Infrastructure.Attributes;
   using Infrastructure.DeploymentEnvironment;
+  using Infrastructure.PipelineExtensions;
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -14,9 +16,8 @@
   using Microsoft.Extensions.Configuration;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
-
-  // environment on index page
-
+  using Newtonsoft.Json;
+  
   public class Startup
   {
     private IHostingEnvironment _env;
@@ -26,8 +27,7 @@
     {
       IConfigurationBuilder builder = new ConfigurationBuilder()
         .SetBasePath(env.ContentRootPath)
-        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-        .AddEnvironmentVariables("ASPNETCORE_")
+        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)                
         .AddUserSecrets();
 
       _env = env;
@@ -49,14 +49,20 @@
         })
         .AddViews()
         .AddRazorViewEngine()
+        .AddCacheTagHelper()
         .AddApiExplorer()
         .AddAuthorization(options => options.AddPolicy("OwnerOnly",
                                       policy => policy.RequireClaim(ClaimTypes.Email, "admin@it.io")))
         .AddDataAnnotations()
         .AddFormatterMappings()
-        .AddJsonFormatters();
+        .AddJsonFormatters(options =>
+          {
+            options.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            options.Culture = new CultureInfo("cs-CZ");
+            options.Formatting = _env.IsDevelopment() ? Formatting.Indented : Formatting.None;
+          });
 
-      services.AddDbContext<ShopDbContext>(options =>
+      services.AddDbContext<PosgresDbContext>(options =>
         {
           if (_env.IsDevelopment())
           {
@@ -79,7 +85,7 @@
           options.Password.RequireNonAlphanumeric = false;
           options.Password.RequiredLength = 4;
         })
-        .AddEntityFrameworkStores<ShopDbContext>()
+        .AddEntityFrameworkStores<PosgresDbContext>()
         .AddDefaultTokenProviders();
 
       services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
@@ -104,7 +110,7 @@
         app.UseExceptionHandler("/Home/Error");
       }
 
-      app.UseStaticFiles();
+      app.UseStaticFilesWithGzip();
 
       app.UseIdentity();
 
