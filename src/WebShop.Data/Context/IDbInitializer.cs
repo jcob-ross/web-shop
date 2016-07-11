@@ -2,7 +2,7 @@ namespace WebShop.Data.Context
 {
   using System.Threading.Tasks;
 
-  public interface IShopDbInitializer
+  public interface IDbInitializer
   {
     Task InitializeAsync();
   }

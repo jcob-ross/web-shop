@@ -73,7 +73,7 @@
         .AddDefaultTokenProviders();
 
       services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
-      services.AddTransient<IShopDbInitializer, ShopDbInitializer>();
+      services.AddTransient<IDbInitializer, PosgresDbInitializer>();
     }
 
     public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

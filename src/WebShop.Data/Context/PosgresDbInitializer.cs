@@ -4,12 +4,12 @@ namespace WebShop.Data.Context
   using System.Threading.Tasks;
   using Microsoft.AspNetCore.Identity;
 
-  public class ShopDbInitializer : IShopDbInitializer
+  public class PosgresDbInitializer : IDbInitializer
   {
     private readonly PosgresDbContext _dbContext;
     private readonly UserManager<ShopUser> _userManager;
 
-    public ShopDbInitializer(PosgresDbContext dbContext, UserManager<ShopUser> userManager)
+    public PosgresDbInitializer(PosgresDbContext dbContext, UserManager<ShopUser> userManager)
     {
       if (null == dbContext)
         throw new ArgumentNullException(nameof(dbContext));
