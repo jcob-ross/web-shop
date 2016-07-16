@@ -1,25 +1,30 @@
 ﻿namespace WebShop
 {
-  using System.Globalization;
+  using System;
   using System.Security.Claims;
-  using AutoMapper;
+  using System.Threading.Tasks;
   using Data;
   using Data.Context;
-  using Data.Entities;
   using Data.Repositiories;
   using Infrastructure;
-  using Infrastructure.Attributes;
+  using Infrastructure.Authentication;
+  using Infrastructure.Authorization;
   using Infrastructure.DeploymentEnvironment;
   using Infrastructure.PipelineExtensions;
+  using Microsoft.AspNetCore.Authentication.Cookies;
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
+  using Microsoft.AspNetCore.Identity;
   using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Configuration;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
-  using Newtonsoft.Json;
-  
+
+  // todo: resource based authorization
+  // https://docs.asp.net/en/latest/security/authorization/views.html
+
   public class Startup
   {
     private IHostingEnvironment _env;
@@ -59,15 +64,20 @@
           options.Password.RequireUppercase = false;
           options.Password.RequireNonAlphanumeric = false;
           options.Password.RequiredLength = 4;
+
+          options.Cookies.ApplicationCookie.AutomaticAuthenticate = true;
+          options.Cookies.ApplicationCookie.AutomaticChallenge = false;
+          options.Cookies.ApplicationCookie.Events = ShopCookieAuthentication.CreateCookieEvents();
         })
         .AddEntityFrameworkStores<PosgresDbContext>()
         .AddDefaultTokenProviders();
 
+
+      services.AddSingleton<IAuthorizationHandler, ContentEditorsHandler>();
       services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
       services.AddTransient<IDbInitializer, PosgresDbInitializer>();
       services.AddScoped<IUnitOfWork, UnitOfWork>();
       services.AddAutoMapper();
-
       services.AddSwaggerGen();
     }
 
@@ -79,13 +89,16 @@
       var deploymentEnv = app.ApplicationServices.GetService<IDeploymentEnvironment>();
       deploymentEnv.Initialize();
 
-      using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
-                                   .CreateScope())
+      if (Configuration.GetValue<bool>("SeedDb"))
       {
-        serviceScope.ServiceProvider.GetService<IDbInitializer>().Initialize();
+        using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                                     .CreateScope())
+        {
+          serviceScope.ServiceProvider.GetService<IDbInitializer>().Initialize();
+        }
       }
 
-        app.UseSwagger();
+      app.UseSwagger();
       app.UseSwaggerUi();
 
       if (env.IsDevelopment())

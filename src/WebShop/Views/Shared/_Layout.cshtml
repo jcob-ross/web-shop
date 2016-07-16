@@ -17,6 +17,8 @@
   @RenderSection("head", required: false)
 </head>
 <body>
+  @await Html.PartialAsync("_LoginPartial")
+
   @RenderBody()
 
   <environment names="Development">

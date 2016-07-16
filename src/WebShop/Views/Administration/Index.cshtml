@@ -1,0 +1,28 @@
+﻿@{
+  ViewData["Title"] = "Administration Page";
+}
+
+@section head
+{
+  <environment names="Development,Staging,Production">
+    <base href="/">
+    <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">
+    <link href="/spa/css/administration.css" rel="stylesheet">
+  </environment>
+}
+
+<administration-main></administration-main>
+
+@section scripts
+{
+  <environment names="Development">
+    <script type="text/javascript" src="/spa/polyfills.bundle.js"></script>
+    <script type="text/javascript" src="/spa/vendor.bundle.js"></script>
+    <script type="text/javascript" src="/spa/administration.bundle.js"></script>
+  </environment>
+  <environment names="Staging,Production">
+    <script type="text/javascript" src="/spa/polyfills.bundle.js.gz"></script>
+    <script type="text/javascript" src="/spa/vendor.bundle.js.gz"></script>
+    <script type="text/javascript" src="/spa/administration.bundle.js.gz"></script>
+  </environment>
+}

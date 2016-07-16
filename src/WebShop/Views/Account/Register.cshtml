@@ -1,0 +1,29 @@
+﻿@model WebShop.Models.Account.RegisterViewModel
+@inject SignInManager<ShopUser> SignInManager
+
+@{
+  ViewData["Title"] = "Sign up";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+  <input asp-for="UserName" type="text" placeholder="User name">
+  <br />
+  <input asp-for="Email" type="text" placeholder="E-mail">
+  <br />
+  <input asp-for="Password" type="password" placeholder="Password">
+  <br />
+  <input asp-for="ConfirmPassword" placeholder="Confirm password" />
+  <br />
+  <input type="submit" value="Register" />
+</form>
+
+
+<span asp-validation-for="UserName"></span>
+<br />
+<span asp-validation-for="Email"></span>
+<br />
+<span asp-validation-for="Password"></span>
+<br />
+<span asp-validation-for="ConfirmPassword"></span>

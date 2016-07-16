@@ -1,0 +1,31 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+
+@model WebShop.Models.Account.LoginViewModel
+@inject SignInManager<ShopUser> SignInManager
+
+@{
+  ViewData["Title"] = "Log in";
+}
+
+<h2>@ViewData["Title"]</h2>
+<form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+  <input asp-for="UserName" type="text" placeholder="User name">
+  <br />
+  <input asp-for="Password" type="password" placeholder="Password">
+  <br />
+  <input type="submit" value="Log in" />
+
+  <div>
+    <input type="checkbox">
+    <label>@Html.DisplayNameFor(m => m.RememberMe)</label>
+  </div>
+</form>
+
+<span asp-validation-for="UserName"></span>
+<br />
+<span asp-validation-for="Password"></span>
+<br />
+
+<a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Register</a>
