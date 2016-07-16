@@ -14,41 +14,38 @@
     
   }
 
+
   public class Product
   {
-    [Key]
     public int Id { get; set; }
-    [Required]
     public string Name { get; set; }
-    [Required]
-    public Manufacturer Manufacturer { get; set; }
-    [Required]
     public string Description { get; set; }
-    [Required]
+
     public int StockCount { get; set; }
-    [Required]
     public decimal Price { get; set; }
-    [Required]
     public decimal CurrentPrice { get; set; }
     public string ProductNumber { get; set; }
     public string ImageUrl { get; set; }
+    public bool NewProduct { get; set; }
+    public bool PromoActive { get; set; }
 
-    [Required]
+    public ProductDetail ProductDetail { get; set; }
+
+    public Manufacturer Manufacturer { get; set; }
+
     public int ParentCategoryId { get; set; }
-    [Required]
-    public ProductCategory ParentCategory { get; set; }
+    public Category ParentCategory { get; set; }
 
-    public List<Tag> Tags { get; set; } = new List<Tag>();
+    public List<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
   }
 
   public class ProductDto
   {
-    [Key]
     public int Id { get; set; }
     [Required]
     public string Name { get; set; }
     [Required]
-    public ManufacturerDto Manufacturer { get; set; }
+    public int ManufacturerId { get; set; }
     [Required]
     public string Description { get; set; }
     [Required]
@@ -58,13 +55,14 @@
     [Required]
     public decimal CurrentPrice { get; set; }
     public string ProductNumber { get; set; }
+    [Required]
     public string ImageUrl { get; set; }
-
+    [Required]
+    public bool NewProduct { get; set; }
+    [Required]
+    public bool PromoActive { get; set; }
     [Required]
     public int ParentCategoryId { get; set; }
-    [Required]
-    public ProductCategoryDto ParentCategory { get; set; }
-
     public List<TagDto> Tags { get; set; } = new List<TagDto>();
   }
 }

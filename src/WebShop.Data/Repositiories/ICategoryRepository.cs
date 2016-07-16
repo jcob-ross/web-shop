@@ -1,23 +1,21 @@
-﻿namespace WebShop.Data.Repositiories
+namespace WebShop.Data.Repositiories
 {
   using System;
   using System.Collections.Generic;
-  using System.Linq;
   using System.Threading.Tasks;
   using Context;
   using Entities;
-  using Microsoft.EntityFrameworkCore;
 
-  public interface ITagRepository
+  public interface ICategoryRepository
   {
-    Task<Tag> GetTagByIdAsync(int id);
+    Task<List<Category>> ListByGroupAsync(int groupId);
   }
 
-  public class TagRepository : ITagRepository
+  public class CategoryRepository : ICategoryRepository
   {
     private readonly PosgresDbContext _context;
 
-    public TagRepository(PosgresDbContext context)
+    public CategoryRepository(PosgresDbContext context)
     {
       if (null == context)
         throw new ArgumentNullException(nameof(context));
@@ -25,7 +23,7 @@
       _context = context;
     }
 
-    public async Task<Tag> GetTagByIdAsync(int id)
+    public Task<List<Category>> ListByGroupAsync(int groupId)
     {
       throw new NotImplementedException();
     }

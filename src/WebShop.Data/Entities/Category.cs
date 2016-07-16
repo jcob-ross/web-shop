@@ -9,16 +9,13 @@
     
   }
 
-  public class ProductCategory
+  public class Category
   {
-    [Key]
-    public string Key { get; set; }
-    [Required]
+    public int Id { get; set; }
     public string Name { get; set; }
-    [Required]
     public string UrlSegment { get; set; }
+    public string CategoryGroup { get; set; }
     public string ImageUrl { get; set; }
-    [Required]
     public int ViewDisplayOrder { get; set; }
 
     public List<Product> Products { get; set; } = new List<Product>();
@@ -26,19 +23,20 @@
     public List<Tag> Tags { get; set; } = new List<Tag>();
   }
 
-  public class ProductCategoryDto
+  public class CategoryDto
   {
-    [Key]
-    public string Key { get; set; }
+    public int Id { get; set; }
     [Required]
     public string Name { get; set; }
     [Required]
     public string UrlSegment { get; set; }
+    [Required]
+    public string CategoryGroup { get; set; }
+    [Required]
     public string ImageUrl { get; set; }
     [Required]
     public int ViewDisplayOrder { get; set; }
 
-    public List<ProductDto> Products { get; set; } = new List<ProductDto>();
     public List<ManufacturerDto> Manufacturers { get; set; } = new List<ManufacturerDto>();
     public List<TagDto> Tags { get; set; } = new List<TagDto>();
   }

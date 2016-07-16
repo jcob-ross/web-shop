@@ -2,8 +2,11 @@
 {
   using System.Globalization;
   using System.Security.Claims;
+  using AutoMapper;
   using Data;
   using Data.Context;
+  using Data.Entities;
+  using Data.Repositiories;
   using Infrastructure;
   using Infrastructure.Attributes;
   using Infrastructure.DeploymentEnvironment;
@@ -11,7 +14,6 @@
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-  using Microsoft.Data.Sqlite;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Configuration;
   using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +23,6 @@
   public class Startup
   {
     private IHostingEnvironment _env;
-    private SqliteConnection _inMemorySqliteConnection;
 
     public Startup(IHostingEnvironment env)
     {
@@ -48,17 +49,7 @@
 
       services.AddDbContext<PosgresDbContext>(options =>
         {
-          if (_env.IsDevelopment())
-          {
-            //_inMemorySqliteConnection = new SqliteConnection("Data Source=:memory:");
-            //_inMemorySqliteConnection.Open();
-            //options.UseSqlite(_inMemorySqliteConnection);
-            options.UseNpgsql(Configuration.GetConnectionString("PosgreSqlConnection"));
-          }
-          else
-          {
-            
-          }
+          options.UseNpgsql(Configuration.GetConnectionString("PosgreSqlConnection"));
         });
 
       services.AddIdentity<ShopUser, IdentityRole>(options =>
@@ -74,6 +65,10 @@
 
       services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
       services.AddTransient<IDbInitializer, PosgresDbInitializer>();
+      services.AddScoped<IUnitOfWork, UnitOfWork>();
+      services.AddAutoMapper();
+
+      services.AddSwaggerGen();
     }
 
     public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -84,6 +79,14 @@
       var deploymentEnv = app.ApplicationServices.GetService<IDeploymentEnvironment>();
       deploymentEnv.Initialize();
 
+      using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                                   .CreateScope())
+      {
+        serviceScope.ServiceProvider.GetService<IDbInitializer>().Initialize();
+      }
+
+        app.UseSwagger();
+      app.UseSwaggerUi();
 
       if (env.IsDevelopment())
       {

@@ -5,32 +5,28 @@ namespace WebShop.Data.Entities
 
   public class Tag
   {
-    [Key]
     public int Id { get; set; }
-    [Required]
     public string Name { get; set; }
     public string UrlSegment { get; set; }
     public bool ShowInMainMenu { get; set; }
 
-    [Required]
     public int ParentCategoryId { get; set; }
-    [Required]
-    public ProductCategory ParentCategory { get; set; }
+    public Category ParentCategory { get; set; }
 
-    public List<Product> Products { get; set; } = new List<Product>();
+    public List<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
   }
 
   public class TagDto
   {
-    [Key]
     public int Id { get; set; }
     [Required]
     public string Name { get; set; }
+    [Required]
     public string UrlSegment { get; set; }
+    [Required]
     public bool ShowInMainMenu { get; set; }
-
     [Required]
     public int ParentCategoryId { get; set; }
-    public ProductCategory ParentCategory { get; set; }
+    public int ProductCount { get; set; }
   }
 }

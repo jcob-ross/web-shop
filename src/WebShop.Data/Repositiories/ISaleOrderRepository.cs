@@ -2,22 +2,20 @@
 {
   using System;
   using System.Collections.Generic;
-  using System.Linq;
   using System.Threading.Tasks;
   using Context;
   using Entities;
-  using Microsoft.EntityFrameworkCore;
 
-  public interface ITagRepository
+  public interface ISaleOrderRepository
   {
-    Task<Tag> GetTagByIdAsync(int id);
+    Task<SaleOrder> GetOrderByIdAsync(int id);
   }
 
-  public class TagRepository : ITagRepository
+  public class SaleOrderRepository : ISaleOrderRepository
   {
     private readonly PosgresDbContext _context;
 
-    public TagRepository(PosgresDbContext context)
+    public SaleOrderRepository(PosgresDbContext context)
     {
       if (null == context)
         throw new ArgumentNullException(nameof(context));
@@ -25,7 +23,7 @@
       _context = context;
     }
 
-    public async Task<Tag> GetTagByIdAsync(int id)
+    public Task<SaleOrder> GetOrderByIdAsync(int id)
     {
       throw new NotImplementedException();
     }

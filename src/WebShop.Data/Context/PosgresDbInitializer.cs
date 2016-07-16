@@ -2,6 +2,7 @@ namespace WebShop.Data.Context
 {
   using System;
   using System.Threading.Tasks;
+  using Entities;
   using Microsoft.AspNetCore.Identity;
 
   public class PosgresDbInitializer : IDbInitializer
@@ -20,27 +21,81 @@ namespace WebShop.Data.Context
       _userManager = userManager;
     }
 
-    public async Task InitializeAsync()
+    public void Initialize()
     {
+      // todo: migrations
       // this prevents using migations
-      await _dbContext.Database.EnsureDeletedAsync();
-      await _dbContext.Database.EnsureCreatedAsync();
+      _dbContext.Database.EnsureDeleted();
+      _dbContext.Database.EnsureCreated();
 
-      await _userManager.CreateAsync(new ShopUser
-                                     {
-                                       UserName = "admin",
-                                       Email = "admin@it.io",
-                                       EmailConfirmed = true,
-                                     }, "admin");
+      _userManager.CreateAsync(new ShopUser
+                               {
+                                 UserName = "admin",
+                                 Email = "admin@it.io",
+                                 EmailConfirmed = true,
+                               }, "admin").Wait();
 
-      await _userManager.CreateAsync(new ShopUser
-                                     {
-                                       UserName = "user",
-                                       Email = "user@it.io",
-                                       EmailConfirmed = true,
-                                     }, "user");
+      _userManager.CreateAsync(new ShopUser
+                               {
+                                 UserName = "user",
+                                 Email = "user@it.io",
+                                 EmailConfirmed = true,
+                               }, "user").Wait();
 
 
+      var cat = new Category
+                {
+                  Name = "Category",
+                  UrlSegment = "category",
+                  CategoryGroup = "one",
+                  ImageUrl = "https://placeholdit.imgix.net/~text?txtsize=33&txt=50%C3%97100&w=50&h=100",
+                  ViewDisplayOrder = 1
+                };
+      _dbContext.Categories.Add(cat);
+
+      var tagAwesome = new Tag
+                       {
+                         Name = "awesome",
+                         UrlSegment = "awesome",
+                         ShowInMainMenu = true,
+
+                         ParentCategory = cat
+                       };
+      _dbContext.Tags.Add(tagAwesome);
+
+      var man = new Manufacturer
+                {
+                  Name = "Ota",
+                  UrlSegment = "ota",
+                  ShowInMainMenu = true,
+
+                  ParentCategory = cat
+                };
+      _dbContext.Manufacturers.Add(man);
+
+      var prod = new Product
+                 {
+                   Name = "Ring of Void",
+                   Description = "Brass rinn",
+                   NewProduct = true,
+                   ParentCategory = cat,
+                   Price = 9999M,
+                   CurrentPrice = 9999M,
+                   ImageUrl = "https://placeholdit.imgix.net/~text?txtsize=33&txt=150%C3%9750&w=150&h=50",
+                   Manufacturer = man,
+                   PromoActive = true,
+                   StockCount = 3
+                 };
+      var productTag = new ProductTag
+                       {
+                         Product = prod,
+                         Tag = tagAwesome
+                       };
+      _dbContext.Products.Add(prod);
+      _dbContext.ProductTag.Add(productTag);
+      prod.ProductTags.Add(productTag);
+
+      _dbContext.SaveChanges();
     }
   }
 }

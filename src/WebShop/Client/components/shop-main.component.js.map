@@ -1,0 +1,1 @@
+{"version":3,"file":"shop-main.component.js","sourceRoot":"","sources":["shop-main.component.ts"],"names":[],"mappings":";AAAA,qBAA0B,eAAe,CAAC,CAAA;AAS1C;IAAA;QACE,YAAO,GAAG,mBAAmB,CAAC;IAChC,CAAC;IATD;QAAC,gBAAS,CAAC;YACT,QAAQ,EAAE,UAAU;YACpB,QAAQ,EAAE,4DAET;YACD,SAAS,EAAE,CAAE,4BAA4B,CAAE;SAC5C,CAAC;;yBAAA;IAGF,wBAAC;AAAD,CAAC,AAFD,IAEC;AAFY,yBAAiB,oBAE7B,CAAA"}

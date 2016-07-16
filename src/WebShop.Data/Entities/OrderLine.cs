@@ -4,11 +4,9 @@ namespace WebShop.Data.Entities
 
   public class OrderLine
   {
-    [Key]
     public int Id { get; set; }
     public int Quantity { get; set; }
-    [Required]
-    public Product Product { get; set; }
+    public int ProductId { get; set; }
   }
 
   public class OrderLineDto
@@ -17,6 +15,6 @@ namespace WebShop.Data.Entities
     [Required]
     public int Quantity { get; set; }
     [Required]
-    public ProductDto Product { get; set; }
+    public int ProductId { get; set; }
   }
 }

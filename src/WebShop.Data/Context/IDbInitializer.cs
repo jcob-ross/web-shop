@@ -4,6 +4,6 @@ namespace WebShop.Data.Context
 
   public interface IDbInitializer
   {
-    Task InitializeAsync();
+    void Initialize();
   }
 }
