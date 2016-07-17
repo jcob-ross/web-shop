@@ -14,7 +14,7 @@
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
-  [Route("api/orders")]
+  [Route("api/order")]
   [Produces("application/json")]
   public class SaleOrderController : Controller
   {

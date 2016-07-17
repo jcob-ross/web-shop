@@ -9,7 +9,7 @@
   using Microsoft.EntityFrameworkCore;
   using System.Linq;
 
-  [Route("api/manufacturers")]
+  [Route("api/manufacturer")]
   [Produces("application/json")]
   public class ManufacturerController : Controller
   {
