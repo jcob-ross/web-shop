@@ -11,9 +11,10 @@ const GlobalStyles = new ExtractTextPlugin('css/global.css')
 
 module.exports = {
   entry: {
-    'polyfills': './Client/polyfills.ts',
-    'vendor':    './Client/vendor.ts',
-    'main':      './Client/main.ts'
+    'polyfills':  './Client/polyfills.ts',
+    'vendor':     './Client/vendor.ts',
+    'app':        './Client/app_entry.ts',
+    'admin':      './Client/admin_entry.ts'
   },
 
   resolve: {

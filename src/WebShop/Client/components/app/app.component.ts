@@ -5,8 +5,8 @@ import { Component } from '@angular/core';
   template: `
     <h2 class="pink">Hello from {{ message }}</h2>
   `,
-  styleUrls: [ './shop-main.component.scss' ]
+  styleUrls: [ './app.component.scss' ]
 })
-export class ShopMainComponent {
-  message = 'ShopMainComponent';
+export class AppComponent {
+  message = 'AppComponent';
 }

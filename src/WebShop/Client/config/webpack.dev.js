@@ -12,7 +12,7 @@ module.exports = webpackMerge(commonConfig, {
   output: {
     path: helpers.root('wwwroot', 'spa'),
     filename: '[name].bundle.js',
-    sourceMapFilename: '[name].map',
+    sourceMapFilename: '[name].bundle.map',
     chunkFilename: '[id].chunk.js',
 
     library: 'ac_[name]',
