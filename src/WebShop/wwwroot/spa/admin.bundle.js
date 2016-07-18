@@ -5,16 +5,16 @@ webpackJsonpac__name_([2],{
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	__webpack_require__(296);
-	var platform_browser_dynamic_1 = __webpack_require__(243);
+	__webpack_require__(298);
+	var platform_browser_dynamic_1 = __webpack_require__(244);
 	var platform_browser_1 = __webpack_require__(80);
 	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(237);
+	var http_1 = __webpack_require__(153);
 	var common_1 = __webpack_require__(9);
-	var forms_1 = __webpack_require__(30);
-	var admin_1 = __webpack_require__(392);
-	var admin_2 = __webpack_require__(392);
-	var shared_1 = __webpack_require__(914);
+	var forms_1 = __webpack_require__(27);
+	var admin_1 = __webpack_require__(393);
+	var admin_2 = __webpack_require__(393);
+	var shared_1 = __webpack_require__(254);
 	if (false) {
 	    platform_browser_1.disableDebugTools();
 	    core_1.enableProdMode();
@@ -32,27 +32,39 @@ webpackJsonpac__name_([2],{
 
 /***/ },
 
-/***/ 392:
+/***/ 254:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(681));
-	__export(__webpack_require__(682));
+	__export(__webpack_require__(696));
 	
 
 /***/ },
 
-/***/ 681:
+/***/ 393:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	__export(__webpack_require__(682));
+	__export(__webpack_require__(683));
+	
+
+/***/ },
+
+/***/ 682:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var core_1 = __webpack_require__(1);
-	var router_1 = __webpack_require__(389);
-	var ng2_bootstrap_1 = __webpack_require__(570);
-	var shared_1 = __webpack_require__(914);
+	var router_1 = __webpack_require__(251);
+	var ng2_bootstrap_1 = __webpack_require__(571);
+	var shared_1 = __webpack_require__(254);
 	var AdminComponent = (function () {
 	    function AdminComponent(api) {
 	        this.api = api;
@@ -63,7 +75,7 @@ webpackJsonpac__name_([2],{
 	    AdminComponent = __decorate([
 	        core_1.Component({
 	            selector: 'admin-main',
-	            template: __webpack_require__(697),
+	            template: __webpack_require__(699),
 	            directives: [ng2_bootstrap_1.AlertComponent, router_1.ROUTER_DIRECTIVES]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object])
@@ -76,16 +88,16 @@ webpackJsonpac__name_([2],{
 
 /***/ },
 
-/***/ 682:
+/***/ 683:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var router_1 = __webpack_require__(389);
-	var categories_1 = __webpack_require__(684);
-	var manufacruters_1 = __webpack_require__(685);
-	var tags_1 = __webpack_require__(691);
-	var orders_1 = __webpack_require__(687);
-	var products_1 = __webpack_require__(689);
+	var router_1 = __webpack_require__(251);
+	var categories_1 = __webpack_require__(685);
+	var manufacruters_1 = __webpack_require__(686);
+	var tags_1 = __webpack_require__(692);
+	var orders_1 = __webpack_require__(688);
+	var products_1 = __webpack_require__(690);
 	exports.routes = [
 	    { path: 'categories', component: categories_1.CategoriesComponent },
 	    { path: 'manufacturers', component: manufacruters_1.ManufacturersComponent },
@@ -99,19 +111,41 @@ webpackJsonpac__name_([2],{
 
 /***/ },
 
-/***/ 683:
+/***/ 684:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var core_1 = __webpack_require__(1);
-	var shared_1 = __webpack_require__(914);
+	var forms_1 = __webpack_require__(27);
+	var shared_1 = __webpack_require__(254);
 	var CategoriesComponent = (function () {
-	    function CategoriesComponent(api) {
+	    function CategoriesComponent(api, fb) {
 	        this.api = api;
+	        this.fb = fb;
 	    }
+	    CategoriesComponent.prototype.onCategoryClick = function (item) {
+	        this.selectedCategory = item;
+	    };
+	    CategoriesComponent.prototype.onNewCategoryClick = function (category) {
+	        this.name = new forms_1.FormControl('-', forms_1.Validators.required);
+	        if (category !== null && typeof category !== 'undefined') {
+	            this.name.updateValue(category.name);
+	        }
+	        this.form = this.fb.group({
+	            'name': this.name
+	        });
+	    };
+	    CategoriesComponent.prototype.onFormSubmit = function (formValue) {
+	        console.log(formValue);
+	    };
 	    CategoriesComponent.prototype.ngOnInit = function () {
+	        var _this = this;
 	        this.sub = this.api.getCategories(/* include manufacturers */ true, /* include tags */ true)
-	            .subscribe(function (res) { return console.log(res.json()); });
+	            .map(function (res) { return res.json(); })
+	            .subscribe(function (res) {
+	            console.log(res);
+	            _this.categories = res;
+	        });
 	    };
 	    CategoriesComponent.prototype.ngOnDestroy = function () {
 	        this.sub.unsubscribe();
@@ -119,26 +153,15 @@ webpackJsonpac__name_([2],{
 	    CategoriesComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-categories',
-	            template: __webpack_require__(698)
+	            template: __webpack_require__(700),
+	            directives: [forms_1.REACTIVE_FORM_DIRECTIVES]
 	        }), 
-	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object])
+	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object, (typeof (_b = typeof forms_1.FormBuilder !== 'undefined' && forms_1.FormBuilder) === 'function' && _b) || Object])
 	    ], CategoriesComponent);
 	    return CategoriesComponent;
-	    var _a;
+	    var _a, _b;
 	}());
 	exports.CategoriesComponent = CategoriesComponent;
-	
-
-/***/ },
-
-/***/ 684:
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	function __export(m) {
-	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	}
-	__export(__webpack_require__(683));
 	
 
 /***/ },
@@ -150,12 +173,24 @@ webpackJsonpac__name_([2],{
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(686));
+	__export(__webpack_require__(684));
 	
 
 /***/ },
 
 /***/ 686:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	__export(__webpack_require__(687));
+	
+
+/***/ },
+
+/***/ 687:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -166,7 +201,7 @@ webpackJsonpac__name_([2],{
 	    ManufacturersComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-manufacturers',
-	            template: __webpack_require__(699)
+	            template: __webpack_require__(701)
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], ManufacturersComponent);
@@ -177,19 +212,19 @@ webpackJsonpac__name_([2],{
 
 /***/ },
 
-/***/ 687:
+/***/ 688:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(688));
+	__export(__webpack_require__(689));
 	
 
 /***/ },
 
-/***/ 688:
+/***/ 689:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -200,7 +235,7 @@ webpackJsonpac__name_([2],{
 	    OrdersComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-orders',
-	            template: __webpack_require__(700)
+	            template: __webpack_require__(702)
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], OrdersComponent);
@@ -211,19 +246,19 @@ webpackJsonpac__name_([2],{
 
 /***/ },
 
-/***/ 689:
+/***/ 690:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(690));
+	__export(__webpack_require__(691));
 	
 
 /***/ },
 
-/***/ 690:
+/***/ 691:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -234,7 +269,7 @@ webpackJsonpac__name_([2],{
 	    ProductsComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-products',
-	            template: __webpack_require__(701)
+	            template: __webpack_require__(703)
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], ProductsComponent);
@@ -245,19 +280,19 @@ webpackJsonpac__name_([2],{
 
 /***/ },
 
-/***/ 691:
+/***/ 692:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(692));
+	__export(__webpack_require__(693));
 	
 
 /***/ },
 
-/***/ 692:
+/***/ 693:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -268,7 +303,7 @@ webpackJsonpac__name_([2],{
 	    TagsComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-tags',
-	            template: __webpack_require__(702)
+	            template: __webpack_require__(704)
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], TagsComponent);
@@ -279,61 +314,18 @@ webpackJsonpac__name_([2],{
 
 /***/ },
 
-/***/ 697:
-/***/ function(module, exports) {
-
-	module.exports = "<ul class=\"nav nav-tabs\">\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./products'] \">Products</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./categories'] \">Categories</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./manufacturers'] \">Manufacturers</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./tags'] \">Tags</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./orders'] \">Orders</a>\r\n  </li>  \r\n</ul>\r\n\r\n<router-outlet></router-outlet>"
-
-/***/ },
-
-/***/ 698:
-/***/ function(module, exports) {
-
-	module.exports = "<p>categories</p>"
-
-/***/ },
-
-/***/ 699:
-/***/ function(module, exports) {
-
-	module.exports = "<p>manufacturers</p>"
-
-/***/ },
-
-/***/ 700:
-/***/ function(module, exports) {
-
-	module.exports = "<p>orders</p>"
-
-/***/ },
-
-/***/ 701:
-/***/ function(module, exports) {
-
-	module.exports = "<p>products</p>"
-
-/***/ },
-
-/***/ 702:
-/***/ function(module, exports) {
-
-	module.exports = "<p>tags</p>"
-
-/***/ },
-
-/***/ 913:
+/***/ 696:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(237);
+	var http_1 = __webpack_require__(153);
 	var BASE_URL = 'http://localhost:8080';
 	var ApiService = (function () {
 	    function ApiService(http) {
 	        this.http = http;
 	    }
 	    ApiService.prototype.getCategories = function (includeManufacturers, includeTags) {
-	        var _this = this;
 	        if (includeManufacturers === void 0) { includeManufacturers = false; }
 	        if (includeTags === void 0) { includeTags = false; }
 	        var queryParams = new http_1.URLSearchParams();
@@ -343,14 +335,13 @@ webpackJsonpac__name_([2],{
 	            method: http_1.RequestMethod.Get,
 	            url: BASE_URL + "/api/category/list",
 	            search: queryParams
-	        }).catch(function (err) { return _this.handleError(err); });
+	        });
 	    };
 	    ApiService.prototype.getManufacturers = function (categoryId) {
-	        var _this = this;
 	        return this.jsonRequest({
 	            method: http_1.RequestMethod.Get,
 	            url: BASE_URL + "/api/manufacturer/list/category/" + categoryId
-	        }).catch(function (err) { return _this.handleError(err); });
+	        });
 	    };
 	    ApiService.prototype.jsonRequest = function (options) {
 	        if (options.body && typeof (options.body) !== 'string') {
@@ -364,6 +355,7 @@ webpackJsonpac__name_([2],{
 	    ApiService.prototype.handleError = function (error) {
 	        // todo: api error handling
 	        console.error(error);
+	        return error;
 	    };
 	    ApiService = __decorate([
 	        core_1.Injectable(), 
@@ -377,15 +369,45 @@ webpackJsonpac__name_([2],{
 
 /***/ },
 
-/***/ 914:
-/***/ function(module, exports, __webpack_require__) {
+/***/ 699:
+/***/ function(module, exports) {
 
-	"use strict";
-	function __export(m) {
-	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	}
-	__export(__webpack_require__(913));
-	
+	module.exports = "<ul class=\"nav nav-tabs\">\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./products'] \">Products</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./categories'] \">Categories</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./manufacturers'] \">Manufacturers</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./tags'] \">Tags</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./orders'] \">Orders</a>\r\n  </li>  \r\n</ul>\r\n\r\n<router-outlet></router-outlet>"
+
+/***/ },
+
+/***/ 700:
+/***/ function(module, exports) {
+
+	module.exports = "<p>categories</p>\r\n\r\n<div class=\"container-fluid\">\r\n  <div class=\"row\">\r\n    <div class=\"col-xs-3\">\r\n      <ul>\r\n        <li (click)=\"onNewCategoryClick()\">New Category</li>\r\n        <li *ngFor=\"let category of categories\" (click)=\"onNewCategoryClick(category)\">{{ category.name }}</li>\r\n      </ul>\r\n    </div>\r\n\r\n    <div class=\"col-xs-9\">\r\n\r\n        <form novalidate *ngIf=\"form\" [formGroup]=\"form\" (ngSubmit)=\"onFormSubmit(form.value)\">\r\n\r\n          <div class=\"form-group\" [class.has-success]=\"name.valid && name.touched\"\r\n               [class.has-error]=\"!name.valid && name.touched\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Name\" [formControl]=\"name\">\r\n            <small class=\"text-muted\" *ngIf=\"name.hasError('required') && name.touched\">\r\n              Name is required.\r\n            </small>\r\n          </div>\r\n\r\n          <button type=\"submit\" [disabled]=\"!form.valid\" class=\"btn btn-primary\">Submit</button>\r\n\r\n        </form>\r\n\r\n      <div *ngIf=\"selectedCategory\">{{ selectedCategory | json }}</div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+
+/***/ },
+
+/***/ 701:
+/***/ function(module, exports) {
+
+	module.exports = "<p>manufacturers</p>"
+
+/***/ },
+
+/***/ 702:
+/***/ function(module, exports) {
+
+	module.exports = "<p>orders</p>"
+
+/***/ },
+
+/***/ 703:
+/***/ function(module, exports) {
+
+	module.exports = "<p>products</p>"
+
+/***/ },
+
+/***/ 704:
+/***/ function(module, exports) {
+
+	module.exports = "<p>tags</p>"
 
 /***/ }
 

@@ -117,16 +117,18 @@
       if (includeManufacturers)
         query = query.Include(s => s.Manufacturers);
 
-      var items = await query
-        .GroupBy(c => c.CategoryGroup)
-        .Select(g => new
-                     {
-                       groupName = g.Key,
-                       items = Mapper.Map<IEnumerable<CategoryDto>>(g.OrderBy(c => c.ViewDisplayOrder).ToList())
-                     })
-        .ToListAsync();
+      // var items = await query
+      //   .GroupBy(c => c.CategoryGroup)
+      //   .Select(g => new
+      //                {
+      //                  groupName = g.Key,
+      //                  items = Mapper.Map<IEnumerable<CategoryDto>>(g.OrderBy(c => c.ViewDisplayOrder).ToList())
+      //                })
+      //   .ToListAsync();
 
-      return Ok(items);
+      var items = await query.ToListAsync();
+
+      return Ok(Mapper.Map<IEnumerable<CategoryDto>>(items));
     }
 
 

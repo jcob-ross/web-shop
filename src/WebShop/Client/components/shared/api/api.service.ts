@@ -9,6 +9,9 @@ import {
   URLSearchParams
 } from '@angular/http';
 
+import { Category } from '../models';
+import { Observable } from 'rxjs/Observable';
+
 interface IRequestOptions {
   method: RequestMethod;
   body?: any;
@@ -24,7 +27,7 @@ export class ApiService {
   constructor(private http: Http){
   }
 
-  getCategories(includeManufacturers: boolean = false, includeTags: boolean = false) {
+  getCategories(includeManufacturers: boolean = false, includeTags: boolean = false)/*: Observable<Category[]>*/ {
     let queryParams = new URLSearchParams();
     queryParams.set('includeManufacturers', JSON.stringify(includeManufacturers));
     queryParams.set('includeTags', JSON.stringify(includeTags));
@@ -33,14 +36,15 @@ export class ApiService {
       method: RequestMethod.Get,
       url: `${BASE_URL}/api/category/list`,
       search: queryParams
-    }).catch(err => this.handleError(err));
+    });
   }
 
+  
   getManufacturers(categoryId: number) {
     return this.jsonRequest({
       method: RequestMethod.Get,
       url: `${BASE_URL}/api/manufacturer/list/category/${categoryId}`
-    }).catch(err => this.handleError(err));
+    });
   }
 
   private jsonRequest(options: IRequestOptions) {
@@ -56,5 +60,6 @@ export class ApiService {
   private handleError(error: Response) {
     // todo: api error handling
     console.error(error);
+    return error;
   }
 }

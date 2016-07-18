@@ -1,1 +1,32 @@
 <p>categories</p>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-3">
+      <ul>
+        <li (click)="onNewCategoryClick()">New Category</li>
+        <li *ngFor="let category of categories" (click)="onNewCategoryClick(category)">{{ category.name }}</li>
+      </ul>
+    </div>
+
+    <div class="col-xs-9">
+
+        <form novalidate *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit(form.value)">
+
+          <div class="form-group" [class.has-success]="name.valid && name.touched"
+               [class.has-error]="!name.valid && name.touched">
+            <input type="text" class="form-control form-control-md"
+                   placeholder="Name" [formControl]="name">
+            <small class="text-muted" *ngIf="name.hasError('required') && name.touched">
+              Name is required.
+            </small>
+          </div>
+
+          <button type="submit" [disabled]="!form.valid" class="btn btn-primary">Submit</button>
+
+        </form>
+
+      <div *ngIf="selectedCategory">{{ selectedCategory | json }}</div>
+    </div>
+  </div>
+</div>
