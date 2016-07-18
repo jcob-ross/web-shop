@@ -1,1 +1,89 @@
-<p>manufacturers</p>
+<div class="container-fluid">
+  <div class="row">
+
+    <!--category list-->
+    <div class="col-xs-3">
+      <ul>
+        <li *ngFor="let category of categories" (click)="onCategoryClick(category)">
+          {{ category.name }}
+          <ul *ngIf="category.manufacturers.length > 0">
+            <li *ngFor="let manufacturer of category.manufacturers"
+                (click)="onManufacturerClick(category, manufacturer); $event.stopPropagation()">
+              {{ manufacturer.name }}
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!--manufacturer form-->
+    <div class="col-xs-9">
+
+      <form novalidate *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit(form.value)">
+
+        <!--header-->
+        <h5 *ngIf="selectedCategory">
+          <span *ngIf="id.value >= 0">Modifying manufacturer {{ selectedManufacturer.name }} in category {{ selectedCategory.name }}</span>
+          <span *ngIf="id.value < 0">Creating new manufacturer in category {{ selectedCategory.name }}</span>
+        </h5>
+
+        <!--name-->
+        <div class="form-group row" [class.has-success]="name.valid && name.touched"
+             [class.has-error]="!name.valid && name.touched">
+          <div class="col-xs-7">
+            <input type="text" class="form-control form-control-md"
+                   placeholder="Name" [formControl]="name">
+            <small class="text-muted" *ngIf="name.hasError('required') && name.touched">
+              Name is required.
+            </small>
+          </div>
+        </div>
+
+        <!--url segment-->
+        <div class="form-group row" [class.has-success]="urlSegment.valid && urlSegment.touched"
+             [class.has-error]="!urlSegment.valid && urlSegment.touched">
+          <div class="col-xs-7">
+            <input type="text" class="form-control form-control-md"
+                   placeholder="Url segment" [formControl]="urlSegment">
+            <small class="text-muted" *ngIf="urlSegment.hasError('required') && urlSegment.touched">
+              Url segment is required.
+            </small>
+          </div>
+        </div>
+
+        <!--show in main menu-->
+        <div class="form-group row">
+          <div class="checkbox col-xs-7">
+            <label>
+              <input type="checkbox" [formControl]="showInMainMenu"> Show in main menu
+            </label>
+          </div>
+        </div>
+
+        <!--submit button-->
+        <button type="submit" [disabled]="!form.valid" class="btn btn-primary">
+          <span *ngIf="selectedManufacturer == null">Create</span>
+          <span *ngIf="selectedManufacturer != null">Update</span>
+        </button>
+
+        <!--delete button-->
+        <button type="button" [disabled]="id.value < 0" class="btn btn-warning" (click)="onDeleteClick(id.value)">
+          Delete
+        </button>
+
+      </form>
+
+      <!--error alerts-->
+      <div *ngIf="errors && errors.length > 0">
+        <div class="alert alert-warning alert-dismissible fade in" role="alert"
+             *ngFor="let error of errors; let idx = index">
+          <button type="button" class="close">
+            <span aria-hidden="true" (click)="clearErrors(idx)">&times;</span>
+          </button>
+          {{ error }}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

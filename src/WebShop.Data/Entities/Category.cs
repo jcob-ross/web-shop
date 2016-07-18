@@ -14,7 +14,6 @@
     public int Id { get; set; }
     public string Name { get; set; }
     public string UrlSegment { get; set; }
-    public string CategoryGroup { get; set; }
     public string ImageUrl { get; set; }
     public int ViewDisplayOrder { get; set; }
 
@@ -30,8 +29,6 @@
     public string Name { get; set; }
     [Required]
     public string UrlSegment { get; set; }
-    [Required]
-    public string CategoryGroup { get; set; }
     [Required]
     public string ImageUrl { get; set; }
     [Required]

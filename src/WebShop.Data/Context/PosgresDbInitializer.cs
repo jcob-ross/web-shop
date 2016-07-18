@@ -47,7 +47,6 @@ namespace WebShop.Data.Context
                 {
                   Name = "Category",
                   UrlSegment = "category",
-                  CategoryGroup = "one",
                   ImageUrl = "https://placeholdit.imgix.net/~text?txtsize=33&txt=50%C3%97100&w=50&h=100",
                   ViewDisplayOrder = 1
                 };

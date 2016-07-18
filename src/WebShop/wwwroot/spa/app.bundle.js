@@ -7,7 +7,7 @@ webpackJsonpac__name_([3],{
 	"use strict";
 	__webpack_require__(298);
 	__webpack_require__(697);
-	var platform_browser_dynamic_1 = __webpack_require__(244);
+	var platform_browser_dynamic_1 = __webpack_require__(245);
 	var platform_browser_1 = __webpack_require__(80);
 	var core_1 = __webpack_require__(1);
 	var http_1 = __webpack_require__(153);
@@ -38,7 +38,7 @@ webpackJsonpac__name_([3],{
 	        core_1.Component({
 	            selector: 'app-main',
 	            template: "\n    <h2 class=\"pink\">Hello from {{ message }}</h2>\n  ",
-	            styles: [__webpack_require__(916)]
+	            styles: [__webpack_require__(914)]
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], AppComponent);
@@ -68,7 +68,7 @@ webpackJsonpac__name_([3],{
 
 /***/ },
 
-/***/ 916:
+/***/ 914:
 /***/ function(module, exports) {
 
 	module.exports = ".pink{color:hotpink}\n"

@@ -1,18 +1,26 @@
-<p>categories</p>
-
 <div class="container-fluid">
   <div class="row">
+
+    <!--category list-->
     <div class="col-xs-3">
       <ul>
-        <li (click)="onNewCategoryClick()">New Category</li>
-        <li *ngFor="let category of categories" (click)="onNewCategoryClick(category)">{{ category.name }}</li>
+        <li (click)="onCategoryClick(null)">New Category</li>
+        <li *ngFor="let category of categories" (click)="onCategoryClick(category)">{{ category.name }}</li>
       </ul>
     </div>
 
+    <!--category form-->
     <div class="col-xs-9">
 
         <form novalidate *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit(form.value)">
 
+          <!--header-->
+          <h5>
+            <span *ngIf="id.value >= 0">Modifying category {{ selectedCategory.name }}</span>
+            <span *ngIf="id.value < 0">Creating new category</span>
+          </h5>
+
+          <!--name-->
           <div class="form-group" [class.has-success]="name.valid && name.touched"
                [class.has-error]="!name.valid && name.touched">
             <input type="text" class="form-control form-control-md"
@@ -22,11 +30,62 @@
             </small>
           </div>
 
-          <button type="submit" [disabled]="!form.valid" class="btn btn-primary">Submit</button>
+          <!--url segment-->
+          <div class="form-group" [class.has-success]="urlSegment.valid && urlSegment.touched"
+               [class.has-error]="!urlSegment.valid && urlSegment.touched">
+            <input type="text" class="form-control form-control-md"
+                   placeholder="Url segment" [formControl]="urlSegment">
+            <small class="text-muted" *ngIf="urlSegment.hasError('required') && urlSegment.touched">
+              Url segment is required.
+            </small>
+          </div>
+
+          <!--image url-->
+          <div class="form-group" [class.has-success]="imageUrl.valid && imageUrl.touched"
+               [class.has-error]="!imageUrl.valid && imageUrl.touched">
+            <input type="text" class="form-control form-control-md"
+                   placeholder="Image url" [formControl]="imageUrl">
+            <small class="text-muted" *ngIf="imageUrl.hasError('required') && imageUrl.touched">
+              Image url is required.
+            </small>
+          </div>
+
+          <!--view display order-->
+          <div class="form-group" [class.has-success]="viewDisplayOrder.valid && viewDisplayOrder.touched"
+               [class.has-error]="!viewDisplayOrder.valid && viewDisplayOrder.touched">
+            <input type="text" class="form-control form-control-md"
+                   placeholder="View display order" [formControl]="viewDisplayOrder">
+            <small class="text-muted" *ngIf="viewDisplayOrder.hasError('required') && viewDisplayOrder.touched">
+              View display order is required.
+            </small>
+            <small class="text-muted" *ngIf="viewDisplayOrder.hasError('pattern') && viewDisplayOrder.touched">
+              Field must be a number.
+            </small>
+          </div>
+
+          <!--submit button-->
+          <button type="submit" [disabled]="!form.valid" class="btn btn-primary">
+            <span *ngIf="selectedCategory == null">Create</span>
+            <span *ngIf="selectedCategory != null">Update</span>
+          </button>
+
+          <!--delete button-->
+          <button type="button" [disabled]="id.value < 0" class="btn btn-warning" (click)="onDeleteClick(id.value)">
+            Delete
+          </button>
 
         </form>
 
-      <div *ngIf="selectedCategory">{{ selectedCategory | json }}</div>
+      <!--error alerts-->
+      <div *ngIf="errors && errors.length > 0">
+        <div class="alert alert-warning alert-dismissible fade in" role="alert"
+             *ngFor="let error of errors; let idx = index">
+          <button type="button" class="close">
+            <span aria-hidden="true" (click)="clearErrors(idx)">&times;</span>
+          </button>
+          {{ error }}
+        </div>
+      </div>
     </div>
   </div>
 </div>

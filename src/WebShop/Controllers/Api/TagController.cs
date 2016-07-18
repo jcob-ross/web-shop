@@ -79,6 +79,10 @@
       item.ParentCategory = parentCategory;
       item.ParentCategoryId = parentCategory.Id;
 
+      Context.Tags.Add(item);
+      parentCategory.Tags.Add(item);
+      await Context.SaveChangesAsync();
+
       var dto = Mapper.Map<TagDto>(item);
       return CreatedAtRoute(nameof(GetTagById), new {controller = nameof(TagController), id = item.Id}, dto);
     }

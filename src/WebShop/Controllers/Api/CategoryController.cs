@@ -117,28 +117,9 @@
       if (includeManufacturers)
         query = query.Include(s => s.Manufacturers);
 
-      // var items = await query
-      //   .GroupBy(c => c.CategoryGroup)
-      //   .Select(g => new
-      //                {
-      //                  groupName = g.Key,
-      //                  items = Mapper.Map<IEnumerable<CategoryDto>>(g.OrderBy(c => c.ViewDisplayOrder).ToList())
-      //                })
-      //   .ToListAsync();
-
       var items = await query.ToListAsync();
 
       return Ok(Mapper.Map<IEnumerable<CategoryDto>>(items));
-    }
-
-
-    [HttpGet]
-    [Route("list-groups")]
-    [NoCache]
-    public async Task<IActionResult> ListGroups()
-    {
-      var items = await StoreContext.Categories.Select(c => c.CategoryGroup).Distinct().ToListAsync();
-      return Ok(items);
     }
 
     [HttpGet]
@@ -165,7 +146,6 @@
                  {
                    Name = model.Name,
                    UrlSegment = model.UrlSegment,
-                   CategoryGroup = model.CategoryGroup,
                    ImageUrl = model.ImageUrl,
                    ViewDisplayOrder = model.ViewDisplayOrder
                  };
@@ -192,7 +172,6 @@
 
       item.Name = model.Name;
       item.UrlSegment = model.UrlSegment;
-      item.CategoryGroup = model.CategoryGroup;
       item.ImageUrl = model.ImageUrl;
       item.ViewDisplayOrder = model.ViewDisplayOrder;
 

@@ -46,13 +46,6 @@
              .IsRequired();
 
       builder.Entity<Category>()
-             .Property(c => c.CategoryGroup)
-             .IsRequired();
-
-      builder.Entity<Category>()
-             .HasIndex(c => c.CategoryGroup);
-
-      builder.Entity<Category>()
              .Property(c => c.ViewDisplayOrder)
              .IsRequired();
 
