@@ -14,9 +14,7 @@ namespace WebShop.Data.Entities
   public class ProductDetailDto
   {
     public int Id { get; set; }
-
     public string Markup { get; set; }
-    [Required]
     public int ParentProductId { get; set; }
   }
 }

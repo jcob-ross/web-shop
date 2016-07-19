@@ -1,0 +1,243 @@
+<div class="container-fluid">
+  <div class="row">
+
+    <form novalidate *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit(form.value)">
+
+      <!--name-->
+      <fieldset class="form-group row"  [class.has-success]="name.valid && name.touched"
+                                        [class.has-error]="!name.valid && name.touched">
+        <label for="name">Name</label>
+        <small class="text-muted">({{ name.value.length }}/{{ fieldRules.name.maxLength }})</small>
+
+        <input class="form-control" id="name" placeholder="Name" [formControl]="name"
+               [class.form-control-success]="name.valid && name.touched"
+               [class.form-control-error]="!name.valid && name.touched">
+
+        <small class="text-muted" *ngIf="name.hasError('required') && name.touched">
+          Name is required <br/>
+        </small>
+        <small class="text-muted" *ngIf="name.hasError('minlength') && name.touched">
+          Minimum length is {{ fieldRules.name.minLength }} <br/>
+        </small>
+        <small class="text-muted" *ngIf="name.hasError('maxlength') && name.touched">
+          Maximum length is {{ fieldRules.name.maxLength }} <br/>
+        </small>
+      </fieldset>
+
+      <!--description-->
+      <fieldset class="form-group row"  [class.has-success]="description.valid && description.touched"
+                                        [class.has-error]="!description.valid && description.touched">
+        <label for="description">Description</label>
+        <small class="text-muted">({{ description.value.length }}/{{ fieldRules.description.maxLength }})</small>
+
+        <input class="form-control" id="description" placeholder="Name" [formControl]="description"
+               [class.form-control-success]="description.valid && description.touched"
+               [class.form-control-error]="!description.valid && description.touched">
+
+        <small class="text-muted" *ngIf="description.hasError('required') && description.touched">
+          Description is required <br/>
+        </small>
+        <small class="text-muted" *ngIf="description.hasError('minlength') && description.touched">
+          Minimum length is {{ fieldRules.description.minLength }} <br/>
+        </small>
+        <small class="text-muted" *ngIf="description.hasError('maxlength') && description.touched">
+          Maximum length is {{ fieldRules.description.maxLength }} <br/>
+        </small>
+      </fieldset>
+
+      <!--price, current price, stock qty-->
+      <div class="container-flex">
+        <div class="row">
+          <div class="col-xs-3">
+
+            <!--price-->
+            <fieldset class="form-group row"  [class.has-success]="price.valid && price.touched"
+                                              [class.has-error]="!price.valid && price.touched">
+              <label for="price">Price</label>
+
+              <input class="form-control" id="price" placeholder="Price" [formControl]="price"
+                     [class.form-control-success]="price.valid && price.touched"
+                     [class.form-control-error]="!price.valid && price.touched">
+
+              <small class="text-muted" *ngIf="price.hasError('required') && price.touched">
+                Price is required <br/>
+              </small>
+              <small class="text-muted" *ngIf="price.hasError('pattern') && price.touched">
+                Price must be a positive number. <br/>
+              </small>
+            </fieldset>
+
+          </div>
+          <div class="col-xs-4 col-xs-offset-1">
+
+            <!--currentPrice-->
+            <fieldset class="form-group row"  [class.has-success]="currentPrice.valid && currentPrice.touched"
+                                              [class.has-error]="!currentPrice.valid && currentPrice.touched">
+              <label for="currentPrice">Current price</label>
+
+              <input class="form-control" id="currentPrice" placeholder="Current price" [formControl]="currentPrice"
+                     [class.form-control-success]="currentPrice.valid && currentPrice.touched"
+                     [class.form-control-error]="!currentPrice.valid && currentPrice.touched">
+
+              <small class="text-muted" *ngIf="currentPrice.hasError('required') && currentPrice.touched">
+                Current price is required <br/>
+              </small>
+              <small class="text-muted" *ngIf="currentPrice.hasError('pattern') && currentPrice.touched">
+                Current price must be a positive number. <br/>
+              </small>
+            </fieldset>
+
+          </div>
+          <div class="col-xs-3 col-xs-offset-1">
+
+            <!--stockCount-->
+            <fieldset class="form-group row"  [class.has-success]="stockCount.valid && stockCount.touched"
+                      [class.has-error]="!stockCount.valid && stockCount.touched">
+              <label for="stockCount">Stock quantity</label>
+
+              <input class="form-control" id="stockCount" placeholder="Stock quantity" [formControl]="stockCount"
+                     [class.form-control-success]="stockCount.valid && stockCount.touched"
+                     [class.form-control-error]="!stockCount.valid && stockCount.touched">
+
+              <small class="text-muted" *ngIf="stockCount.hasError('required') && stockCount.touched">
+                Stock quantity is required <br/>
+              </small>
+              <small class="text-muted" *ngIf="stockCount.hasError('pattern') && stockCount.touched">
+                Stock quantity must be a positive number. <br/>
+              </small>
+            </fieldset>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!--imageUrl-->
+      <fieldset class="form-group row"  [class.has-success]="imageUrl.valid && imageUrl.touched"
+                                        [class.has-error]="!imageUrl.valid && imageUrl.touched">
+        <label for="imageUrl">Image Url</label>
+        <small class="text-muted">({{ imageUrl.value.length }}/{{ fieldRules.imageUrl.maxLength }})</small>
+
+        <input class="form-control" id="imageUrl" placeholder="Image Url" [formControl]="imageUrl"
+               [class.form-control-success]="imageUrl.valid && imageUrl.touched"
+               [class.form-control-error]="!imageUrl.valid && imageUrl.touched">
+
+        <small class="text-muted" *ngIf="imageUrl.hasError('required') && imageUrl.touched">
+          Image Url is required <br/>
+        </small>
+        <small class="text-muted" *ngIf="imageUrl.hasError('minlength') && imageUrl.touched">
+          Minimum length is {{ fieldRules.imageUrl.minLength }} <br/>
+        </small>
+        <small class="text-muted" *ngIf="imageUrl.hasError('maxlength') && imageUrl.touched">
+          Maximum length is {{ fieldRules.imageUrl.maxLength }} <br/>
+        </small>
+      </fieldset>
+
+      <!--product number, new product, promo active-->
+      <div class="container-flex">
+        <div class="row">
+
+          <!--productNumber-->
+          <div class="col-xs-4">
+            <fieldset class="form-group row">
+              <label for="stockCount">Product number</label>
+              <input class="form-control" id="productNumber" [formControl]="productNumber" disabled>
+            </fieldset>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="container-flex" *ngIf="id.value < 0">
+        <div class="row">
+
+          <div class="col-xs-5 col-xs-offset-1">
+
+            <h6>Select category
+              <sup class="text-muted text-danger" *ngIf="parentCategoryId.hasError('invalidCategory')">
+                Required
+              </sup>
+            </h6>
+            <br/>
+
+            <div class="radio" *ngFor="let category of categories; trackBy:category?.id">
+              <label>
+                <input type="radio" name="categories" (click)="onCategorySelect(category)">
+                {{ category.id }} - {{ category.name }}
+              </label>
+            </div>
+
+          </div>
+
+          <div class="col-xs-5 col-xs-offset-1">
+
+            <h6>Select manufacturer
+              <sup class="text-muted text-danger" *ngIf="manufacturerId.hasError('invalidManufacturer')">
+                Required
+              </sup>
+            </h6>
+            <br/>
+
+            <div class="radio" *ngFor="let man of manufacturers; trackBy:man?.id">
+              <label>
+                <input type="radio" name="manufacturers" (click)="onManufacturerSelect(man)">
+                {{ man.id }} - {{ man.name }}
+              </label>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" [formControl]="newProduct">
+          New Product
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" [formControl]="promoActive">
+          Promo active
+        </label>
+      </div>
+
+
+      <!--submit button-->
+      <button type="submit" [disabled]="!form.valid" class="btn btn-primary">
+        Submit
+      </button>
+
+      <!--delete button-->
+      <button type="button" [disabled]="id.value < 0" class="btn btn-warning" *ngIf="product" (click)="onDeleteClick()">
+        Delete
+      </button>
+
+      <!--clear form button-->
+      <button type="button" class="btn btn-danger pull-right" (click)="onClearFormClick()">
+        Clear form / New product
+      </button>
+
+    </form>
+
+  </div>
+</div>
+
+<div class="modal" [ngStyle]="{ 'display': showConfirmDelete ? 'block':'none', 'background-color': showConfirmDelete ? 'rgba(0,0,0,0.7)':'transparent' }"
+     *ngIf="product && product.name">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm</h4>
+      </div>
+      <div class="modal-body">
+        <p>Do you really really want to delete '{{ product.name }}'?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onConfirmCancel()">No, go back</button>
+        <button type="button" class="btn btn-primary" (click)="onConfirmOk()">Yes, delete</button>
+      </div>
+    </div>
+  </div>
+</div>

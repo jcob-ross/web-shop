@@ -1,0 +1,36 @@
+<div>
+  <form *ngIf="form" [formGroup]="form">
+
+    <h5>Product search</h5>
+
+    <input type="text" class="form-control form-control-md" placeholder="Search..." [formControl]="term">
+    <small class="text-muted" *ngIf="term.hasError('minlength')">Minimum length is 3 characters</small>
+    <small class="text-muted" *ngIf="term.hasError('maxlength')">Maximum length is 30 characters</small>
+
+  </form>
+
+  <br/>
+
+
+    <div class="card-columns" *ngIf="products && products.length > 0">
+
+
+        <div class="card" *ngFor="let product of products" (click)="onProductClick(product)">
+          <img class="card-img-top" [src]="product.imageUrl" style="width: 100%;">
+          <div class="card-block">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">Current price: {{ product.currentPrice }}</p>
+            <p class="card-text">{{ product.description }}</p>
+          </div>
+          <div class="card-footer text-muted">
+            <!--void 0 so bootstrap anchor styles work-->
+            <a class="card-link" href="javascript:void(0)" (click)="onLinkClick('/products/edit', product); $event.stopPropagation()">Edit</a>
+            <a class="card-link" href="javascript:void(0)" (click)="onLinkClick('/products/tags', product); $event.stopPropagation()">Tags</a>
+            <a class="card-link" href="javascript:void(0)" (click)="onLinkClick('/products/detail', product); $event.stopPropagation()">Detail</a>
+          </div>
+        </div>
+
+
+    </div>
+
+</div>

@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, REACTIVE_FORM_DIRECTIVES } from '@angular/forms';
 
-import { ApiService } from '../../shared';
 import { Subscription } from 'rxjs/Subscription';
-import { Category, Tag } from '../../shared/models';
+import { ApiService, Category, Tag } from '../../shared';
 
 @Component({
   selector: 'j-tags',
@@ -61,7 +60,6 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   onFormSubmit(formValue) {
-    console.log(formValue);
     if (formValue.id >= 0) {
       this.api.updateTag(formValue).subscribe((res: any) => {
         if (res.ok) {

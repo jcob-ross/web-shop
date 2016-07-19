@@ -24,7 +24,7 @@
     public int StockCount { get; set; }
     public decimal Price { get; set; }
     public decimal CurrentPrice { get; set; }
-    public string ProductNumber { get; set; }
+    public long ProductNumber { get; set; }
     public string ImageUrl { get; set; }
     public bool NewProduct { get; set; }
     public bool PromoActive { get; set; }
@@ -54,7 +54,7 @@
     public decimal Price { get; set; }
     [Required]
     public decimal CurrentPrice { get; set; }
-    public string ProductNumber { get; set; }
+    public long ProductNumber { get; set; }
     [Required]
     public string ImageUrl { get; set; }
     [Required]

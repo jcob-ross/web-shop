@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FORM_DIRECTIVES, FormControl, REACTIVE_FORM_DIRECTIVES } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, REACTIVE_FORM_DIRECTIVES } from '@angular/forms';
 import { Response } from '@angular/http';
 
-import { ApiService } from '../../shared';
 import { Subscription } from 'rxjs/Subscription';
-import { Category } from '../../shared/models';
+
+import { ApiService, Category } from '../../shared';
 
 @Component({
   selector: 'j-categories',

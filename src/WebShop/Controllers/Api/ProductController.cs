@@ -39,46 +39,16 @@
 
       term = term.Trim();
 
-      var categories = await StoreContext.Categories
-                                     .Where(c => c.Name.Contains(term))
-                                     .ToListAsync();
-
       var items = await StoreContext.Products
                                     .Include(p => p.Manufacturer)
                                     .Include(p => p.ParentCategory)
+                                    .Include(p => p.ProductTags).ThenInclude(pt => pt.Tag)
                                     .Where(p => p.Name.Contains(term) || p.Description.Contains(term))
                                     .Take(count)
                                     .ToListAsync();
 
-      var result = new
-      {
-        routes = categories,
-        products = items
-      };
-
-      return Ok(result);
-    }
-
-    [HttpGet]
-    [Route("{productNumber}/detail")]
-    [NoCache]
-    public async Task<IActionResult> GetProductDetail(string productNumber)
-    {
-      if (string.IsNullOrWhiteSpace(productNumber))
-      {
-        ModelState.AddModelError(nameof(productNumber), "Invalid product number");
-        return BadRequest(ModelState);
-      }
-
-      var item = await StoreContext.ProductDetails
-                                   .Include(d => d.ParentProduct)
-                                   .Where(d => d.ParentProduct.ProductNumber == productNumber)
-                                   .FirstOrDefaultAsync();
-
-      if (item == null)
-        return NoContent();
-
-      return Ok(Mapper.Map<ProductDetailDto>(item));
+      var dto = Mapper.Map<List<ProductDto>>(items);
+      return Ok(dto);
     }
 
     [HttpGet]
@@ -89,13 +59,14 @@
       var item = await StoreContext.Products
         .Include(p => p.ParentCategory)
         .Include(p => p.Manufacturer)
-        .Include(p => p.ProductTags)
+        .Include(p => p.ProductTags).ThenInclude(pt => pt.Tag)
         .SingleOrDefaultAsync(p => p.Id == id);
 
       if (item == null)
         return NotFound();
-
-      return Ok(item);
+      
+      var dto = Mapper.Map<ProductDto>(item);
+      return Ok(dto);
     }
 
     [HttpPost]

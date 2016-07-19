@@ -1,1 +1,24 @@
-<p>products</p>
+<div class="container-fluid">
+  <div class="row">
+
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]=" ['./search'] " routerLinkActive="active">Search</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]=" ['./edit'] " routerLinkActive="active">Create / Edit</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]=" ['./tags'] " routerLinkActive="active" [class.disabled]="noProductSelected">Manage tags</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]=" ['./detail'] " routerLinkActive="active" [class.disabled]="noProductSelected">Edit details page</a>
+      </li>
+
+    </ul>
+
+    <br/>
+
+    <router-outlet></router-outlet>
+  </div>
+</div>

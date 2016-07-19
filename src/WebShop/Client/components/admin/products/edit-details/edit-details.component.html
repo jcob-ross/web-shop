@@ -1,0 +1,21 @@
+<h5>Item: {{ product.name }} (#{{ product.productNumber }})</h5>
+<br/>
+
+<div class="container-flex" *ngIf="form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+    <div class="row">    
+      <label for="markup">Markup <small>({{ markup.value.length }}/{{markupMaxLength}})</small> </label>
+      <small class="text-muted text-danger" *ngIf="markup.hasError('maxlength') && !markup.pristine">
+        Maximum length is {{ markupMaxLength }}
+      </small>
+
+      <textarea auto-adjust id="markup" [formControl]="markup" style="width: 100%; min-height: 50vh"></textarea>        
+    </div>
+    <div class="row">
+      <!--submit button-->
+      <button type="submit" [disabled]="!form.valid" class="btn btn-primary">
+        Save
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,25 @@
+<h5>Item: {{ product.name }} (#{{ product.productNumber }})</h5>
+<br/>
+
+<div class="container-fluid">
+  <div class="row" style="text-align: center">
+
+    <!--available tag list-->
+    <div class="col-xs-4 col-xs-offset-2">
+      <h6>Available tags</h6>
+      <div *ngFor="let tag of availableTags">
+        <a class="label" (click)="addTag(tag)" [class.label-primary]="!tag.added" [class.label-default]="tag.added">
+          {{ tag.name }}
+        </a>
+      </div>
+    </div>
+
+    <div class="col-xs-4">
+      <h6>Assigned tags</h6>
+      <div *ngFor="let tag of assignedTags">
+        <a class="label label-primary" (click)="removeTag(tag)">{{ tag.name }}</a>
+      </div>
+    </div>
+
+  </div>
+</div>

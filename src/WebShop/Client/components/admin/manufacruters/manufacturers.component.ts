@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, REACTIVE_FORM_DIRECTIVES } from '@angular/forms';
 
-import { ApiService } from '../../shared';
 import { Subscription } from 'rxjs/Subscription';
-import { Category, Manufacturer } from '../../shared/models';
+
+import { ApiService, Category, Manufacturer } from '../../shared';
 
 @Component({
   selector: 'j-manufacturers',
