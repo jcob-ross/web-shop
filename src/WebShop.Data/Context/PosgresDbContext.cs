@@ -130,7 +130,11 @@
       builder.Entity<OrderLine>()
              .Property(l => l.ProductId)
              .IsRequired();
-      
+
+      builder.Entity<OrderLine>()
+             .Property(l => l.Quantity)
+             .IsRequired();
+
       #endregion order line
 
       #region tag
