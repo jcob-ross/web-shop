@@ -43,7 +43,7 @@ webpackJsonpac__name_([2],{
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	__export(__webpack_require__(714));
-	__export(__webpack_require__(719));
+	__export(__webpack_require__(720));
 	
 
 /***/ },
@@ -86,7 +86,7 @@ webpackJsonpac__name_([2],{
 	    AdminComponent = __decorate([
 	        core_1.Component({
 	            selector: 'admin-main',
-	            template: __webpack_require__(722),
+	            template: __webpack_require__(723),
 	            directives: [ng2_bootstrap_1.AlertComponent, router_1.ROUTER_DIRECTIVES]
 	        }), 
 	        __metadata('design:paramtypes', [])
@@ -250,7 +250,7 @@ webpackJsonpac__name_([2],{
 	    CategoriesComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-categories',
-	            template: __webpack_require__(723),
+	            template: __webpack_require__(724),
 	            directives: [forms_1.REACTIVE_FORM_DIRECTIVES]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object, (typeof (_b = typeof forms_1.FormBuilder !== 'undefined' && forms_1.FormBuilder) === 'function' && _b) || Object])
@@ -395,7 +395,7 @@ webpackJsonpac__name_([2],{
 	    ManufacturersComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-manufacturers',
-	            template: __webpack_require__(724),
+	            template: __webpack_require__(725),
 	            directives: [forms_1.REACTIVE_FORM_DIRECTIVES]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object, (typeof (_b = typeof forms_1.FormBuilder !== 'undefined' && forms_1.FormBuilder) === 'function' && _b) || Object])
@@ -431,7 +431,7 @@ webpackJsonpac__name_([2],{
 	    OrdersComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-orders',
-	            template: __webpack_require__(725)
+	            template: __webpack_require__(726)
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], OrdersComponent);
@@ -447,35 +447,21 @@ webpackJsonpac__name_([2],{
 
 	"use strict";
 	var core_1 = __webpack_require__(1);
+	var platform_browser_1 = __webpack_require__(81);
 	var forms_1 = __webpack_require__(18);
 	var shared_1 = __webpack_require__(70);
 	var shared_2 = __webpack_require__(84);
 	var textarea_auto_adjust_directive_1 = __webpack_require__(699);
 	var EditDetailsComponent = (function () {
-	    function EditDetailsComponent(api, fb, editorState) {
+	    function EditDetailsComponent(api, fb, editorState, sanitizer) {
 	        this.api = api;
 	        this.fb = fb;
 	        this.editorState = editorState;
+	        this.sanitizer = sanitizer;
 	        // validation helper form view
-	        this.markupMaxLength = 20000;
+	        this.markupMaxLength = 30000;
+	        this.preview = null;
 	    }
-	    EditDetailsComponent.prototype.createForm = function (productDetail) {
-	        this.productDetail = null;
-	        this.id = new forms_1.FormControl(-1);
-	        this.markup = new forms_1.FormControl('', forms_1.Validators.maxLength(this.markupMaxLength));
-	        this.parentProductId = new forms_1.FormControl(this.product.id);
-	        if (productDetail !== null && typeof productDetail !== 'undefined') {
-	            this.productDetail = productDetail;
-	            this.id.updateValue(productDetail.id);
-	            this.markup.updateValue(productDetail.markup);
-	            this.parentProductId.updateValue(productDetail.parentProductId);
-	        }
-	        this.form = this.fb.group({
-	            'id': this.id,
-	            'markup': this.markup,
-	            'parentProductId': this.parentProductId
-	        });
-	    };
 	    EditDetailsComponent.prototype.onSubmit = function (formValue) {
 	        var _this = this;
 	        if (this.id.value > 0) {
@@ -492,6 +478,14 @@ webpackJsonpac__name_([2],{
 	                _this.createForm(detail);
 	            });
 	        }
+	    };
+	    EditDetailsComponent.prototype.onPreviewClick = function (formValue) {
+	        var _this = this;
+	        this.api.getMarkdownPreview(formValue)
+	            .subscribe(function (res) {
+	            var markup = res.json().markup;
+	            _this.preview = _this.sanitizer.bypassSecurityTrustHtml(markup);
+	        }, function (err) { return console.log(err); });
 	    };
 	    EditDetailsComponent.prototype.ngOnInit = function () {
 	        var _this = this;
@@ -515,16 +509,33 @@ webpackJsonpac__name_([2],{
 	            this.updateSub.unsubscribe();
 	        }
 	    };
+	    EditDetailsComponent.prototype.createForm = function (productDetail) {
+	        this.productDetail = null;
+	        this.id = new forms_1.FormControl(-1);
+	        this.markup = new forms_1.FormControl('', forms_1.Validators.maxLength(this.markupMaxLength));
+	        this.parentProductId = new forms_1.FormControl(this.product.id);
+	        if (productDetail !== null && typeof productDetail !== 'undefined') {
+	            this.productDetail = productDetail;
+	            this.id.updateValue(productDetail.id);
+	            this.markup.updateValue(productDetail.markup);
+	            this.parentProductId.updateValue(productDetail.parentProductId);
+	        }
+	        this.form = this.fb.group({
+	            'id': this.id,
+	            'markup': this.markup,
+	            'parentProductId': this.parentProductId
+	        });
+	    };
 	    EditDetailsComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-details',
-	            template: __webpack_require__(726),
+	            template: __webpack_require__(727),
 	            directives: [forms_1.REACTIVE_FORM_DIRECTIVES, textarea_auto_adjust_directive_1.AutoAdjustTextareaDirective]
 	        }), 
-	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object, (typeof (_b = typeof forms_1.FormBuilder !== 'undefined' && forms_1.FormBuilder) === 'function' && _b) || Object, (typeof (_c = typeof shared_2.ProductEditorState !== 'undefined' && shared_2.ProductEditorState) === 'function' && _c) || Object])
+	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object, (typeof (_b = typeof forms_1.FormBuilder !== 'undefined' && forms_1.FormBuilder) === 'function' && _b) || Object, (typeof (_c = typeof shared_2.ProductEditorState !== 'undefined' && shared_2.ProductEditorState) === 'function' && _c) || Object, (typeof (_d = typeof platform_browser_1.DomSanitizationService !== 'undefined' && platform_browser_1.DomSanitizationService) === 'function' && _d) || Object])
 	    ], EditDetailsComponent);
 	    return EditDetailsComponent;
-	    var _a, _b, _c;
+	    var _a, _b, _c, _d;
 	}());
 	exports.EditDetailsComponent = EditDetailsComponent;
 	
@@ -768,7 +779,7 @@ webpackJsonpac__name_([2],{
 	    EditProductComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-edit-product',
-	            template: __webpack_require__(727),
+	            template: __webpack_require__(728),
 	            directives: [forms_1.REACTIVE_FORM_DIRECTIVES]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object, (typeof (_b = typeof forms_1.FormBuilder !== 'undefined' && forms_1.FormBuilder) === 'function' && _b) || Object, (typeof (_c = typeof shared_2.ProductEditorState !== 'undefined' && shared_2.ProductEditorState) === 'function' && _c) || Object])
@@ -885,7 +896,7 @@ webpackJsonpac__name_([2],{
 	    EditTagsComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-tags',
-	            template: __webpack_require__(728),
+	            template: __webpack_require__(729),
 	            directives: [forms_1.REACTIVE_FORM_DIRECTIVES]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object, (typeof (_b = typeof shared_2.ProductEditorState !== 'undefined' && shared_2.ProductEditorState) === 'function' && _b) || Object])
@@ -1011,7 +1022,7 @@ webpackJsonpac__name_([2],{
 	    ProductSearchComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-search',
-	            template: __webpack_require__(729),
+	            template: __webpack_require__(730),
 	            directives: [forms_1.REACTIVE_FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object, (typeof (_b = typeof forms_1.FormBuilder !== 'undefined' && forms_1.FormBuilder) === 'function' && _b) || Object, (typeof (_c = typeof shared_2.ProductEditorState !== 'undefined' && shared_2.ProductEditorState) === 'function' && _c) || Object, (typeof (_d = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _d) || Object])
@@ -1051,7 +1062,7 @@ webpackJsonpac__name_([2],{
 	    ProductsComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-products',
-	            template: __webpack_require__(730),
+	            template: __webpack_require__(731),
 	            directives: [router_1.ROUTER_DIRECTIVES]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ProductEditorState !== 'undefined' && shared_1.ProductEditorState) === 'function' && _a) || Object])
@@ -1238,7 +1249,7 @@ webpackJsonpac__name_([2],{
 	    TagsComponent = __decorate([
 	        core_1.Component({
 	            selector: 'j-tags',
-	            template: __webpack_require__(731),
+	            template: __webpack_require__(732),
 	            directives: [forms_1.REACTIVE_FORM_DIRECTIVES]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof shared_1.ApiService !== 'undefined' && shared_1.ApiService) === 'function' && _a) || Object, (typeof (_b = typeof forms_1.FormBuilder !== 'undefined' && forms_1.FormBuilder) === 'function' && _b) || Object])
@@ -1259,7 +1270,7 @@ webpackJsonpac__name_([2],{
 	var http_1 = __webpack_require__(156);
 	var Observable_1 = __webpack_require__(6);
 	__webpack_require__(399);
-	__webpack_require__(736);
+	__webpack_require__(737);
 	__webpack_require__(401);
 	var BASE_URL = 'http://localhost:8080';
 	var ApiService = (function () {
@@ -1356,6 +1367,14 @@ webpackJsonpac__name_([2],{
 	        return this.jsonRequest({
 	            method: http_1.RequestMethod.Delete,
 	            url: BASE_URL + "/api/product/" + productId + "/detail",
+	        }).catch(function (err) { return _this.handleError(err); });
+	    };
+	    ApiService.prototype.getMarkdownPreview = function (model) {
+	        var _this = this;
+	        return this.jsonRequest({
+	            method: http_1.RequestMethod.Post,
+	            url: BASE_URL + "/api/product-detail/preview-markdown",
+	            body: model
 	        }).catch(function (err) { return _this.handleError(err); });
 	    };
 	    /**
@@ -1545,6 +1564,20 @@ webpackJsonpac__name_([2],{
 /***/ function(module, exports) {
 
 	"use strict";
+	var ProductDetail = (function () {
+	    function ProductDetail() {
+	    }
+	    return ProductDetail;
+	}());
+	exports.ProductDetail = ProductDetail;
+	
+
+/***/ },
+
+/***/ 719:
+/***/ function(module, exports) {
+
+	"use strict";
 	var Tag = (function () {
 	    function Tag() {
 	        /**
@@ -1560,7 +1593,7 @@ webpackJsonpac__name_([2],{
 
 /***/ },
 
-/***/ 719:
+/***/ 720:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1568,96 +1601,96 @@ webpackJsonpac__name_([2],{
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	__export(__webpack_require__(715));
-	__export(__webpack_require__(718));
+	__export(__webpack_require__(719));
 	__export(__webpack_require__(716));
 	__export(__webpack_require__(717));
-	__export(__webpack_require__(948));
+	__export(__webpack_require__(718));
 	
-
-/***/ },
-
-/***/ 722:
-/***/ function(module, exports) {
-
-	module.exports = "<ul class=\"nav nav-tabs\">\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./products'] \" routerLinkActive=\"active\">Products</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./categories'] \" routerLinkActive=\"active\">Categories</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./manufacturers'] \" routerLinkActive=\"active\">Manufacturers</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./tags'] \" routerLinkActive=\"active\">Tags</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./orders'] \" routerLinkActive=\"active\">Orders</a>\r\n  </li>  \r\n</ul>\r\n\r\n<br/>\r\n\r\n<router-outlet></router-outlet>"
 
 /***/ },
 
 /***/ 723:
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container-fluid\">\r\n  <div class=\"row\">\r\n\r\n    <!--category list-->\r\n    <div class=\"col-xs-3\">\r\n      <ul>\r\n        <li (click)=\"onCategoryClick(null)\">New Category</li>\r\n        <li *ngFor=\"let category of categories\" (click)=\"onCategoryClick(category)\">{{ category.name }}</li>\r\n      </ul>\r\n    </div>\r\n\r\n    <!--category form-->\r\n    <div class=\"col-xs-9\">\r\n\r\n        <form novalidate *ngIf=\"form\" [formGroup]=\"form\" (ngSubmit)=\"onFormSubmit(form.value)\">\r\n\r\n          <!--header-->\r\n          <h5>\r\n            <span *ngIf=\"id.value >= 0\">Modifying category {{ selectedCategory.name }}</span>\r\n            <span *ngIf=\"id.value < 0\">Creating new category</span>\r\n          </h5>\r\n\r\n          <!--name-->\r\n          <div class=\"form-group\" [class.has-success]=\"name.valid && name.touched\"\r\n               [class.has-error]=\"!name.valid && name.touched\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Name\" [formControl]=\"name\">\r\n            <small class=\"text-muted\" *ngIf=\"name.hasError('required') && name.touched\">\r\n              Name is required.\r\n            </small>\r\n          </div>\r\n\r\n          <!--url segment-->\r\n          <div class=\"form-group\" [class.has-success]=\"urlSegment.valid && urlSegment.touched\"\r\n               [class.has-error]=\"!urlSegment.valid && urlSegment.touched\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Url segment\" [formControl]=\"urlSegment\">\r\n            <small class=\"text-muted\" *ngIf=\"urlSegment.hasError('required') && urlSegment.touched\">\r\n              Url segment is required.\r\n            </small>\r\n          </div>\r\n\r\n          <!--image url-->\r\n          <div class=\"form-group\" [class.has-success]=\"imageUrl.valid && imageUrl.touched\"\r\n               [class.has-error]=\"!imageUrl.valid && imageUrl.touched\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Image url\" [formControl]=\"imageUrl\">\r\n            <small class=\"text-muted\" *ngIf=\"imageUrl.hasError('required') && imageUrl.touched\">\r\n              Image url is required.\r\n            </small>\r\n          </div>\r\n\r\n          <!--view display order-->\r\n          <div class=\"form-group\" [class.has-success]=\"viewDisplayOrder.valid && viewDisplayOrder.touched\"\r\n               [class.has-error]=\"!viewDisplayOrder.valid && viewDisplayOrder.touched\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"View display order\" [formControl]=\"viewDisplayOrder\">\r\n            <small class=\"text-muted\" *ngIf=\"viewDisplayOrder.hasError('required') && viewDisplayOrder.touched\">\r\n              View display order is required.\r\n            </small>\r\n            <small class=\"text-muted\" *ngIf=\"viewDisplayOrder.hasError('pattern') && viewDisplayOrder.touched\">\r\n              Field must be a number.\r\n            </small>\r\n          </div>\r\n\r\n          <!--submit button-->\r\n          <button type=\"submit\" [disabled]=\"!form.valid\" class=\"btn btn-primary\">\r\n            <span *ngIf=\"selectedCategory == null\">Create</span>\r\n            <span *ngIf=\"selectedCategory != null\">Update</span>\r\n          </button>\r\n\r\n          <!--delete button-->\r\n          <button type=\"button\" [disabled]=\"id.value < 0\" class=\"btn btn-warning\" (click)=\"onDeleteClick(id.value)\">\r\n            Delete\r\n          </button>\r\n\r\n        </form>\r\n\r\n      <!--error alerts-->\r\n      <div *ngIf=\"errors && errors.length > 0\">\r\n        <div class=\"alert alert-warning alert-dismissible fade in\" role=\"alert\"\r\n             *ngFor=\"let error of errors; let idx = index\">\r\n          <button type=\"button\" class=\"close\">\r\n            <span aria-hidden=\"true\" (click)=\"clearErrors(idx)\">&times;</span>\r\n          </button>\r\n          {{ error }}\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+	module.exports = "<ul class=\"nav nav-tabs\">\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./products'] \" routerLinkActive=\"active\">Products</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./categories'] \" routerLinkActive=\"active\">Categories</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./manufacturers'] \" routerLinkActive=\"active\">Manufacturers</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./tags'] \" routerLinkActive=\"active\">Tags</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" [routerLink]=\" ['./orders'] \" routerLinkActive=\"active\">Orders</a>\r\n  </li>  \r\n</ul>\r\n\r\n<br/>\r\n\r\n<router-outlet></router-outlet>"
 
 /***/ },
 
 /***/ 724:
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container-fluid\">\r\n  <div class=\"row\">\r\n\r\n    <!--category list-->\r\n    <div class=\"col-xs-3\">\r\n      <ul>\r\n        <li *ngFor=\"let category of categories\" (click)=\"onCategoryClick(category)\">\r\n          {{ category.name }}\r\n          <ul *ngIf=\"category.manufacturers.length > 0\">\r\n            <li *ngFor=\"let manufacturer of category.manufacturers\"\r\n                (click)=\"onManufacturerClick(category, manufacturer); $event.stopPropagation()\">\r\n              {{ manufacturer.name }}\r\n            </li>\r\n          </ul>\r\n        </li>\r\n      </ul>\r\n    </div>\r\n\r\n    <!--manufacturer form-->\r\n    <div class=\"col-xs-9\">\r\n\r\n      <form novalidate *ngIf=\"form\" [formGroup]=\"form\" (ngSubmit)=\"onFormSubmit(form.value)\">\r\n\r\n        <!--header-->\r\n        <h5 *ngIf=\"selectedCategory\">\r\n          <span *ngIf=\"id.value >= 0\">Modifying manufacturer {{ selectedManufacturer.name }} in category {{ selectedCategory.name }}</span>\r\n          <span *ngIf=\"id.value < 0\">Creating new manufacturer in category {{ selectedCategory.name }}</span>\r\n        </h5>\r\n\r\n        <!--name-->\r\n        <div class=\"form-group row\" [class.has-success]=\"name.valid && name.touched\"\r\n             [class.has-error]=\"!name.valid && name.touched\">\r\n          <div class=\"col-xs-7\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Name\" [formControl]=\"name\">\r\n            <small class=\"text-muted\" *ngIf=\"name.hasError('required') && name.touched\">\r\n              Name is required.\r\n            </small>\r\n          </div>\r\n        </div>\r\n\r\n        <!--url segment-->\r\n        <div class=\"form-group row\" [class.has-success]=\"urlSegment.valid && urlSegment.touched\"\r\n             [class.has-error]=\"!urlSegment.valid && urlSegment.touched\">\r\n          <div class=\"col-xs-7\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Url segment\" [formControl]=\"urlSegment\">\r\n            <small class=\"text-muted\" *ngIf=\"urlSegment.hasError('required') && urlSegment.touched\">\r\n              Url segment is required.\r\n            </small>\r\n          </div>\r\n        </div>\r\n\r\n        <!--show in main menu-->\r\n        <div class=\"form-group row\">\r\n          <div class=\"checkbox col-xs-7\">\r\n            <label>\r\n              <input type=\"checkbox\" [formControl]=\"showInMainMenu\"> Show in main menu\r\n            </label>\r\n          </div>\r\n        </div>\r\n\r\n        <!--submit button-->\r\n        <button type=\"submit\" [disabled]=\"!form.valid\" class=\"btn btn-primary\">\r\n          <span *ngIf=\"selectedManufacturer == null\">Create</span>\r\n          <span *ngIf=\"selectedManufacturer != null\">Update</span>\r\n        </button>\r\n\r\n        <!--delete button-->\r\n        <button type=\"button\" [disabled]=\"id.value < 0\" class=\"btn btn-warning\" (click)=\"onDeleteClick(id.value)\">\r\n          Delete\r\n        </button>\r\n\r\n      </form>\r\n\r\n      <!--error alerts-->\r\n      <div *ngIf=\"errors && errors.length > 0\">\r\n        <div class=\"alert alert-warning alert-dismissible fade in\" role=\"alert\"\r\n             *ngFor=\"let error of errors; let idx = index\">\r\n          <button type=\"button\" class=\"close\">\r\n            <span aria-hidden=\"true\" (click)=\"clearErrors(idx)\">&times;</span>\r\n          </button>\r\n          {{ error }}\r\n        </div>\r\n      </div>\r\n\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+	module.exports = "<div class=\"container-fluid\">\r\n  <div class=\"row\">\r\n\r\n    <!--category list-->\r\n    <div class=\"col-xs-3\">\r\n      <ul>\r\n        <li (click)=\"onCategoryClick(null)\">New Category</li>\r\n        <li *ngFor=\"let category of categories\" (click)=\"onCategoryClick(category)\">{{ category.name }}</li>\r\n      </ul>\r\n    </div>\r\n\r\n    <!--category form-->\r\n    <div class=\"col-xs-9\">\r\n\r\n        <form novalidate *ngIf=\"form\" [formGroup]=\"form\" (ngSubmit)=\"onFormSubmit(form.value)\">\r\n\r\n          <!--header-->\r\n          <h5>\r\n            <span *ngIf=\"id.value >= 0\">Modifying category {{ selectedCategory.name }}</span>\r\n            <span *ngIf=\"id.value < 0\">Creating new category</span>\r\n          </h5>\r\n\r\n          <!--name-->\r\n          <div class=\"form-group\" [class.has-success]=\"name.valid && name.touched\"\r\n               [class.has-error]=\"!name.valid && name.touched\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Name\" [formControl]=\"name\">\r\n            <small class=\"text-muted\" *ngIf=\"name.hasError('required') && name.touched\">\r\n              Name is required.\r\n            </small>\r\n          </div>\r\n\r\n          <!--url segment-->\r\n          <div class=\"form-group\" [class.has-success]=\"urlSegment.valid && urlSegment.touched\"\r\n               [class.has-error]=\"!urlSegment.valid && urlSegment.touched\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Url segment\" [formControl]=\"urlSegment\">\r\n            <small class=\"text-muted\" *ngIf=\"urlSegment.hasError('required') && urlSegment.touched\">\r\n              Url segment is required.\r\n            </small>\r\n          </div>\r\n\r\n          <!--image url-->\r\n          <div class=\"form-group\" [class.has-success]=\"imageUrl.valid && imageUrl.touched\"\r\n               [class.has-error]=\"!imageUrl.valid && imageUrl.touched\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Image url\" [formControl]=\"imageUrl\">\r\n            <small class=\"text-muted\" *ngIf=\"imageUrl.hasError('required') && imageUrl.touched\">\r\n              Image url is required.\r\n            </small>\r\n          </div>\r\n\r\n          <!--view display order-->\r\n          <div class=\"form-group\" [class.has-success]=\"viewDisplayOrder.valid && viewDisplayOrder.touched\"\r\n               [class.has-error]=\"!viewDisplayOrder.valid && viewDisplayOrder.touched\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"View display order\" [formControl]=\"viewDisplayOrder\">\r\n            <small class=\"text-muted\" *ngIf=\"viewDisplayOrder.hasError('required') && viewDisplayOrder.touched\">\r\n              View display order is required.\r\n            </small>\r\n            <small class=\"text-muted\" *ngIf=\"viewDisplayOrder.hasError('pattern') && viewDisplayOrder.touched\">\r\n              Field must be a number.\r\n            </small>\r\n          </div>\r\n\r\n          <!--submit button-->\r\n          <button type=\"submit\" [disabled]=\"!form.valid\" class=\"btn btn-primary\">\r\n            <span *ngIf=\"selectedCategory == null\">Create</span>\r\n            <span *ngIf=\"selectedCategory != null\">Update</span>\r\n          </button>\r\n\r\n          <!--delete button-->\r\n          <button type=\"button\" [disabled]=\"id.value < 0\" class=\"btn btn-warning\" (click)=\"onDeleteClick(id.value)\">\r\n            Delete\r\n          </button>\r\n\r\n        </form>\r\n\r\n      <!--error alerts-->\r\n      <div *ngIf=\"errors && errors.length > 0\">\r\n        <div class=\"alert alert-warning alert-dismissible fade in\" role=\"alert\"\r\n             *ngFor=\"let error of errors; let idx = index\">\r\n          <button type=\"button\" class=\"close\">\r\n            <span aria-hidden=\"true\" (click)=\"clearErrors(idx)\">&times;</span>\r\n          </button>\r\n          {{ error }}\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ },
 
 /***/ 725:
 /***/ function(module, exports) {
 
-	module.exports = "<p>orders</p>"
+	module.exports = "<div class=\"container-fluid\">\r\n  <div class=\"row\">\r\n\r\n    <!--category list-->\r\n    <div class=\"col-xs-3\">\r\n      <ul>\r\n        <li *ngFor=\"let category of categories\" (click)=\"onCategoryClick(category)\">\r\n          {{ category.name }}\r\n          <ul *ngIf=\"category.manufacturers.length > 0\">\r\n            <li *ngFor=\"let manufacturer of category.manufacturers\"\r\n                (click)=\"onManufacturerClick(category, manufacturer); $event.stopPropagation()\">\r\n              {{ manufacturer.name }}\r\n            </li>\r\n          </ul>\r\n        </li>\r\n      </ul>\r\n    </div>\r\n\r\n    <!--manufacturer form-->\r\n    <div class=\"col-xs-9\">\r\n\r\n      <form novalidate *ngIf=\"form\" [formGroup]=\"form\" (ngSubmit)=\"onFormSubmit(form.value)\">\r\n\r\n        <!--header-->\r\n        <h5 *ngIf=\"selectedCategory\">\r\n          <span *ngIf=\"id.value >= 0\">Modifying manufacturer {{ selectedManufacturer.name }} in category {{ selectedCategory.name }}</span>\r\n          <span *ngIf=\"id.value < 0\">Creating new manufacturer in category {{ selectedCategory.name }}</span>\r\n        </h5>\r\n\r\n        <!--name-->\r\n        <div class=\"form-group row\" [class.has-success]=\"name.valid && name.touched\"\r\n             [class.has-error]=\"!name.valid && name.touched\">\r\n          <div class=\"col-xs-7\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Name\" [formControl]=\"name\">\r\n            <small class=\"text-muted\" *ngIf=\"name.hasError('required') && name.touched\">\r\n              Name is required.\r\n            </small>\r\n          </div>\r\n        </div>\r\n\r\n        <!--url segment-->\r\n        <div class=\"form-group row\" [class.has-success]=\"urlSegment.valid && urlSegment.touched\"\r\n             [class.has-error]=\"!urlSegment.valid && urlSegment.touched\">\r\n          <div class=\"col-xs-7\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Url segment\" [formControl]=\"urlSegment\">\r\n            <small class=\"text-muted\" *ngIf=\"urlSegment.hasError('required') && urlSegment.touched\">\r\n              Url segment is required.\r\n            </small>\r\n          </div>\r\n        </div>\r\n\r\n        <!--show in main menu-->\r\n        <div class=\"form-group row\">\r\n          <div class=\"checkbox col-xs-7\">\r\n            <label>\r\n              <input type=\"checkbox\" [formControl]=\"showInMainMenu\"> Show in main menu\r\n            </label>\r\n          </div>\r\n        </div>\r\n\r\n        <!--submit button-->\r\n        <button type=\"submit\" [disabled]=\"!form.valid\" class=\"btn btn-primary\">\r\n          <span *ngIf=\"selectedManufacturer == null\">Create</span>\r\n          <span *ngIf=\"selectedManufacturer != null\">Update</span>\r\n        </button>\r\n\r\n        <!--delete button-->\r\n        <button type=\"button\" [disabled]=\"id.value < 0\" class=\"btn btn-warning\" (click)=\"onDeleteClick(id.value)\">\r\n          Delete\r\n        </button>\r\n\r\n      </form>\r\n\r\n      <!--error alerts-->\r\n      <div *ngIf=\"errors && errors.length > 0\">\r\n        <div class=\"alert alert-warning alert-dismissible fade in\" role=\"alert\"\r\n             *ngFor=\"let error of errors; let idx = index\">\r\n          <button type=\"button\" class=\"close\">\r\n            <span aria-hidden=\"true\" (click)=\"clearErrors(idx)\">&times;</span>\r\n          </button>\r\n          {{ error }}\r\n        </div>\r\n      </div>\r\n\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ },
 
 /***/ 726:
 /***/ function(module, exports) {
 
-	module.exports = "<h5>Item: {{ product.name }} (#{{ product.productNumber }})</h5>\r\n<br/>\r\n\r\n<div class=\"container-flex\" *ngIf=\"form\">\r\n  <form [formGroup]=\"form\" (ngSubmit)=\"onSubmit(form.value)\">\r\n    <div class=\"row\">    \r\n      <label for=\"markup\">Markup <small>({{ markup.value.length }}/{{markupMaxLength}})</small> </label>\r\n      <small class=\"text-muted text-danger\" *ngIf=\"markup.hasError('maxlength') && !markup.pristine\">\r\n        Maximum length is {{ markupMaxLength }}\r\n      </small>\r\n\r\n      <textarea auto-adjust id=\"markup\" [formControl]=\"markup\" style=\"width: 100%; min-height: 50vh\"></textarea>        \r\n    </div>\r\n    <div class=\"row\">\r\n      <!--submit button-->\r\n      <button type=\"submit\" [disabled]=\"!form.valid\" class=\"btn btn-primary\">\r\n        Save\r\n      </button>\r\n    </div>\r\n  </form>\r\n</div>"
+	module.exports = "<p>orders</p>"
 
 /***/ },
 
 /***/ 727:
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container-fluid\">\r\n  <div class=\"row\">\r\n\r\n    <form novalidate *ngIf=\"form\" [formGroup]=\"form\" (ngSubmit)=\"onFormSubmit(form.value)\">\r\n\r\n      <!--name-->\r\n      <fieldset class=\"form-group row\"  [class.has-success]=\"name.valid && name.touched\"\r\n                                        [class.has-error]=\"!name.valid && name.touched\">\r\n        <label for=\"name\">Name</label>\r\n        <small class=\"text-muted\">({{ name.value.length }}/{{ fieldRules.name.maxLength }})</small>\r\n\r\n        <input class=\"form-control\" id=\"name\" placeholder=\"Name\" [formControl]=\"name\"\r\n               [class.form-control-success]=\"name.valid && name.touched\"\r\n               [class.form-control-error]=\"!name.valid && name.touched\">\r\n\r\n        <small class=\"text-muted\" *ngIf=\"name.hasError('required') && name.touched\">\r\n          Name is required <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"name.hasError('minlength') && name.touched\">\r\n          Minimum length is {{ fieldRules.name.minLength }} <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"name.hasError('maxlength') && name.touched\">\r\n          Maximum length is {{ fieldRules.name.maxLength }} <br/>\r\n        </small>\r\n      </fieldset>\r\n\r\n      <!--description-->\r\n      <fieldset class=\"form-group row\"  [class.has-success]=\"description.valid && description.touched\"\r\n                                        [class.has-error]=\"!description.valid && description.touched\">\r\n        <label for=\"description\">Description</label>\r\n        <small class=\"text-muted\">({{ description.value.length }}/{{ fieldRules.description.maxLength }})</small>\r\n\r\n        <input class=\"form-control\" id=\"description\" placeholder=\"Name\" [formControl]=\"description\"\r\n               [class.form-control-success]=\"description.valid && description.touched\"\r\n               [class.form-control-error]=\"!description.valid && description.touched\">\r\n\r\n        <small class=\"text-muted\" *ngIf=\"description.hasError('required') && description.touched\">\r\n          Description is required <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"description.hasError('minlength') && description.touched\">\r\n          Minimum length is {{ fieldRules.description.minLength }} <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"description.hasError('maxlength') && description.touched\">\r\n          Maximum length is {{ fieldRules.description.maxLength }} <br/>\r\n        </small>\r\n      </fieldset>\r\n\r\n      <!--price, current price, stock qty-->\r\n      <div class=\"container-flex\">\r\n        <div class=\"row\">\r\n          <div class=\"col-xs-3\">\r\n\r\n            <!--price-->\r\n            <fieldset class=\"form-group row\"  [class.has-success]=\"price.valid && price.touched\"\r\n                                              [class.has-error]=\"!price.valid && price.touched\">\r\n              <label for=\"price\">Price</label>\r\n\r\n              <input class=\"form-control\" id=\"price\" placeholder=\"Price\" [formControl]=\"price\"\r\n                     [class.form-control-success]=\"price.valid && price.touched\"\r\n                     [class.form-control-error]=\"!price.valid && price.touched\">\r\n\r\n              <small class=\"text-muted\" *ngIf=\"price.hasError('required') && price.touched\">\r\n                Price is required <br/>\r\n              </small>\r\n              <small class=\"text-muted\" *ngIf=\"price.hasError('pattern') && price.touched\">\r\n                Price must be a positive number. <br/>\r\n              </small>\r\n            </fieldset>\r\n\r\n          </div>\r\n          <div class=\"col-xs-4 col-xs-offset-1\">\r\n\r\n            <!--currentPrice-->\r\n            <fieldset class=\"form-group row\"  [class.has-success]=\"currentPrice.valid && currentPrice.touched\"\r\n                                              [class.has-error]=\"!currentPrice.valid && currentPrice.touched\">\r\n              <label for=\"currentPrice\">Current price</label>\r\n\r\n              <input class=\"form-control\" id=\"currentPrice\" placeholder=\"Current price\" [formControl]=\"currentPrice\"\r\n                     [class.form-control-success]=\"currentPrice.valid && currentPrice.touched\"\r\n                     [class.form-control-error]=\"!currentPrice.valid && currentPrice.touched\">\r\n\r\n              <small class=\"text-muted\" *ngIf=\"currentPrice.hasError('required') && currentPrice.touched\">\r\n                Current price is required <br/>\r\n              </small>\r\n              <small class=\"text-muted\" *ngIf=\"currentPrice.hasError('pattern') && currentPrice.touched\">\r\n                Current price must be a positive number. <br/>\r\n              </small>\r\n            </fieldset>\r\n\r\n          </div>\r\n          <div class=\"col-xs-3 col-xs-offset-1\">\r\n\r\n            <!--stockCount-->\r\n            <fieldset class=\"form-group row\"  [class.has-success]=\"stockCount.valid && stockCount.touched\"\r\n                      [class.has-error]=\"!stockCount.valid && stockCount.touched\">\r\n              <label for=\"stockCount\">Stock quantity</label>\r\n\r\n              <input class=\"form-control\" id=\"stockCount\" placeholder=\"Stock quantity\" [formControl]=\"stockCount\"\r\n                     [class.form-control-success]=\"stockCount.valid && stockCount.touched\"\r\n                     [class.form-control-error]=\"!stockCount.valid && stockCount.touched\">\r\n\r\n              <small class=\"text-muted\" *ngIf=\"stockCount.hasError('required') && stockCount.touched\">\r\n                Stock quantity is required <br/>\r\n              </small>\r\n              <small class=\"text-muted\" *ngIf=\"stockCount.hasError('pattern') && stockCount.touched\">\r\n                Stock quantity must be a positive number. <br/>\r\n              </small>\r\n            </fieldset>\r\n\r\n          </div>\r\n\r\n        </div>\r\n      </div>\r\n\r\n      <!--imageUrl-->\r\n      <fieldset class=\"form-group row\"  [class.has-success]=\"imageUrl.valid && imageUrl.touched\"\r\n                                        [class.has-error]=\"!imageUrl.valid && imageUrl.touched\">\r\n        <label for=\"imageUrl\">Image Url</label>\r\n        <small class=\"text-muted\">({{ imageUrl.value.length }}/{{ fieldRules.imageUrl.maxLength }})</small>\r\n\r\n        <input class=\"form-control\" id=\"imageUrl\" placeholder=\"Image Url\" [formControl]=\"imageUrl\"\r\n               [class.form-control-success]=\"imageUrl.valid && imageUrl.touched\"\r\n               [class.form-control-error]=\"!imageUrl.valid && imageUrl.touched\">\r\n\r\n        <small class=\"text-muted\" *ngIf=\"imageUrl.hasError('required') && imageUrl.touched\">\r\n          Image Url is required <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"imageUrl.hasError('minlength') && imageUrl.touched\">\r\n          Minimum length is {{ fieldRules.imageUrl.minLength }} <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"imageUrl.hasError('maxlength') && imageUrl.touched\">\r\n          Maximum length is {{ fieldRules.imageUrl.maxLength }} <br/>\r\n        </small>\r\n      </fieldset>\r\n\r\n      <!--product number, new product, promo active-->\r\n      <div class=\"container-flex\">\r\n        <div class=\"row\">\r\n\r\n          <!--productNumber-->\r\n          <div class=\"col-xs-4\">\r\n            <fieldset class=\"form-group row\">\r\n              <label for=\"stockCount\">Product number</label>\r\n              <input class=\"form-control\" id=\"productNumber\" [formControl]=\"productNumber\" disabled>\r\n            </fieldset>\r\n          </div>\r\n\r\n        </div>\r\n      </div>\r\n\r\n      <div class=\"container-flex\" *ngIf=\"id.value < 0\">\r\n        <div class=\"row\">\r\n\r\n          <div class=\"col-xs-5 col-xs-offset-1\">\r\n\r\n            <h6>Select category\r\n              <sup class=\"text-muted text-danger\" *ngIf=\"parentCategoryId.hasError('invalidCategory')\">\r\n                Required\r\n              </sup>\r\n            </h6>\r\n            <br/>\r\n\r\n            <div class=\"radio\" *ngFor=\"let category of categories; trackBy:category?.id\">\r\n              <label>\r\n                <input type=\"radio\" name=\"categories\" (click)=\"onCategorySelect(category)\">\r\n                {{ category.id }} - {{ category.name }}\r\n              </label>\r\n            </div>\r\n\r\n          </div>\r\n\r\n          <div class=\"col-xs-5 col-xs-offset-1\">\r\n\r\n            <h6>Select manufacturer\r\n              <sup class=\"text-muted text-danger\" *ngIf=\"manufacturerId.hasError('invalidManufacturer')\">\r\n                Required\r\n              </sup>\r\n            </h6>\r\n            <br/>\r\n\r\n            <div class=\"radio\" *ngFor=\"let man of manufacturers; trackBy:man?.id\">\r\n              <label>\r\n                <input type=\"radio\" name=\"manufacturers\" (click)=\"onManufacturerSelect(man)\">\r\n                {{ man.id }} - {{ man.name }}\r\n              </label>\r\n            </div>\r\n\r\n          </div>\r\n\r\n        </div>\r\n      </div>\r\n\r\n      <div class=\"checkbox\">\r\n        <label>\r\n          <input type=\"checkbox\" [formControl]=\"newProduct\">\r\n          New Product\r\n        </label>\r\n      </div>\r\n      <div class=\"checkbox\">\r\n        <label>\r\n          <input type=\"checkbox\" [formControl]=\"promoActive\">\r\n          Promo active\r\n        </label>\r\n      </div>\r\n\r\n\r\n      <!--submit button-->\r\n      <button type=\"submit\" [disabled]=\"!form.valid\" class=\"btn btn-primary\">\r\n        Submit\r\n      </button>\r\n\r\n      <!--delete button-->\r\n      <button type=\"button\" [disabled]=\"id.value < 0\" class=\"btn btn-warning\" *ngIf=\"product\" (click)=\"onDeleteClick()\">\r\n        Delete\r\n      </button>\r\n\r\n      <!--clear form button-->\r\n      <button type=\"button\" class=\"btn btn-danger pull-right\" (click)=\"onClearFormClick()\">\r\n        Clear form / New product\r\n      </button>\r\n\r\n    </form>\r\n\r\n  </div>\r\n</div>\r\n\r\n<div class=\"modal\" [ngStyle]=\"{ 'display': showConfirmDelete ? 'block':'none', 'background-color': showConfirmDelete ? 'rgba(0,0,0,0.7)':'transparent' }\"\r\n     *ngIf=\"product && product.name\">\r\n  <div class=\"modal-dialog\" role=\"document\">\r\n    <div class=\"modal-content\">\r\n      <div class=\"modal-header\">\r\n        <h4 class=\"modal-title\">Confirm</h4>\r\n      </div>\r\n      <div class=\"modal-body\">\r\n        <p>Do you really really want to delete '{{ product.name }}'?</p>\r\n      </div>\r\n      <div class=\"modal-footer\">\r\n        <button type=\"button\" class=\"btn btn-secondary\" (click)=\"onConfirmCancel()\">No, go back</button>\r\n        <button type=\"button\" class=\"btn btn-primary\" (click)=\"onConfirmOk()\">Yes, delete</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>"
+	module.exports = "<h5>Item: {{ product.name }} (#{{ product.productNumber }})</h5>\r\n<br/>\r\n\r\n<div class=\"container-flex\" *ngIf=\"form\">\r\n  <form [formGroup]=\"form\" (ngSubmit)=\"onSubmit(form.value)\">\r\n    <div class=\"row\">    \r\n      <label for=\"markup\">Markup <small>({{ markup.value.length }}/{{markupMaxLength}})</small> </label>\r\n      <small class=\"text-muted text-danger\" *ngIf=\"markup.hasError('maxlength') && !markup.pristine\">\r\n        Maximum length is {{ markupMaxLength }}\r\n      </small>\r\n\r\n      <textarea auto-adjust id=\"markup\" [formControl]=\"markup\" style=\"width: 100%; min-height: 50vh\"></textarea>        \r\n    </div>\r\n    <div class=\"row\">\r\n      <!--submit button-->\r\n      <button type=\"submit\" [disabled]=\"!form.valid\" class=\"btn btn-primary\">\r\n        Save\r\n      </button>\r\n\r\n      <!--preview button-->\r\n      <button type=\"button\" [disabled]=\"!form.valid\" class=\"btn btn-primary\" (click)=\"onPreviewClick(form.value)\">\r\n        Preview\r\n      </button>\r\n    </div>\r\n  </form>\r\n\r\n  <div class=\"row\" *ngIf=\"preview\">\r\n    <h3>Preview</h3>\r\n    <span [innerHtml]=\"preview\"></span>\r\n  </div>\r\n\r\n</div>"
 
 /***/ },
 
 /***/ 728:
 /***/ function(module, exports) {
 
-	module.exports = "<h5>Item: {{ product.name }} (#{{ product.productNumber }})</h5>\r\n<br/>\r\n\r\n<div class=\"container-fluid\">\r\n  <div class=\"row\" style=\"text-align: center\">\r\n\r\n    <!--available tag list-->\r\n    <div class=\"col-xs-4 col-xs-offset-2\">\r\n      <h6>Available tags</h6>\r\n      <div *ngFor=\"let tag of availableTags\">\r\n        <a class=\"label\" (click)=\"addTag(tag)\" [class.label-primary]=\"!tag.added\" [class.label-default]=\"tag.added\">\r\n          {{ tag.name }}\r\n        </a>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"col-xs-4\">\r\n      <h6>Assigned tags</h6>\r\n      <div *ngFor=\"let tag of assignedTags\">\r\n        <a class=\"label label-primary\" (click)=\"removeTag(tag)\">{{ tag.name }}</a>\r\n      </div>\r\n    </div>\r\n\r\n  </div>\r\n</div>"
+	module.exports = "<div class=\"container-fluid\">\r\n  <div class=\"row\">\r\n\r\n    <form novalidate *ngIf=\"form\" [formGroup]=\"form\" (ngSubmit)=\"onFormSubmit(form.value)\">\r\n\r\n      <!--name-->\r\n      <fieldset class=\"form-group row\"  [class.has-success]=\"name.valid && name.touched\"\r\n                                        [class.has-error]=\"!name.valid && name.touched\">\r\n        <label for=\"name\">Name</label>\r\n        <small class=\"text-muted\">({{ name.value.length }}/{{ fieldRules.name.maxLength }})</small>\r\n\r\n        <input class=\"form-control\" id=\"name\" placeholder=\"Name\" [formControl]=\"name\"\r\n               [class.form-control-success]=\"name.valid && name.touched\"\r\n               [class.form-control-error]=\"!name.valid && name.touched\">\r\n\r\n        <small class=\"text-muted\" *ngIf=\"name.hasError('required') && name.touched\">\r\n          Name is required <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"name.hasError('minlength') && name.touched\">\r\n          Minimum length is {{ fieldRules.name.minLength }} <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"name.hasError('maxlength') && name.touched\">\r\n          Maximum length is {{ fieldRules.name.maxLength }} <br/>\r\n        </small>\r\n      </fieldset>\r\n\r\n      <!--description-->\r\n      <fieldset class=\"form-group row\"  [class.has-success]=\"description.valid && description.touched\"\r\n                                        [class.has-error]=\"!description.valid && description.touched\">\r\n        <label for=\"description\">Description</label>\r\n        <small class=\"text-muted\">({{ description.value.length }}/{{ fieldRules.description.maxLength }})</small>\r\n\r\n        <input class=\"form-control\" id=\"description\" placeholder=\"Name\" [formControl]=\"description\"\r\n               [class.form-control-success]=\"description.valid && description.touched\"\r\n               [class.form-control-error]=\"!description.valid && description.touched\">\r\n\r\n        <small class=\"text-muted\" *ngIf=\"description.hasError('required') && description.touched\">\r\n          Description is required <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"description.hasError('minlength') && description.touched\">\r\n          Minimum length is {{ fieldRules.description.minLength }} <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"description.hasError('maxlength') && description.touched\">\r\n          Maximum length is {{ fieldRules.description.maxLength }} <br/>\r\n        </small>\r\n      </fieldset>\r\n\r\n      <!--price, current price, stock qty-->\r\n      <div class=\"container-flex\">\r\n        <div class=\"row\">\r\n          <div class=\"col-xs-3\">\r\n\r\n            <!--price-->\r\n            <fieldset class=\"form-group row\"  [class.has-success]=\"price.valid && price.touched\"\r\n                                              [class.has-error]=\"!price.valid && price.touched\">\r\n              <label for=\"price\">Price</label>\r\n\r\n              <input class=\"form-control\" id=\"price\" placeholder=\"Price\" [formControl]=\"price\"\r\n                     [class.form-control-success]=\"price.valid && price.touched\"\r\n                     [class.form-control-error]=\"!price.valid && price.touched\">\r\n\r\n              <small class=\"text-muted\" *ngIf=\"price.hasError('required') && price.touched\">\r\n                Price is required <br/>\r\n              </small>\r\n              <small class=\"text-muted\" *ngIf=\"price.hasError('pattern') && price.touched\">\r\n                Price must be a positive number. <br/>\r\n              </small>\r\n            </fieldset>\r\n\r\n          </div>\r\n          <div class=\"col-xs-4 col-xs-offset-1\">\r\n\r\n            <!--currentPrice-->\r\n            <fieldset class=\"form-group row\"  [class.has-success]=\"currentPrice.valid && currentPrice.touched\"\r\n                                              [class.has-error]=\"!currentPrice.valid && currentPrice.touched\">\r\n              <label for=\"currentPrice\">Current price</label>\r\n\r\n              <input class=\"form-control\" id=\"currentPrice\" placeholder=\"Current price\" [formControl]=\"currentPrice\"\r\n                     [class.form-control-success]=\"currentPrice.valid && currentPrice.touched\"\r\n                     [class.form-control-error]=\"!currentPrice.valid && currentPrice.touched\">\r\n\r\n              <small class=\"text-muted\" *ngIf=\"currentPrice.hasError('required') && currentPrice.touched\">\r\n                Current price is required <br/>\r\n              </small>\r\n              <small class=\"text-muted\" *ngIf=\"currentPrice.hasError('pattern') && currentPrice.touched\">\r\n                Current price must be a positive number. <br/>\r\n              </small>\r\n            </fieldset>\r\n\r\n          </div>\r\n          <div class=\"col-xs-3 col-xs-offset-1\">\r\n\r\n            <!--stockCount-->\r\n            <fieldset class=\"form-group row\"  [class.has-success]=\"stockCount.valid && stockCount.touched\"\r\n                      [class.has-error]=\"!stockCount.valid && stockCount.touched\">\r\n              <label for=\"stockCount\">Stock quantity</label>\r\n\r\n              <input class=\"form-control\" id=\"stockCount\" placeholder=\"Stock quantity\" [formControl]=\"stockCount\"\r\n                     [class.form-control-success]=\"stockCount.valid && stockCount.touched\"\r\n                     [class.form-control-error]=\"!stockCount.valid && stockCount.touched\">\r\n\r\n              <small class=\"text-muted\" *ngIf=\"stockCount.hasError('required') && stockCount.touched\">\r\n                Stock quantity is required <br/>\r\n              </small>\r\n              <small class=\"text-muted\" *ngIf=\"stockCount.hasError('pattern') && stockCount.touched\">\r\n                Stock quantity must be a positive number. <br/>\r\n              </small>\r\n            </fieldset>\r\n\r\n          </div>\r\n\r\n        </div>\r\n      </div>\r\n\r\n      <!--imageUrl-->\r\n      <fieldset class=\"form-group row\"  [class.has-success]=\"imageUrl.valid && imageUrl.touched\"\r\n                                        [class.has-error]=\"!imageUrl.valid && imageUrl.touched\">\r\n        <label for=\"imageUrl\">Image Url</label>\r\n        <small class=\"text-muted\">({{ imageUrl.value.length }}/{{ fieldRules.imageUrl.maxLength }})</small>\r\n\r\n        <input class=\"form-control\" id=\"imageUrl\" placeholder=\"Image Url\" [formControl]=\"imageUrl\"\r\n               [class.form-control-success]=\"imageUrl.valid && imageUrl.touched\"\r\n               [class.form-control-error]=\"!imageUrl.valid && imageUrl.touched\">\r\n\r\n        <small class=\"text-muted\" *ngIf=\"imageUrl.hasError('required') && imageUrl.touched\">\r\n          Image Url is required <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"imageUrl.hasError('minlength') && imageUrl.touched\">\r\n          Minimum length is {{ fieldRules.imageUrl.minLength }} <br/>\r\n        </small>\r\n        <small class=\"text-muted\" *ngIf=\"imageUrl.hasError('maxlength') && imageUrl.touched\">\r\n          Maximum length is {{ fieldRules.imageUrl.maxLength }} <br/>\r\n        </small>\r\n      </fieldset>\r\n\r\n      <!--product number, new product, promo active-->\r\n      <div class=\"container-flex\">\r\n        <div class=\"row\">\r\n\r\n          <!--productNumber-->\r\n          <div class=\"col-xs-4\">\r\n            <fieldset class=\"form-group row\">\r\n              <label for=\"stockCount\">Product number</label>\r\n              <input class=\"form-control\" id=\"productNumber\" [formControl]=\"productNumber\" disabled>\r\n            </fieldset>\r\n          </div>\r\n\r\n        </div>\r\n      </div>\r\n\r\n      <div class=\"container-flex\" *ngIf=\"id.value < 0\">\r\n        <div class=\"row\">\r\n\r\n          <div class=\"col-xs-5 col-xs-offset-1\">\r\n\r\n            <h6>Select category\r\n              <sup class=\"text-muted text-danger\" *ngIf=\"parentCategoryId.hasError('invalidCategory')\">\r\n                Required\r\n              </sup>\r\n            </h6>\r\n            <br/>\r\n\r\n            <div class=\"radio\" *ngFor=\"let category of categories; trackBy:category?.id\">\r\n              <label>\r\n                <input type=\"radio\" name=\"categories\" (click)=\"onCategorySelect(category)\">\r\n                {{ category.id }} - {{ category.name }}\r\n              </label>\r\n            </div>\r\n\r\n          </div>\r\n\r\n          <div class=\"col-xs-5 col-xs-offset-1\">\r\n\r\n            <h6>Select manufacturer\r\n              <sup class=\"text-muted text-danger\" *ngIf=\"manufacturerId.hasError('invalidManufacturer')\">\r\n                Required\r\n              </sup>\r\n            </h6>\r\n            <br/>\r\n\r\n            <div class=\"radio\" *ngFor=\"let man of manufacturers; trackBy:man?.id\">\r\n              <label>\r\n                <input type=\"radio\" name=\"manufacturers\" (click)=\"onManufacturerSelect(man)\">\r\n                {{ man.id }} - {{ man.name }}\r\n              </label>\r\n            </div>\r\n\r\n          </div>\r\n\r\n        </div>\r\n      </div>\r\n\r\n      <div class=\"checkbox\">\r\n        <label>\r\n          <input type=\"checkbox\" [formControl]=\"newProduct\">\r\n          New Product\r\n        </label>\r\n      </div>\r\n      <div class=\"checkbox\">\r\n        <label>\r\n          <input type=\"checkbox\" [formControl]=\"promoActive\">\r\n          Promo active\r\n        </label>\r\n      </div>\r\n\r\n\r\n      <!--submit button-->\r\n      <button type=\"submit\" [disabled]=\"!form.valid\" class=\"btn btn-primary\">\r\n        Submit\r\n      </button>\r\n\r\n      <!--delete button-->\r\n      <button type=\"button\" [disabled]=\"id.value < 0\" class=\"btn btn-warning\" *ngIf=\"product\" (click)=\"onDeleteClick()\">\r\n        Delete\r\n      </button>\r\n\r\n      <!--clear form button-->\r\n      <button type=\"button\" class=\"btn btn-danger pull-right\" (click)=\"onClearFormClick()\">\r\n        Clear form / New product\r\n      </button>\r\n\r\n    </form>\r\n\r\n  </div>\r\n</div>\r\n\r\n<div class=\"modal\" [ngStyle]=\"{ 'display': showConfirmDelete ? 'block':'none', 'background-color': showConfirmDelete ? 'rgba(0,0,0,0.7)':'transparent' }\"\r\n     *ngIf=\"product && product.name\">\r\n  <div class=\"modal-dialog\" role=\"document\">\r\n    <div class=\"modal-content\">\r\n      <div class=\"modal-header\">\r\n        <h4 class=\"modal-title\">Confirm</h4>\r\n      </div>\r\n      <div class=\"modal-body\">\r\n        <p>Do you really really want to delete '{{ product.name }}'?</p>\r\n      </div>\r\n      <div class=\"modal-footer\">\r\n        <button type=\"button\" class=\"btn btn-secondary\" (click)=\"onConfirmCancel()\">No, go back</button>\r\n        <button type=\"button\" class=\"btn btn-primary\" (click)=\"onConfirmOk()\">Yes, delete</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>"
 
 /***/ },
 
 /***/ 729:
 /***/ function(module, exports) {
 
-	module.exports = "<div>\r\n  <form *ngIf=\"form\" [formGroup]=\"form\">\r\n\r\n    <h5>Product search</h5>\r\n\r\n    <input type=\"text\" class=\"form-control form-control-md\" placeholder=\"Search...\" [formControl]=\"term\">\r\n    <small class=\"text-muted\" *ngIf=\"term.hasError('minlength')\">Minimum length is 3 characters</small>\r\n    <small class=\"text-muted\" *ngIf=\"term.hasError('maxlength')\">Maximum length is 30 characters</small>\r\n\r\n  </form>\r\n\r\n  <br/>\r\n\r\n\r\n    <div class=\"card-columns\" *ngIf=\"products && products.length > 0\">\r\n\r\n\r\n        <div class=\"card\" *ngFor=\"let product of products\" (click)=\"onProductClick(product)\">\r\n          <img class=\"card-img-top\" [src]=\"product.imageUrl\" style=\"width: 100%;\">\r\n          <div class=\"card-block\">\r\n            <h5 class=\"card-title\">{{ product.name }}</h5>\r\n            <p class=\"card-text\">Current price: {{ product.currentPrice }}</p>\r\n            <p class=\"card-text\">{{ product.description }}</p>\r\n          </div>\r\n          <div class=\"card-footer text-muted\">\r\n            <!--void 0 so bootstrap anchor styles work-->\r\n            <a class=\"card-link\" href=\"javascript:void(0)\" (click)=\"onLinkClick('/products/edit', product); $event.stopPropagation()\">Edit</a>\r\n            <a class=\"card-link\" href=\"javascript:void(0)\" (click)=\"onLinkClick('/products/tags', product); $event.stopPropagation()\">Tags</a>\r\n            <a class=\"card-link\" href=\"javascript:void(0)\" (click)=\"onLinkClick('/products/detail', product); $event.stopPropagation()\">Detail</a>\r\n          </div>\r\n        </div>\r\n\r\n\r\n    </div>\r\n\r\n</div>"
+	module.exports = "<h5>Item: {{ product.name }} (#{{ product.productNumber }})</h5>\r\n<br/>\r\n\r\n<div class=\"container-fluid\">\r\n  <div class=\"row\" style=\"text-align: center\">\r\n\r\n    <!--available tag list-->\r\n    <div class=\"col-xs-4 col-xs-offset-2\">\r\n      <h6>Available tags</h6>\r\n      <div *ngFor=\"let tag of availableTags\">\r\n        <a class=\"label\" (click)=\"addTag(tag)\" [class.label-primary]=\"!tag.added\" [class.label-default]=\"tag.added\">\r\n          {{ tag.name }}\r\n        </a>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"col-xs-4\">\r\n      <h6>Assigned tags</h6>\r\n      <div *ngFor=\"let tag of assignedTags\">\r\n        <a class=\"label label-primary\" (click)=\"removeTag(tag)\">{{ tag.name }}</a>\r\n      </div>\r\n    </div>\r\n\r\n  </div>\r\n</div>"
 
 /***/ },
 
 /***/ 730:
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container-fluid\">\r\n  <div class=\"row\">\r\n\r\n    <ul class=\"nav nav-tabs\">\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link\" [routerLink]=\" ['./search'] \" routerLinkActive=\"active\">Search</a>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link\" [routerLink]=\" ['./edit'] \" routerLinkActive=\"active\">Create / Edit</a>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link\" [routerLink]=\" ['./tags'] \" routerLinkActive=\"active\" [class.disabled]=\"noProductSelected\">Manage tags</a>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link\" [routerLink]=\" ['./detail'] \" routerLinkActive=\"active\" [class.disabled]=\"noProductSelected\">Edit details page</a>\r\n      </li>\r\n\r\n    </ul>\r\n\r\n    <br/>\r\n\r\n    <router-outlet></router-outlet>\r\n  </div>\r\n</div>\r\n"
+	module.exports = "<div>\r\n  <form *ngIf=\"form\" [formGroup]=\"form\">\r\n\r\n    <h5>Product search</h5>\r\n\r\n    <input type=\"text\" class=\"form-control form-control-md\" placeholder=\"Search...\" [formControl]=\"term\">\r\n    <small class=\"text-muted\" *ngIf=\"term.hasError('minlength')\">Minimum length is 3 characters</small>\r\n    <small class=\"text-muted\" *ngIf=\"term.hasError('maxlength')\">Maximum length is 30 characters</small>\r\n\r\n  </form>\r\n\r\n  <br/>\r\n\r\n\r\n    <div class=\"card-columns\" *ngIf=\"products && products.length > 0\">\r\n\r\n\r\n        <div class=\"card\" *ngFor=\"let product of products\" (click)=\"onProductClick(product)\">\r\n          <img class=\"card-img-top\" [src]=\"product.imageUrl\" style=\"width: 100%;\">\r\n          <div class=\"card-block\">\r\n            <h5 class=\"card-title\">{{ product.name }}</h5>\r\n            <p class=\"card-text\">Current price: {{ product.currentPrice }}</p>\r\n            <p class=\"card-text\">{{ product.description }}</p>\r\n          </div>\r\n          <div class=\"card-footer text-muted\">\r\n            <!--void 0 so bootstrap anchor styles work-->\r\n            <a class=\"card-link\" href=\"javascript:void(0)\" (click)=\"onLinkClick('/products/edit', product); $event.stopPropagation()\">Edit</a>\r\n            <a class=\"card-link\" href=\"javascript:void(0)\" (click)=\"onLinkClick('/products/tags', product); $event.stopPropagation()\">Tags</a>\r\n            <a class=\"card-link\" href=\"javascript:void(0)\" (click)=\"onLinkClick('/products/detail', product); $event.stopPropagation()\">Detail</a>\r\n          </div>\r\n        </div>\r\n\r\n\r\n    </div>\r\n\r\n</div>"
 
 /***/ },
 
 /***/ 731:
 /***/ function(module, exports) {
 
+	module.exports = "<div class=\"container-fluid\">\r\n  <div class=\"row\">\r\n\r\n    <ul class=\"nav nav-tabs\">\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link\" [routerLink]=\" ['./search'] \" routerLinkActive=\"active\">Search</a>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link\" [routerLink]=\" ['./edit'] \" routerLinkActive=\"active\">Create / Edit</a>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link\" [routerLink]=\" ['./tags'] \" routerLinkActive=\"active\" [class.disabled]=\"noProductSelected\">Manage tags</a>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link\" [routerLink]=\" ['./detail'] \" routerLinkActive=\"active\" [class.disabled]=\"noProductSelected\">Edit details page</a>\r\n      </li>\r\n\r\n    </ul>\r\n\r\n    <br/>\r\n\r\n    <router-outlet></router-outlet>\r\n  </div>\r\n</div>\r\n"
+
+/***/ },
+
+/***/ 732:
+/***/ function(module, exports) {
+
 	module.exports = "<div class=\"container-fluid\">\r\n  <div class=\"row\">\r\n\r\n    <!--category list-->\r\n    <div class=\"col-xs-3\">\r\n      <ul>\r\n        <li *ngFor=\"let category of categories\" (click)=\"onCategoryClick(category)\">\r\n          {{ category.name }}\r\n          <ul *ngIf=\"category.tags.length > 0\">\r\n            <li *ngFor=\"let tag of category.tags\" (click)=\"onTagClick(category, tag); $event.stopPropagation()\">\r\n              {{ tag.name }}\r\n            </li>\r\n          </ul>\r\n        </li>\r\n      </ul>\r\n    </div>\r\n\r\n    <!--tag form-->\r\n    <div class=\"col-xs-9\">\r\n\r\n      <form novalidate *ngIf=\"form\" [formGroup]=\"form\" (ngSubmit)=\"onFormSubmit(form.value)\">\r\n\r\n        <!--header-->\r\n        <h5 *ngIf=\"selectedCategory\">\r\n          <span *ngIf=\"id.value >= 0\">Modifying tag {{ selectedTag.name }} in category {{ selectedCategory.name }}</span>\r\n          <span *ngIf=\"id.value < 0\">Creating new tag in category {{ selectedCategory.name }}</span>\r\n        </h5>\r\n\r\n        <!--name-->\r\n        <div class=\"form-group row\" [class.has-success]=\"name.valid && name.touched\"\r\n             [class.has-error]=\"!name.valid && name.touched\">\r\n          <div class=\"col-xs-7\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Name\" [formControl]=\"name\">\r\n            <small class=\"text-muted\" *ngIf=\"name.hasError('required') && name.touched\">\r\n              Name is required.\r\n            </small>\r\n          </div>\r\n        </div>\r\n\r\n        <!--url segment-->\r\n        <div class=\"form-group row\" [class.has-success]=\"urlSegment.valid && urlSegment.touched\"\r\n             [class.has-error]=\"!urlSegment.valid && urlSegment.touched\">\r\n          <div class=\"col-xs-7\">\r\n            <input type=\"text\" class=\"form-control form-control-md\"\r\n                   placeholder=\"Url segment\" [formControl]=\"urlSegment\">\r\n            <small class=\"text-muted\" *ngIf=\"urlSegment.hasError('required') && urlSegment.touched\">\r\n              Url segment is required.\r\n            </small>\r\n          </div>\r\n        </div>\r\n\r\n        <!--show in main menu-->\r\n        <div class=\"form-group row\">\r\n          <div class=\"checkbox col-xs-7\">\r\n            <label>\r\n              <input type=\"checkbox\" [formControl]=\"showInMainMenu\"> Show in main menu\r\n            </label>\r\n          </div>\r\n        </div>\r\n\r\n        <!--submit button-->\r\n        <button type=\"submit\" [disabled]=\"!form.valid\" class=\"btn btn-primary\">\r\n          <span *ngIf=\"selectedTag == null\">Create</span>\r\n          <span *ngIf=\"selectedTag != null\">Update</span>\r\n        </button>\r\n\r\n        <!--delete button-->\r\n        <button type=\"button\" [disabled]=\"id.value < 0\" class=\"btn btn-warning\" (click)=\"onDeleteClick(id.value)\">\r\n          Delete\r\n        </button>\r\n\r\n      </form>\r\n\r\n      <!--error alerts-->\r\n      <div *ngIf=\"errors && errors.length > 0\">\r\n        <div class=\"alert alert-warning alert-dismissible fade in\" role=\"alert\"\r\n             *ngFor=\"let error of errors; let idx = index\">\r\n          <button type=\"button\" class=\"close\">\r\n            <span aria-hidden=\"true\" (click)=\"clearErrors(idx)\">&times;</span>\r\n          </button>\r\n          {{ error }}\r\n        </div>\r\n      </div>\r\n\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ },
 
-/***/ 736:
+/***/ 737:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(6);
-	var throw_1 = __webpack_require__(751);
+	var throw_1 = __webpack_require__(752);
 	Observable_1.Observable.throw = throw_1._throw;
 	//# sourceMappingURL=throw.js.map
 
 /***/ },
 
-/***/ 745:
+/***/ 746:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1745,27 +1778,13 @@ webpackJsonpac__name_([2],{
 
 /***/ },
 
-/***/ 751:
+/***/ 752:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var ErrorObservable_1 = __webpack_require__(745);
+	var ErrorObservable_1 = __webpack_require__(746);
 	exports._throw = ErrorObservable_1.ErrorObservable.create;
 	//# sourceMappingURL=throw.js.map
-
-/***/ },
-
-/***/ 948:
-/***/ function(module, exports) {
-
-	"use strict";
-	var ProductDetail = (function () {
-	    function ProductDetail() {
-	    }
-	    return ProductDetail;
-	}());
-	exports.ProductDetail = ProductDetail;
-	
 
 /***/ }
 

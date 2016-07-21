@@ -246,6 +246,10 @@
       builder.Entity<ProductDetail>()
              .HasKey(d => d.Id);
 
+      builder.Entity<ProductDetail>()
+             .Property(p => p.Markup)
+             .HasMaxLength(30000);
+
       #endregion product detail
 
       base.OnModelCreating(builder);

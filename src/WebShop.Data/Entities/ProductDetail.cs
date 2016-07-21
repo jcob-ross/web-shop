@@ -14,6 +14,7 @@ namespace WebShop.Data.Entities
   public class ProductDetailDto
   {
     public int Id { get; set; }
+    [StringLength(30000, ErrorMessage = "Maximum length of {0} is {1} characters")]
     public string Markup { get; set; }
     public int ParentProductId { get; set; }
   }

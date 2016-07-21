@@ -23,8 +23,6 @@ namespace WebShop.Data.Context
 
     public void Initialize()
     {
-      // todo: migrations
-      // this prevents using migations
       _dbContext.Database.EnsureDeleted();
       _dbContext.Database.EnsureCreated();
 
@@ -45,27 +43,27 @@ namespace WebShop.Data.Context
 
       var cat = new Category
                 {
-                  Name = "Category",
-                  UrlSegment = "category",
+                  Name = "Rings",
+                  UrlSegment = "rings",
                   ImageUrl = "https://placeholdit.imgix.net/~text?txtsize=33&txt=50%C3%97100&w=50&h=100",
                   ViewDisplayOrder = 1
                 };
       _dbContext.Categories.Add(cat);
 
-      var tagAwesome = new Tag
+      var tagPrecious = new Tag
                        {
-                         Name = "awesome",
-                         UrlSegment = "awesome",
+                         Name = "Precious",
+                         UrlSegment = "precious",
                          ShowInMainMenu = true,
 
                          ParentCategory = cat
                        };
-      _dbContext.Tags.Add(tagAwesome);
+      _dbContext.Tags.Add(tagPrecious);
 
       var man = new Manufacturer
                 {
-                  Name = "Ota",
-                  UrlSegment = "ota",
+                  Name = "Sauron @ Mount Doom LLC.",
+                  UrlSegment = "mnt-doom",
                   ShowInMainMenu = true,
 
                   ParentCategory = cat
@@ -74,8 +72,8 @@ namespace WebShop.Data.Context
 
       var prod = new Product
                  {
-                   Name = "Ring of Void",
-                   Description = "Brass rinn",
+                   Name = "The One Ring",
+                   Description = "One ring to rule them all.",
                    NewProduct = true,
                    ParentCategory = cat,
                    Price = 9999M,
@@ -88,7 +86,7 @@ namespace WebShop.Data.Context
       var productTag = new ProductTag
                        {
                          Product = prod,
-                         Tag = tagAwesome
+                         Tag = tagPrecious
                        };
       _dbContext.Products.Add(prod);
       _dbContext.ProductTag.Add(productTag);

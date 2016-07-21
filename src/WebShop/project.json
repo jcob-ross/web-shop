@@ -45,6 +45,8 @@
     "AutoMapper": "5.0.2",
     "Swashbuckle.SwaggerGen": "6.0.0-beta901",
     "Swashbuckle.SwaggerUi": "6.0.0-beta901",
+    "HtmlAgilityPack": "1.4.9.5",
+    "CommonMark.NET": "0.13.4",
 
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-preview2-final",

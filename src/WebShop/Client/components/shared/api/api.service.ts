@@ -29,7 +29,7 @@ const BASE_URL: string = 'http://localhost:8080';
 
 @Injectable()
 export class ApiService {
-  constructor(private http: Http){
+  constructor(private http: Http) {
   }
 
   /**
@@ -122,7 +122,15 @@ export class ApiService {
   deleteProductDetail(productId: number): any {
     return this.jsonRequest({
       method: RequestMethod.Delete,
-      url: `${BASE_URL}/api/product/${productId}/detail`,      
+      url: `${BASE_URL}/api/product/${productId}/detail`,
+    }).catch(err => this.handleError(err));
+  }
+
+  getMarkdownPreview(model: ProductDetail): any {
+    return this.jsonRequest({
+      method: RequestMethod.Post,
+      url: `${BASE_URL}/api/product-detail/preview-markdown`,
+      body: model
     }).catch(err => this.handleError(err));
   }
 

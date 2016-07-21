@@ -10,6 +10,7 @@
   using Infrastructure.Authentication;
   using Infrastructure.Authorization;
   using Infrastructure.DeploymentEnvironment;
+  using Infrastructure.MarkdownSanitizer;
   using Infrastructure.PipelineExtensions;
   using Microsoft.AspNetCore.Authentication.Cookies;
   using Microsoft.AspNetCore.Authorization;
@@ -75,6 +76,7 @@
 
       services.AddSingleton<IAuthorizationHandler, ContentEditorsHandler>();
       services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
+      services.AddSingleton<IMarkdownSanitizer, MarkdownSanitizer>();
       services.AddTransient<IDbInitializer, PosgresDbInitializer>();
       services.AddScoped<IUnitOfWork, UnitOfWork>();
       services.AddAutoMapper();

@@ -16,6 +16,17 @@
       <button type="submit" [disabled]="!form.valid" class="btn btn-primary">
         Save
       </button>
+
+      <!--preview button-->
+      <button type="button" [disabled]="!form.valid" class="btn btn-primary" (click)="onPreviewClick(form.value)">
+        Preview
+      </button>
     </div>
   </form>
+
+  <div class="row" *ngIf="preview">
+    <h3>Preview</h3>
+    <span [innerHtml]="preview"></span>
+  </div>
+
 </div>

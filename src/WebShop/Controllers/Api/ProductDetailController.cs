@@ -9,21 +9,59 @@ namespace WebShop.Controllers.Api
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Caching.Memory;
   using System.Linq;
+  using Infrastructure.MarkdownSanitizer;
+  using System;
+  using Microsoft.Extensions.Logging;
 
   [Route("api/product")]
   [Produces("application/json")]
   public class ProductDetailController : Controller
   {
-    public ProductDetailController(PosgresDbContext storeContext, IMapper mapper, IMemoryCache cache)
+    private ILogger _logger;
+    public PosgresDbContext StoreContext { get; }
+    public IMapper Mapper { get; }
+    public IMemoryCache Cache { get; }
+    public IMarkdownSanitizer MarkdownSanitizer { get; }
+
+    public ProductDetailController(PosgresDbContext storeContext, 
+      IMapper mapper, 
+      IMemoryCache cache,
+      IMarkdownSanitizer sanitizer,
+      ILogger<ProductDetailController> logger)
     {
       StoreContext = storeContext;
       Mapper = mapper;
       Cache = cache;
+      MarkdownSanitizer = sanitizer;
+      _logger = logger;
     }
 
-    public PosgresDbContext StoreContext { get; }
-    public IMapper Mapper { get; }
-    public IMemoryCache Cache { get; }
+    [HttpPost]
+    [Route("~/api/product-detail/preview-markdown")]
+    public IActionResult PreviewMarkdown([FromBody] ProductDetailDto model)
+    {
+      if (!ModelState.IsValid)
+        return BadRequest(ModelState);
+
+      var sanitizedHtml = String.Empty;
+      try
+      {
+        var settings = CommonMark.CommonMarkSettings.Default;
+        settings.OutputFormat = CommonMark.OutputFormat.Html;
+        settings.AdditionalFeatures = CommonMark.CommonMarkAdditionalFeatures.StrikethroughTilde;
+
+        var html = CommonMark.CommonMarkConverter.Convert(model.Markup, settings);
+        sanitizedHtml = MarkdownSanitizer.SanitizeHtml(html);
+        _logger.LogDebug($"Sanitized html: [{sanitizedHtml}]");
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError(ex.Message);
+        sanitizedHtml = "Failed to convert markup";
+      }
+      model.Markup = sanitizedHtml;
+      return Ok(model);
+    }
 
     [HttpGet]
     [Route("~/api/product-detail/{id:int}", Name = "GetDetailById")]

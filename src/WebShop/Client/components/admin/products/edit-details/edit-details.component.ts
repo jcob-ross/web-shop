@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { DomSanitizationService } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, FormControl, REACTIVE_FORM_DIRECTIVES } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -20,7 +21,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   productDetail: ProductDetail;
 
   // validation helper form view
-  markupMaxLength: number = 20000;
+  markupMaxLength: number = 30000;
 
   form: FormGroup;
 
@@ -31,7 +32,57 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private api: ApiService,
     private fb: FormBuilder,
-    private editorState: ProductEditorState) {
+    private editorState: ProductEditorState,
+    private sanitizer: DomSanitizationService) {
+  }
+
+  onSubmit(formValue) {
+    if (this.id.value > 0) { // updating existing detail
+      this.api.updateProductDetail(this.parentProductId.value, formValue)
+        .subscribe((res: any) => {
+          let detail = res.json();
+          this.createForm(detail);
+        })
+    } else { // creating new detail
+      this.api.createProductDetail(this.parentProductId.value, formValue)
+        .subscribe((res: any) => {
+          let detail = res.json();
+          this.createForm(detail);
+        });
+    }
+  }
+
+  preview = null;
+  onPreviewClick(formValue: ProductDetail) {
+    this.api.getMarkdownPreview(formValue)
+      .subscribe((res: any) => {
+        let markup = res.json().markup;
+        this.preview = this.sanitizer.bypassSecurityTrustHtml(markup);
+      }, (err: any) => console.log(err));
+  }
+
+  ngOnInit() {
+    this.product = this.editorState.currentProduct;
+    this.detailSub = this.api.getProductDetail(this.product.id)
+      .subscribe((res: any) => {
+        let detail = res.json();
+        this.createForm(detail);
+      }, (err: any) => {
+        this.createForm();
+      });
+  }
+
+
+  ngOnDestroy() {
+    if (this.detailSub && this.detailSub.unsubscribe) {
+      this.detailSub.unsubscribe();
+    }
+    if (this.createSub && this.createSub.unsubscribe) {
+      this.createSub.unsubscribe();
+    }
+    if (this.updateSub && this.updateSub.unsubscribe) {
+      this.updateSub.unsubscribe();
+    }
   }
 
   private createForm(productDetail?: ProductDetail) {
@@ -53,45 +104,4 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       'parentProductId': this.parentProductId
     });
   }
-
-  onSubmit(formValue) {
-    if (this.id.value > 0) { // updating existing detail
-      this.api.updateProductDetail(this.parentProductId.value, formValue)
-        .subscribe((res: any) => {
-          let detail = res.json();
-          this.createForm(detail);
-        })
-    } else { // creating new detail
-      this.api.createProductDetail(this.parentProductId.value, formValue)
-        .subscribe((res: any) => {
-          let detail = res.json();
-          this.createForm(detail);
-        });
-    }
-  }
-
-  ngOnInit() {
-    this.product = this.editorState.currentProduct;
-    this.detailSub = this.api.getProductDetail(this.product.id)
-      .subscribe((res: any) => {
-        let detail = res.json();
-        this.createForm(detail);
-      }, (err: any) => {
-        this.createForm();
-      });  
-  }
-
-
-  ngOnDestroy() {
-    if (this.detailSub && this.detailSub.unsubscribe) {
-      this.detailSub.unsubscribe();
-    }
-    if (this.createSub && this.createSub.unsubscribe) {
-      this.createSub.unsubscribe();
-    }
-    if (this.updateSub && this.updateSub.unsubscribe) {
-      this.updateSub.unsubscribe();
-    }
-  }
-
 }

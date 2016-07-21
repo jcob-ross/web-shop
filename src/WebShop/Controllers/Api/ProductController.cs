@@ -1,5 +1,6 @@
 ﻿namespace WebShop.Controllers.Api
 {
+  using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Threading.Tasks;
@@ -44,7 +45,7 @@
                                     .Include(p => p.ParentCategory)
                                     .Include(p => p.ProductTags).ThenInclude(pt => pt.Tag)
                                     .Where(p => p.Name.Contains(term) || p.Description.Contains(term))
-                                    .Take(count)
+                                    .Take(count)                                    
                                     .ToListAsync();
 
       var dto = Mapper.Map<List<ProductDto>>(items);
@@ -102,7 +103,6 @@
       item.NewProduct = model.NewProduct;
       item.PromoActive = model.PromoActive;
 
-      // todo: new product - product detail
       item.ParentCategory = parentCategory;
       item.Manufacturer = manufacturer;
       
