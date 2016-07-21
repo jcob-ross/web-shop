@@ -2,10 +2,8 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "version": "1.0.0",
-      "type": "platform"
-    },
+    "NETStandard.Library": "1.6.0",
+
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
     "Npgsql.EntityFrameworkCore.PostgreSQL": "1.0.0"
   },

@@ -16,7 +16,7 @@ namespace WebShop.Data.Entities
     public DateTime? ShippedOnUtc { get; set; }
     public DateTime? DeliveredOnUtc { get; set; }
     public DateTime? CancelledOnUtc { get; set; }
-    public List<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
+    public HashSet<OrderLine> OrderLines { get; set; } = new HashSet<OrderLine>();
   }
 
   public class SaleOrderDto
@@ -27,6 +27,6 @@ namespace WebShop.Data.Entities
     public DateTime? ShippedOnUtc { get; set; }
     public DateTime? DeliveredOnUtc { get; set; }
     public DateTime? CancelledOnUtc { get; set; }
-    public List<OrderLineDto> OrderLines { get; set; } = new List<OrderLineDto>();
+    public HashSet<OrderLineDto> OrderLines { get; set; } = new HashSet<OrderLineDto>();
   }
 }

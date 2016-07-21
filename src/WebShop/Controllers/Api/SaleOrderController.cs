@@ -85,7 +85,18 @@
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
 
-      var lines = new List<OrderLine>();
+      foreach(var orderLine in model.OrderLines)
+      {
+
+      }
+
+      //model.OrderLines.All(line => line.ProductId)
+
+      var items = await StoreContext.Products
+        .Where(p => model.OrderLines.Any(desiredItem => desiredItem.Id == p.Id))
+        .ToListAsync();
+
+      var lines = new HashSet<OrderLine>();
 
       foreach(var line in model.OrderLines)
       {
