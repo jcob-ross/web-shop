@@ -1,0 +1,47 @@
+@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment HostingEnvironment
+@inject WebShop.Infrastructure.DeploymentEnvironment.IDeploymentEnvironment DeploymentEnvironment
+@inject Microsoft.Extensions.Options.IOptions<WebShop.Infrastructure.AppSettings> AppSettings
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewBag.Title - @AppSettings.Value.SiteTitle</title>
+
+  <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet">  
+
+  @RenderSection("head", required: false)
+</head>
+
+<nav class="navbar navbar-fixed-top navbar-light bg-faded">
+  <a class="navbar-brand" href="/">Home</a>
+  
+  <ul class="nav navbar-nav">
+    <li class="nav-item"></li>
+    @await Html.PartialAsync("_AdminLoginPartial")
+  </ul>
+
+</nav>
+<div class="body-wrapper container">
+  @RenderBody()
+</div>
+
+<environment names="Development">
+</environment>
+<environment names="Staging,Production">
+</environment>
+
+@RenderSection("scripts", required: false)
+
+</body>
+</html>
+
+<cache>
+  <!-- Environment: @DeploymentEnvironment.Environment -->
+  <!-- Application: @DeploymentEnvironment.Application -->
+  <!-- Deployment: @DeploymentEnvironment.DeploymentSha -->
+  <!-- Framework: @DeploymentEnvironment.Framework -->
+  <!-- OS: @DeploymentEnvironment.OS  -->
+</cache>

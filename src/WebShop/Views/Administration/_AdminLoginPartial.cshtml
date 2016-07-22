@@ -1,0 +1,34 @@
+@using WebShop.Models
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+
+@inject IAuthorizationService AuthorizationService
+@inject SignInManager<ShopUser> SignInManager
+@inject UserManager<ShopUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+  <li class="nav-item pull-right">
+    <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
+      <button class="btn btn-warning-outline" type="submit">Logout</button>
+    </form>
+  </li>
+  @*<a asp-controller="Manage" asp-action="Index" title="Account">
+    @UserManager.GetUserName(User)
+  </a>*@
+
+  if (await AuthorizationService.AuthorizeAsync(User, "ContentEditors"))
+  {
+    <li class="nav-item pull-right">
+      <a class="nav-link" asp-controller="Administration" asp-action="Index">Administration</a>      
+    </li>
+  }
+}
+else
+{
+  <li class="nav-item pull-right">
+    <a class="btn btn-success-outline" asp-controller="Account" asp-action="Login">Log-in</a>
+  </li>
+}

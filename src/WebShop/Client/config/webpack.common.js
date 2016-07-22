@@ -11,10 +11,13 @@ const GlobalStyles = new ExtractTextPlugin('css/global.css')
 
 module.exports = {
   entry: {
-    'polyfills':  './Client/polyfills.ts',
-    'vendor':     './Client/vendor.ts',
-    'app':        './Client/app_entry.ts',
-    'admin':      './Client/admin_entry.ts'
+    'app_polyfills':    './Client/app_polyfills.ts',
+    'app_vendor':       './Client/app_vendor.ts',
+    'app':              './Client/app_entry.ts',
+
+    'admin_polyfills':  './Client/admin_polyfills.ts',
+    'admin_vendor':     './Client/admin_vendor.ts',
+    'admin':            './Client/admin_entry.ts'
   },
 
   resolve: {
@@ -58,7 +61,18 @@ module.exports = {
     new ForkCheckerPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(true),
     new webpack.optimize.CommonsChunkPlugin({
-      name: ['polyfills', 'vendor'].reverse()
+      name: 'admin_commons',
+      minChunks: 2,
+      chunks: ['admin', 'admin_vendor', 'admin_polyfills']
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'app_commons',
+      minChunks: 2,
+      chunks: ['app', 'app_vendor', 'app_polyfills']
+    }),
+    new webpack.ProvidePlugin({
+      $: 'jQuery',
+      jQuery: 'jQuery'
     }),
     GlobalStyles,
     new ExtractTextPlugin('css/[name].css'),

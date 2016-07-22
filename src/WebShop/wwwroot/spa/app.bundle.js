@@ -1,17 +1,17 @@
 var ac_app =
-webpackJsonpac__name_([3],{
+webpackJsonpac__name_([6],{
 
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	__webpack_require__(302);
-	__webpack_require__(721);
-	var platform_browser_dynamic_1 = __webpack_require__(250);
-	var platform_browser_1 = __webpack_require__(81);
+	__webpack_require__(418);
+	__webpack_require__(767);
+	var platform_browser_dynamic_1 = __webpack_require__(358);
+	var platform_browser_1 = __webpack_require__(104);
 	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(156);
-	var app_1 = __webpack_require__(712);
+	var http_1 = __webpack_require__(278);
+	var app_1 = __webpack_require__(758);
 	if (false) {
 	    platform_browser_1.disableDebugTools();
 	    core_1.enableProdMode();
@@ -25,7 +25,7 @@ webpackJsonpac__name_([3],{
 
 /***/ },
 
-/***/ 711:
+/***/ 757:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38,7 +38,7 @@ webpackJsonpac__name_([3],{
 	        core_1.Component({
 	            selector: 'app-main',
 	            template: "\n    <h2 class=\"pink\">Hello from {{ message }}</h2>\n  ",
-	            styles: [__webpack_require__(947)]
+	            styles: [__webpack_require__(781)]
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], AppComponent);
@@ -49,26 +49,26 @@ webpackJsonpac__name_([3],{
 
 /***/ },
 
-/***/ 712:
+/***/ 758:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(711));
+	__export(__webpack_require__(757));
 	
 
 /***/ },
 
-/***/ 721:
+/***/ 767:
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
 
-/***/ 947:
+/***/ 781:
 /***/ function(module, exports) {
 
 	module.exports = ".pink{color:hotpink}\n"
