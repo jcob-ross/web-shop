@@ -1,36 +1,40 @@
-<div>
-  <form *ngIf="form" [formGroup]="form">
 
-    <h5>Product search</h5>
+<div class="ui basic segment" style="min-height: 300px;">
+  <form novalidate class="ui form" *ngIf="form" [formGroup]="form">    
 
-    <input type="text" class="form-control form-control-md" placeholder="Search..." [formControl]="term">
-    <small class="text-muted" *ngIf="term.hasError('minlength')">Minimum length is 3 characters</small>
-    <small class="text-muted" *ngIf="term.hasError('maxlength')">Maximum length is 30 characters</small>
+    <h4 class="ui dividing header">Product search</h4>
+    <div class="field">
+      <div class="ui left icon input" [class.loading]="xhrPending">
+        <input type="text" [formControl]="term" placeholder="Search...">
+        <i class="search icon"></i>        
+      </div>
+      <div *ngIf="term.hasError('minlength')">
+          <small>Minimum length is 3 characters</small>
+      </div>
+      <div *ngIf="term.hasError('maxlength')">
+          <small>Maximum length is 30 characters</small>
+      </div>
+    </div>
 
   </form>
+  
+  <h4 class="ui horizontal divider header">Results</h4>
 
-  <br/>
-
-
-    <div class="card-columns" *ngIf="products && products.length > 0">
-
-
-        <div class="card" *ngFor="let product of products" (click)="onProductClick(product)">
-          <img class="card-img-top" [src]="product.imageUrl" style="width: 100%;">
-          <div class="card-block">
-            <h5 class="card-title">{{ product.name }}</h5>
-            <p class="card-text">Current price: {{ product.currentPrice }}</p>
-            <p class="card-text">{{ product.description }}</p>
-          </div>
-          <div class="card-footer text-muted">
-            <!--void 0 so bootstrap anchor styles work-->
-            <a class="card-link" href="javascript:void(0)" (click)="onLinkClick('/products/edit', product); $event.stopPropagation()">Edit</a>
-            <a class="card-link" href="javascript:void(0)" (click)="onLinkClick('/products/tags', product); $event.stopPropagation()">Tags</a>
-            <a class="card-link" href="javascript:void(0)" (click)="onLinkClick('/products/detail', product); $event.stopPropagation()">Detail</a>
-          </div>
-        </div>
-
-
+  <div class="ui four cards" *ngIf="products && products.length > 0">
+    
+    <div class="card" *ngFor="let product of products" (click)="onProductClick(product)">
+      <a class="image"><img [src]="product.imageUrl" alt="product image"></a>
+      <div class="content">
+        <a class="header">{{ product.name }}</a>
+        <div class="meta"><span class="right floated">$ {{ product.price }}</span></div>
+        <div class="description">{{ product.description }}</div>        
+      </div>
+      <div class="ui bottom attached button" (click)="onLinkClick('/products/edit', product); $event.stopPropagation()">          
+        <i class="external share"></i>
+        Edit
+      </div>
     </div>
+
+  </div>
 
 </div>

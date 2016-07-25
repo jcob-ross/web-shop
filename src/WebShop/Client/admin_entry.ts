@@ -10,7 +10,7 @@ import { disableDeprecatedForms, provideForms } from '@angular/forms';
 import { AdminComponent } from './components/admin';
 import { ADMIN_ROUTER_PROVIDERS, ProductAvailableGuard } from './components/admin';
 import { ApiService } from './components/shared';
-import { ProductEditorState } from './components/admin/products/shared';
+import { AdminAppState } from './components/admin/shared';
 
 declare var ENV: any; // webpack DefinePlugin
 if ('production' === ENV) {
@@ -26,7 +26,7 @@ bootstrap(<Type>AdminComponent, [
   ...ADMIN_ROUTER_PROVIDERS,
   ...HTTP_PROVIDERS,
   ApiService,
-  ProductEditorState,
+  AdminAppState,
   ProductAvailableGuard,
   { provide: LocationStrategy, useClass: HashLocationStrategy }
 ]).catch((error: Error) => console.error(`admin-main: ${error}`));

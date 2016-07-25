@@ -1,26 +1,26 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 
-import { ProductEditorState } from './shared';
+import { AdminAppState } from '../shared';
 
 @Component({
   selector: 'j-products',
   templateUrl: './products.component.html',
   directives: [ ROUTER_DIRECTIVES ]
 })
-export class ProductsComponent implements OnInit {
-  constructor(private editorState: ProductEditorState) {
+export class ProductsComponent implements OnInit, OnDestroy {
+  constructor(private appState: AdminAppState) {
   }
 
-  get noProductSelected(): boolean {
-    return !this.editorState.hasProduct && this.editorState.isNewProduct;
+  get noneOrNonexistentProduct(): boolean {
+    return !this.appState.productSelected || this.appState.currentProduct.id < 0;
   }
 
   ngOnInit() {
   }
 
   ngOnDestroy() {
-    this.editorState.clearCurrentProduct();
-    this.editorState.clearSearchResult();
+    this.appState.clearCurrentProduct();
+    this.appState.clearProductSearchResult();
   }
 }

@@ -1,32 +1,22 @@
-<h5>Item: {{ product.name }} (#{{ product.productNumber }})</h5>
-<br/>
+<div class="ui attached message" *ngIf="xhrNotificationVisible" [ngClass]="{'success': xhrSucceeded, 'error': !xhrSucceeded}">
+    <span *ngIf="xhrSucceeded"><i class="icon checkmark"></i>{{ xhrNotificationMessage }}</span>
+    <span *ngIf="!xhrSucceeded"><i class="icon warning sign"></i>{{ xhrNotificationMessage }}</span>
+</div>
 
-<div class="container-flex" *ngIf="form">
-  <form [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
-    <div class="row">    
-      <label for="markup">Markup <small>({{ markup.value.length }}/{{markupMaxLength}})</small> </label>
-      <small class="text-muted text-danger" *ngIf="markup.hasError('maxlength') && !markup.pristine">
-        Maximum length is {{ markupMaxLength }}
-      </small>
+<form novalidate class="ui form attached fluid segment" *ngIf="form && !preview" [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+  <h4 class="ui header">Item: {{ product.name }} <small>(#{{ product.productNumber }})</small></h4>
 
-      <textarea auto-adjust id="markup" [formControl]="markup" style="width: 100%; min-height: 50vh"></textarea>        
-    </div>
-    <div class="row">
-      <!--submit button-->
-      <button type="submit" [disabled]="!form.valid" class="btn btn-primary">
-        Save
-      </button>
-
-      <!--preview button-->
-      <button type="button" [disabled]="!form.valid" class="btn btn-primary" (click)="onPreviewClick(form.value)">
-        Preview
-      </button>
-    </div>
-  </form>
-
-  <div class="row" *ngIf="preview">
-    <h3>Preview</h3>
-    <span [innerHtml]="preview"></span>
+  <div class="field">
+    <label>Markdown ({{ markdown.value.length }}/{{markdownMaxLength}})</label>
+    <textarea auto-adjust [formControl]="markdown" style="max-height: none"></textarea>
   </div>
 
+  <div class="ui positive button" (click)="onSubmit(form.value)" [class.disabled]="!form.valid" [class.loading]="xhrPending">Save</div>
+  <div class="ui inverted green button" (click)="onPreviewClick(form.value)" [class.disabled]="!form.valid" [class.loading]="xhrPending">Preview</div>
+</form>
+
+<div class="ui attached fluid segment" *ngIf="preview">
+  <h4 class="ui dividing header">Preview:</h4>
+  <div class="content" [innerHtml]="preview"></div>
+  <div class="ui positive button" (click)="onPreviewBackClick()">Back</div>
 </div>

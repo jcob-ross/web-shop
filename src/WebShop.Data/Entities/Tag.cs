@@ -3,7 +3,7 @@ namespace WebShop.Data.Entities
   using System.Collections.Generic;
   using System.ComponentModel.DataAnnotations;
 
-  public class Tag
+  public sealed class Tag
   {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -16,7 +16,7 @@ namespace WebShop.Data.Entities
     public List<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
   }
 
-  public class TagDto
+  public sealed class TagDto
   {
     public int Id { get; set; }
     [Required]

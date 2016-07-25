@@ -1,21 +1,9 @@
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link" [routerLink]=" ['./products'] " routerLinkActive="active">Products</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" [routerLink]=" ['./categories'] " routerLinkActive="active">Categories</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" [routerLink]=" ['./manufacturers'] " routerLinkActive="active">Manufacturers</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" [routerLink]=" ['./tags'] " routerLinkActive="active">Tags</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" [routerLink]=" ['./orders'] " routerLinkActive="active">Orders</a>
-  </li>  
-</ul>
-
-<br/>
+<div class="ui basic segment">
+  <div class="ui secondary pointing menu">
+    <a sm-item *ngFor="let item of menuitems" [icon]="item.icon" [routerLink]="item.link" routerLinkActive="active">
+    {{ item.title }}
+  </a>
+  </div>
+</div>
 
 <router-outlet></router-outlet>

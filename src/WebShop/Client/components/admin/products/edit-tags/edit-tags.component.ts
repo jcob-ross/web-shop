@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, REACTIVE_FORM_DIRECTIVES } from '@angular/forms';
 
 import { ApiService, Product, Tag, Category } from '../../../shared';
-import { ProductEditorState } from '../shared';
+import { AdminAppState } from '../../shared';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -17,11 +17,11 @@ export class EditTagsComponent implements OnInit, OnDestroy {
   availableTags: Tag[];
   assignedTags: Tag[];
 
-  constructor(private api: ApiService, private editorState: ProductEditorState) {    
+  constructor(private api: ApiService, private appState: AdminAppState) {
   }
-  
+
   ngOnInit() {
-    this.product = this.editorState.currentProduct;
+    this.product = this.appState.currentProduct;
     this.assignedTags = this.product.tags;
 
     this.tagsSub = this.api.getCategoryTags(this.product.parentCategoryId)
@@ -61,8 +61,8 @@ export class EditTagsComponent implements OnInit, OnDestroy {
     this.addTagSub = this.api.addTagToProduct(this.product.id, tag.id)
       .subscribe((res: any) => {
         tag.added = true;
-        this.editorState.currentProduct.tags.push(tag);
-        this.product = this.editorState.currentProduct;
+        this.appState.currentProduct.tags.push(tag);
+        this.product = this.appState.currentProduct;
       }, (err: any) => this.addErrors(err))
   }
 
@@ -73,11 +73,11 @@ export class EditTagsComponent implements OnInit, OnDestroy {
     }
     this.removeTagSub = this.api.removeTagFromProduct(this.product.id, tag.id)
       .subscribe((res: any) => {
-        let tagIndex = this.editorState.currentProduct.tags.findIndex(t => t.id === tag.id);
+        let tagIndex = this.appState.currentProduct.tags.findIndex(t => t.id === tag.id);
         let availableTagIndex = this.availableTags.findIndex(t => t.id === tag.id);
         this.availableTags[availableTagIndex].added = false;
-        this.editorState.currentProduct.tags.splice(tagIndex, 1);
-        this.product = this.editorState.currentProduct;
+        this.appState.currentProduct.tags.splice(tagIndex, 1);
+        this.product = this.appState.currentProduct;
       }, (err: any) => this.addErrors(err))
   }
 

@@ -5,7 +5,7 @@ namespace WebShop.Data.Context
   using Entities;
   using Microsoft.AspNetCore.Identity;
 
-  public class PosgresDbInitializer : IDbInitializer
+  public sealed class PosgresDbInitializer : IDbInitializer
   {
     private readonly PosgresDbContext _dbContext;
     private readonly UserManager<ShopUser> _userManager;

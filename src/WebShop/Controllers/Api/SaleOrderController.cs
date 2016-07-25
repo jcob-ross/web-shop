@@ -39,29 +39,30 @@
       [FromQuery] bool onlyShipped = false)
     {
       maxAgeDays = Math.Abs(maxAgeDays);
-      var startDate = DateTime.UtcNow.Date.Subtract(TimeSpan.FromDays(maxAgeDays));
+      var startDate = DateTimeOffset.UtcNow.Date.Subtract(TimeSpan.FromDays(maxAgeDays));
 
       var query = StoreContext.SaleOrders
                               .Include(o => o.OrderLines)
-                              .Where(o => o.DateCreatedUtc > startDate && !o.Deleted);
+                              .Where(o => o.DateCreated > startDate && !o.Deleted);
 
       if (onlyShipped)
-        query = query.Where(o => o.ShippedOnUtc.HasValue);
-      else
-        query = query.Where(o => !o.ShippedOnUtc.HasValue);
+        query = query.Where(o => o.ShippedOn.HasValue);
 
-      var items = await query.ToListAsync();
+      var items = await query.OrderByDescending(o => o.DateCreated).ToListAsync();
 
       return Ok(Mapper.Map<List<SaleOrderDto>>(items));
     }
 
     [HttpGet]
     [Route("user/{userId}")]
-    public async Task<IActionResult> GetOrdersByUserId(string userId)
+    public async Task<IActionResult> GetOrdersByUserId(string userId, [FromQuery] int maxAgeDays = 7)
     {
+      maxAgeDays = Math.Abs(maxAgeDays);
+      var startDate = DateTimeOffset.UtcNow.Date.Subtract(TimeSpan.FromDays(maxAgeDays));
+
       var items = await StoreContext.SaleOrders
                                     .Include(o => o.OrderLines)
-                                    .Where(o => o.CustomerId == userId && !o.Deleted)
+                                    .Where(o => o.CustomerId == userId && o.DateCreated > startDate && !o.Deleted)
                                     .ToListAsync();
 
       return Ok(Mapper.Map<List<SaleOrderDto>>(items));
@@ -84,18 +85,7 @@
     {
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
-
-      foreach(var orderLine in model.OrderLines)
-      {
-
-      }
-
-      //model.OrderLines.All(line => line.ProductId)
-
-      var items = await StoreContext.Products
-        .Where(p => model.OrderLines.Any(desiredItem => desiredItem.Id == p.Id))
-        .ToListAsync();
-
+      
       var lines = new HashSet<OrderLine>();
 
       foreach(var line in model.OrderLines)
@@ -112,7 +102,7 @@
       var userId = "e7686347-63bc-4bde-b135-725f16c6e16d";
       var item = new SaleOrder {
         CustomerId = userId,
-        DateCreatedUtc = DateTime.UtcNow,
+        DateCreated = DateTimeOffset.UtcNow,
         OrderLines = lines
       };
       StoreContext.SaleOrders.Add(item);
@@ -130,22 +120,22 @@
       if (order == null)
         return NotFound();
 
-      if (order.CancelledOnUtc.HasValue)
+      if (order.CancelledOn.HasValue)
       {
-        var cancelledDate = order.CancelledOnUtc;
+        var cancelledDate = order.CancelledOn;
         ModelState.AddModelError(nameof(id), $"Order is already cancelled. (As of {cancelledDate})");
         return BadRequest(ModelState);
       }
 
-      if (order.ShippedOnUtc.HasValue)
+      if (order.ShippedOn.HasValue)
       {
-        var shippedDate = order.ShippedOnUtc;
+        var shippedDate = order.ShippedOn;
         ModelState.AddModelError(nameof(id), $"Cannot cancel shipped order. (Shipped as of {shippedDate})");
         return BadRequest(ModelState);
       }
 
-
-      order.CancelledOnUtc = DateTime.UtcNow;
+      order.CancelledOn = DateTimeOffset.UtcNow;
+      order.AcceptedOn = null;
       StoreContext.SaleOrders.Update(order);
       await StoreContext.SaveChangesAsync();
 
@@ -160,16 +150,15 @@
       if (order == null)
         return NotFound();
 
-      if (order.AcceptedOnUtc.HasValue)
+      if (order.AcceptedOn.HasValue)
       {
-        var acceptedDate = order.AcceptedOnUtc;
+        var acceptedDate = order.AcceptedOn;
         ModelState.AddModelError(nameof(id), $"Order is already accepted. (As of {acceptedDate})");
         return BadRequest(ModelState);
       }
 
-      order.AcceptedOnUtc = DateTime.UtcNow;
-      order.CancelledOnUtc = null;
-      order.ShippedOnUtc = null;
+      order.AcceptedOn = DateTimeOffset.UtcNow;
+      order.CancelledOn = null;
       StoreContext.SaleOrders.Update(order);
       await StoreContext.SaveChangesAsync();
 
@@ -184,22 +173,27 @@
       if (order == null)
         return NotFound();
 
-      if (order.ShippedOnUtc.HasValue)
+      if (order.CancelledOn.HasValue)
       {
-        var shippedDate = order.ShippedOnUtc;
+        var cancelledDate = order.CancelledOn;
+        ModelState.AddModelError(nameof(id), $"Cannot ship cancelled order.");
+        return BadRequest(ModelState);
+      }
+
+      if (order.ShippedOn.HasValue)
+      {
+        var shippedDate = order.ShippedOn;
         ModelState.AddModelError(nameof(id), $"Order is already shipped. (As of {shippedDate})");
         return BadRequest(ModelState);
       }
 
-      if (!order.AcceptedOnUtc.HasValue)
+      if (!order.AcceptedOn.HasValue)
       {
-        ModelState.AddModelError(nameof(id), $"Order must first be accepted before shipping");
+        ModelState.AddModelError(nameof(id), $"Order must first be accepted before marking it as shipped");
         return BadRequest(ModelState);
       }
 
-
-      order.ShippedOnUtc = DateTime.UtcNow;
-      order.CancelledOnUtc = null;
+      order.ShippedOn = DateTimeOffset.UtcNow;
       StoreContext.SaleOrders.Update(order);
       await StoreContext.SaveChangesAsync();
 
@@ -216,14 +210,14 @@
 
       if (item.Deleted)
       {
-        var deletedDate = item.DeletedOnUtc;
+        var deletedDate = item.DeletedOn;
         ModelState.AddModelError(nameof(id), $"Item is already deleted. (As of {deletedDate})");
         return BadRequest(ModelState);
       }
 
       item.Deleted = true;
       item.DeletedBy = "fantomas";
-      item.DeletedOnUtc = DateTime.UtcNow;
+      item.DeletedOn = DateTimeOffset.UtcNow;
 
       StoreContext.SaleOrders.Update(item);
       await StoreContext.SaveChangesAsync();

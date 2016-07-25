@@ -1,91 +1,93 @@
-<div class="container-fluid">
-  <div class="row">
+<div class="ui grid container">
 
-    <!--category list-->
-    <div class="col-xs-3">
-      <ul>
-        <li (click)="onCategoryClick(null)">New Category</li>
-        <li *ngFor="let category of categories" (click)="onCategoryClick(category)">{{ category.name }}</li>
-      </ul>
-    </div>
-
-    <!--category form-->
-    <div class="col-xs-9">
-
-        <form novalidate *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit(form.value)">
-
-          <!--header-->
-          <h5>
-            <span *ngIf="id.value >= 0">Modifying category {{ selectedCategory.name }}</span>
-            <span *ngIf="id.value < 0">Creating new category</span>
-          </h5>
-
-          <!--name-->
-          <div class="form-group" [class.has-success]="name.valid && name.touched"
-               [class.has-error]="!name.valid && name.touched">
-            <input type="text" class="form-control form-control-md"
-                   placeholder="Name" [formControl]="name">
-            <small class="text-muted" *ngIf="name.hasError('required') && name.touched">
-              Name is required.
-            </small>
-          </div>
-
-          <!--url segment-->
-          <div class="form-group" [class.has-success]="urlSegment.valid && urlSegment.touched"
-               [class.has-error]="!urlSegment.valid && urlSegment.touched">
-            <input type="text" class="form-control form-control-md"
-                   placeholder="Url segment" [formControl]="urlSegment">
-            <small class="text-muted" *ngIf="urlSegment.hasError('required') && urlSegment.touched">
-              Url segment is required.
-            </small>
-          </div>
-
-          <!--image url-->
-          <div class="form-group" [class.has-success]="imageUrl.valid && imageUrl.touched"
-               [class.has-error]="!imageUrl.valid && imageUrl.touched">
-            <input type="text" class="form-control form-control-md"
-                   placeholder="Image url" [formControl]="imageUrl">
-            <small class="text-muted" *ngIf="imageUrl.hasError('required') && imageUrl.touched">
-              Image url is required.
-            </small>
-          </div>
-
-          <!--view display order-->
-          <div class="form-group" [class.has-success]="viewDisplayOrder.valid && viewDisplayOrder.touched"
-               [class.has-error]="!viewDisplayOrder.valid && viewDisplayOrder.touched">
-            <input type="text" class="form-control form-control-md"
-                   placeholder="View display order" [formControl]="viewDisplayOrder">
-            <small class="text-muted" *ngIf="viewDisplayOrder.hasError('required') && viewDisplayOrder.touched">
-              View display order is required.
-            </small>
-            <small class="text-muted" *ngIf="viewDisplayOrder.hasError('pattern') && viewDisplayOrder.touched">
-              Field must be a number.
-            </small>
-          </div>
-
-          <!--submit button-->
-          <button type="submit" [disabled]="!form.valid" class="btn btn-primary">
-            <span *ngIf="selectedCategory == null">Create</span>
-            <span *ngIf="selectedCategory != null">Update</span>
-          </button>
-
-          <!--delete button-->
-          <button type="button" [disabled]="id.value < 0" class="btn btn-warning" (click)="onDeleteClick(id.value)">
-            Delete
-          </button>
-
-        </form>
-
-      <!--error alerts-->
-      <div *ngIf="errors && errors.length > 0">
-        <div class="alert alert-warning alert-dismissible fade in" role="alert"
-             *ngFor="let error of errors; let idx = index">
-          <button type="button" class="close">
-            <span aria-hidden="true" (click)="clearErrors(idx)">&times;</span>
-          </button>
-          {{ error }}
-        </div>
-      </div>
-    </div>
+  <div class="four wide column">
+    <div class="ui tiny red inverted fluid button" (click)="onCreateNewCategory()">Create new</div>
+    
+    <sm-list class="ui list">
+      <a sm-item *ngFor="let category of categories"
+        [ngStyle]="{'border-right': (category?.id === selectedCategory?.id) ? '1px solid gray' : null}"
+        [header]="category.name" [image]="category?.imageUrl" (click)="onCategoryClick(category)">
+        {{ category.urlSegment }}
+      </a>
+    </sm-list>
   </div>
+
+  <div class="twelve wide stretched column">
+
+    <form novalidate class="ui form attached fluid segment" *ngIf="form" 
+      [class.loading]="xhrPending" [formGroup]="form" (ngSubmit)="onFormSubmit(form.value)">
+      
+      <!--header-->
+      <h4 class="ui dividing header">
+        <span *ngIf="id.value >= 0">Modifying category <em>{{ selectedCategory?.name }}</em></span>
+        <span *ngIf="id.value < 0">Creating new category</span>
+      </h4>
+
+      <!--name-->
+      <div class="field">
+        <sm-input label="Name ({{ name.value.length }}/{{ fieldRules.name.maxLength }})" [control]="name"></sm-input>
+        <div class="ui basic pointing red label" *ngIf="!name.valid && !name.pristine">        
+          <small *ngIf="name.hasError('required')">Name is required<br/></small>
+          <small *ngIf="name.hasError('minlength')">Minimum length is {{ fieldRules.name.minLength }}<br/></small>
+          <small *ngIf="name.hasError('maxlength')">Maximum length is {{ fieldRules.name.maxLength }}<br/></small>
+        </div>
+      </div><!--name-->
+
+      <!--url segment-->
+      <div class="field" [class.error]="!urlSegment.valid && urlSegment.touched" [class.success]="urlSegment.valid && urlSegment.touched">
+        <sm-input label="urlSegment ({{ urlSegment.value.length }}/{{ fieldRules.urlSegment.maxLength }})" [control]="urlSegment"></sm-input>
+        <div class="ui basic pointing red label" *ngIf="!urlSegment.valid && !urlSegment.pristine">        
+          <small *ngIf="urlSegment.hasError('required')">Url segment is required<br/></small>
+          <small *ngIf="urlSegment.hasError('minlength')">Minimum length is {{ fieldRules.urlSegment.minLength }}<br/></small>
+          <small *ngIf="urlSegment.hasError('maxlength')">Maximum length is {{ fieldRules.urlSegment.maxLength }}<br/></small>
+        </div>
+      </div><!--url segment-->
+
+      <!--image url-->
+      <div class="field" [class.error]="!imageUrl.valid && imageUrl.touched" [class.success]="imageUrl.valid && imageUrl.touched">
+        <sm-input label="Image Url ({{ imageUrl.value.length }}/{{ fieldRules.imageUrl.maxLength }})" [control]="imageUrl"></sm-input>
+        <div class="ui basic pointing red label" *ngIf="!imageUrl.valid && !imageUrl.pristine">        
+          <small *ngIf="imageUrl.hasError('required')">Image url is required<br/></small>
+          <small *ngIf="imageUrl.hasError('maxlength')">Maximum length is {{ fieldRules.imageUrl.maxLength }}<br/></small>
+        </div>
+      </div><!--image url-->
+
+      <!--display order-->
+      <div class="field" [class.error]="!viewDisplayOrder.valid && viewDisplayOrder.touched" [class.success]="viewDisplayOrder.valid && viewDisplayOrder.touched">
+        <sm-input label="Display order (number)" [control]="viewDisplayOrder"></sm-input>
+        <div class="ui basic pointing red label" *ngIf="!viewDisplayOrder.valid && !viewDisplayOrder.pristine">        
+          <small *ngIf="viewDisplayOrder.hasError('required')">Display order is required<br/></small>
+          <small *ngIf="viewDisplayOrder.hasError('pattern')">Display order mus be a whole number<br/></small>
+        </div>
+      </div><!--display order-->
+
+      <!--submit button-->
+      <button class="ui positive button" [disabled]="!form.valid" [class.loading]="xhrPending">
+        <i class="ui icon thumbs up"></i>
+        <span *ngIf="selectedCategory == null">Create</span>
+        <span *ngIf="selectedCategory != null">Update</span>
+      </button>
+
+      <!--delete button-->
+      <button *ngIf="selectedCategory && !showConfirmDelete" class="ui red inverted button" type="button" 
+        [disabled]="id.value < 0" (click)="onDeleteClick()">
+        Delete
+      </button>
+
+      <!--delete confirmation buttons-->
+      <div class="ui buttons" *ngIf="showConfirmDelete">
+        <div class="ui button cancel" (click)="onConfirmDeleteCancel()">No</div>
+        <div class="or"></div>
+        <div class="ui red inverted button" (click)="onConfirmDeleteOk()">Yes, delete</div>
+      </div>
+
+    </form>
+    
+    <div class="ui bottom attached message" *ngIf="xhrNotificationVisible" [ngClass]="{'success': xhrSucceeded, 'error': !xhrSucceeded}">
+        <span *ngIf="xhrSucceeded"><i class="icon checkmark"></i>{{ xhrNotificationMessage }}</span>
+        <span *ngIf="!xhrSucceeded"><i class="icon warning sign"></i>{{ xhrNotificationMessage }}</span>
+    </div>
+
+  </div> <!-- column end -->
+
 </div>

@@ -11,7 +11,7 @@
     Task<SaleOrder> GetOrderByIdAsync(int id);
   }
 
-  public class SaleOrderRepository : ISaleOrderRepository
+  public sealed class SaleOrderRepository : ISaleOrderRepository
   {
     private readonly PosgresDbContext _context;
 

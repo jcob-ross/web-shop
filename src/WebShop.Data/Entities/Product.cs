@@ -4,18 +4,18 @@
   using System.Collections.Generic;
   using System.ComponentModel.DataAnnotations;
 
-  public class PagedSearchModel
+  public sealed class PagedSearchModel
   {
     
   }
 
-  public class PagedSearchResult
+  public sealed class PagedSearchResult
   {
     
   }
 
 
-  public class Product
+  public sealed class Product
   {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -39,7 +39,7 @@
     public List<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
   }
 
-  public class ProductDto
+  public sealed class ProductDto
   {
     public int Id { get; set; }
     [Required]

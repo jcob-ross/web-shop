@@ -1,0 +1,54 @@
+<form novalidate class="ui form" *ngIf="form" [formGroup]="form">
+  <div class="inline fields">
+    <div class="field">      
+      <sm-button (click)="onFetchClick()" [disabled]="!form.valid" class="primary" [icon]="cubes">Fetch</sm-button>
+    </div>
+    <div class="six wide field" style="display: inherit;">
+      <div class="ui fluid action input">
+        <input type="text" [formControl]="maxAgeDays" smDirTooltip="Max age in days" smDirPosition="bottom center">
+        <div class="ui button" (click)=onMaxAgeButtonClick(-1)><i class="icon minus"></i></div>
+        <div class="ui button" (click)=onMaxAgeButtonClick(1)><i class="icon plus"></i></div>
+      </div>
+      <!--<sm-input [control]="maxAgeDays"></sm-input>-->
+    </div>
+    <div class="field">        
+      <sm-checkbox type="toggle" label="Show shipped only" [control]="shippedOnly"></sm-checkbox>        
+    </div>
+  </div>
+</form>
+
+<sm-segment class="basic table-segment">
+  <sm-loader [complete]="!xhrPending" class="inverted" text="Loading..."></sm-loader>
+  <table class="ui compact selectable celled table" *ngIf="orders?.length > 0">
+    
+    <thead>
+      <th>Created</th>
+      <th>Accepted</th>
+      <th>Cancelled</th>
+      <th>Shipped</th>
+    </thead>
+    
+    <tbody>
+      <tr *ngFor="let order of orders"
+        [class.disabled]="order.shippedOn && !shippedOnly.value"
+        [class.negative]="order.cancelledOn"
+        [class.positive]="order.shippedOn"
+        [ngStyle]="{'background-color': (!order.acceptedOn && !order.cancelledOn) ? 'yellow' : 'inherit'}"
+        (click)=onOrderRowClick(order)>
+        <td>{{ order.dateCreated | fromNow }} - {{ order.dateCreated | moment:'short' }}</td>
+        <td>{{ order.acceptedOn | moment:short }}</td>
+        <td><i *ngIf="order.cancelledOn" class="icon attention"></i>{{ order.cancelledOn | moment:short }}</td>
+        <td><i *ngIf="order.shippedOn" class="icon checkmark"></i>{{ order.shippedOn | moment:short }}</td>
+      </tr>
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <th>Total: {{ ordersStats.total }}</th>
+        <th>Accepted: {{ ordersStats.accepted }}</th>
+        <th>Cancelled: {{ ordersStats.cancelled }}</th>
+        <th>Shipped: {{ ordersStats.shipped }}</th>
+      </tr>
+    </tfoot>
+  </table>
+</sm-segment>

@@ -50,21 +50,21 @@ namespace WebShop.Controllers.Api
         settings.OutputFormat = CommonMark.OutputFormat.Html;
         settings.AdditionalFeatures = CommonMark.CommonMarkAdditionalFeatures.StrikethroughTilde;
 
-        var html = CommonMark.CommonMarkConverter.Convert(model.Markup, settings);
+        var html = CommonMark.CommonMarkConverter.Convert(model.Markdown, settings);
         sanitizedHtml = MarkdownSanitizer.SanitizeHtml(html);
         _logger.LogDebug($"Sanitized html: [{sanitizedHtml}]");
       }
       catch (Exception ex)
       {
         _logger.LogError(ex.Message);
-        sanitizedHtml = "Failed to convert markup";
+        sanitizedHtml = "Failed to convert markdown";
       }
-      model.Markup = sanitizedHtml;
+      model.Markdown = sanitizedHtml;
       return Ok(model);
     }
 
     [HttpGet]
-    [Route("~/api/product-detail/{id:int}", Name = "GetDetailById")]
+    [Route("~/api/product-detail/{id:int}", Name = nameof(GetDetailById))]
     [NoCache]
     public async Task<IActionResult> GetDetailById(int id)
     {
@@ -113,7 +113,7 @@ namespace WebShop.Controllers.Api
 
       var item = new ProductDetail
                  {
-                   Markup = model.Markup,
+                   Markdown = model.Markdown,
                    ParentProduct = product
                  };
 
@@ -146,7 +146,7 @@ namespace WebShop.Controllers.Api
       }
       
       var item = product.ProductDetail;
-      item.Markup = model.Markup;
+      item.Markdown = model.Markdown;
 
       StoreContext.ProductDetails.Update(item);
       await StoreContext.SaveChangesAsync();

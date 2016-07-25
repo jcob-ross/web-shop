@@ -14,7 +14,7 @@
     ISaleOrderRepository SaleOrderRepository { get; }
   }
 
-  public class UnitOfWork : IUnitOfWork
+  public sealed class UnitOfWork : IUnitOfWork
   {
     private bool _disposed;
     private readonly PosgresDbContext _context;
@@ -46,7 +46,7 @@
       Dispose(true);
     }
 
-    protected void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
       if (! _disposed)
       {

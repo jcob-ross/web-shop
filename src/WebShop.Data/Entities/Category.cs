@@ -4,12 +4,7 @@
   using System.Collections.Generic;
   using System.ComponentModel.DataAnnotations;
 
-  public class CategoryMetadataDto
-  {
-    
-  }
-
-  public class Category
+  public sealed class Category
   {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -22,7 +17,7 @@
     public List<Tag> Tags { get; set; } = new List<Tag>();
   }
 
-  public class CategoryDto
+  public sealed class CategoryDto
   {
     public int Id { get; set; }
     [Required]

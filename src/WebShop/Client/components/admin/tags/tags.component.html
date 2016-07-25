@@ -1,88 +1,108 @@
-<div class="container-fluid">
-  <div class="row">
+<div class="ui grid container">
+  <!--left column-->
+  <div class="five wide column">
 
-    <!--category list-->
-    <div class="col-xs-3">
-      <ul>
-        <li *ngFor="let category of categories" (click)="onCategoryClick(category)">
-          {{ category.name }}
-          <ul *ngIf="category.tags.length > 0">
-            <li *ngFor="let tag of category.tags" (click)="onTagClick(category, tag); $event.stopPropagation()">
-              {{ tag.name }}
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-
-    <!--tag form-->
-    <div class="col-xs-9">
-
-      <form novalidate *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit(form.value)">
-
-        <!--header-->
-        <h5 *ngIf="selectedCategory">
-          <span *ngIf="id.value >= 0">Modifying tag {{ selectedTag.name }} in category {{ selectedCategory.name }}</span>
-          <span *ngIf="id.value < 0">Creating new tag in category {{ selectedCategory.name }}</span>
-        </h5>
-
-        <!--name-->
-        <div class="form-group row" [class.has-success]="name.valid && name.touched"
-             [class.has-error]="!name.valid && name.touched">
-          <div class="col-xs-7">
-            <input type="text" class="form-control form-control-md"
-                   placeholder="Name" [formControl]="name">
-            <small class="text-muted" *ngIf="name.hasError('required') && name.touched">
-              Name is required.
-            </small>
+    
+    <div class="ui minimal comments">
+      
+      <div class="comment" *ngFor="let category of categories">
+        <div class="content">
+          <i class="icon hashtag"></i><strong>{{ category.name }}</strong>
+          <div class="actions" style="opacity: 1;">
+            <div class="ui tiny compact inverted red button" (click)="onNewTagClick(category)">new</div>
           </div>
         </div>
 
-        <!--url segment-->
-        <div class="form-group row" [class.has-success]="urlSegment.valid && urlSegment.touched"
-             [class.has-error]="!urlSegment.valid && urlSegment.touched">
-          <div class="col-xs-7">
-            <input type="text" class="form-control form-control-md"
-                   placeholder="Url segment" [formControl]="urlSegment">
-            <small class="text-muted" *ngIf="urlSegment.hasError('required') && urlSegment.touched">
-              Url segment is required.
-            </small>
+        <div class="comments" *ngIf="category.tags?.length > 0">
+          <div class="comment" *ngFor="let tag of category.tags" (click)="onTagClick(category, tag); $event.stopPropagation()">
+            <div class="content">
+              <a class="author" [ngStyle]="{'text-decoration': (tag?.id === selectedTag?.id) ? 'underline' : 'none'}">
+                {{ tag.name }}
+              </a>
+            </div>
           </div>
-        </div>
-
-        <!--show in main menu-->
-        <div class="form-group row">
-          <div class="checkbox col-xs-7">
-            <label>
-              <input type="checkbox" [formControl]="showInMainMenu"> Show in main menu
-            </label>
-          </div>
-        </div>
-
-        <!--submit button-->
-        <button type="submit" [disabled]="!form.valid" class="btn btn-primary">
-          <span *ngIf="selectedTag == null">Create</span>
-          <span *ngIf="selectedTag != null">Update</span>
-        </button>
-
-        <!--delete button-->
-        <button type="button" [disabled]="id.value < 0" class="btn btn-warning" (click)="onDeleteClick(id.value)">
-          Delete
-        </button>
-
-      </form>
-
-      <!--error alerts-->
-      <div *ngIf="errors && errors.length > 0">
-        <div class="alert alert-warning alert-dismissible fade in" role="alert"
-             *ngFor="let error of errors; let idx = index">
-          <button type="button" class="close">
-            <span aria-hidden="true" (click)="clearErrors(idx)">&times;</span>
-          </button>
-          {{ error }}
         </div>
       </div>
 
     </div>
-  </div>
+
+  </div> <!--end left column-->
+
+  <!--content column-->
+  <div class="eleven wide stretched column">
+
+    <div class="ui small icon message" style="max-height: 4.5rem;" *ngIf="!form && xhrNotificationVisible" [ngClass]="{'positive': xhrSucceeded, 'negative': !xhrSucceeded}">
+      <i class="icon" [ngClass]="{'checkmark': xhrSucceeded, 'warning sign': !xhrSucceeded}"></i>
+      <div class="content">
+        <div class="header">
+          <span *ngIf="xhrSucceeded">Success!</span>
+          <span *ngIf="!xhrSucceeded">Error!</span>
+        </div>
+        <p>{{ xhrNotificationMessage }}</p>      
+      </div>
+    </div>
+
+    <form novalidate class="ui form attached fluid segment" *ngIf="form"
+      [class.loading]="xhrPending" [formGroup]="form" (ngSubmit)="onFormSubmit(form.value)">      
+
+      <!--header-->
+      <h4 class="ui dividing header">
+        <span *ngIf="id.value >= 0">Modifying tag <em>{{ selectedtag?.name }}</em> in category <em>{{ selectedCategory?.name }}</em></span>
+        <span *ngIf="id.value < 0">Creating new tag in category <em>{{ selectedCategory.name }}</em></span>
+      </h4>
+
+      <!--name-->
+      <div class="field">
+        <sm-input label="Name ({{ name.value.length }}/{{ fieldRules.name.maxLength }})" [control]="name"></sm-input>
+        <div class="ui basic pointing red label" *ngIf="!name.valid && !name.pristine">        
+          <small *ngIf="name.hasError('required')">Name is required<br/></small>
+          <small *ngIf="name.hasError('minlength')">Minimum length is {{ fieldRules.name.minLength }}<br/></small>
+          <small *ngIf="name.hasError('maxlength')">Maximum length is {{ fieldRules.name.maxLength }}<br/></small>
+        </div>
+      </div><!--name-->
+
+      <!--url segment-->
+      <div class="field" [class.error]="!urlSegment.valid && urlSegment.touched" [class.success]="urlSegment.valid && urlSegment.touched">
+        <sm-input label="urlSegment ({{ urlSegment.value.length }}/{{ fieldRules.urlSegment.maxLength }})" [control]="urlSegment"></sm-input>
+        <div class="ui basic pointing red label" *ngIf="!urlSegment.valid && !urlSegment.pristine">        
+          <small *ngIf="urlSegment.hasError('required')">Url segment is required<br/></small>
+          <small *ngIf="urlSegment.hasError('minlength')">Minimum length is {{ fieldRules.urlSegment.minLength }}<br/></small>
+          <small *ngIf="urlSegment.hasError('maxlength')">Maximum length is {{ fieldRules.urlSegment.maxLength }}<br/></small>
+        </div>
+      </div><!--url segment-->
+
+      <!--show in main menu-->
+      <div class="field">
+        <sm-checkbox type="toggle" label="Show in main manu" [control]="showInMainMenu"></sm-checkbox>
+      </div>
+
+      <!--submit button-->
+      <button class="ui positive button" [disabled]="!form.valid" [class.loading]="xhrPending">
+        <i class="ui icon thumbs up"></i>
+        <span *ngIf="selectedTag == null">Create</span>
+        <span *ngIf="selectedTag != null">Update</span>
+      </button>
+
+      <!--delete button-->
+      <button *ngIf="selectedTag && !showConfirmDelete" class="ui red inverted button" type="button" 
+        [disabled]="id.value < 0" (click)="onDeleteClick()">
+        Delete
+      </button>
+
+      <!--delete confirmation buttons-->
+      <div class="ui buttons" *ngIf="showConfirmDelete">
+        <div class="ui button cancel" (click)="onConfirmDeleteCancel()">No</div>
+        <div class="or"></div>
+        <div class="ui red inverted button" (click)="onConfirmDeleteOk()">Yes, delete</div>
+      </div>
+
+    </form>
+
+    <div class="ui bottom attached message" *ngIf="form && xhrNotificationVisible" [ngClass]="{'success': xhrSucceeded, 'error': !xhrSucceeded}">
+      <span *ngIf="xhrSucceeded"><i class="icon checkmark"></i>{{ xhrNotificationMessage }}</span>
+      <span *ngIf="!xhrSucceeded"><i class="icon warning sign"></i>{{ xhrNotificationMessage }}</span>
+    </div>
+
+  </div> <!--end content column-->
+
 </div>

@@ -2,7 +2,7 @@
 {
   using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-  public class ShopUser : IdentityUser
+  public sealed class ShopUser : IdentityUser
   {
   }
 }

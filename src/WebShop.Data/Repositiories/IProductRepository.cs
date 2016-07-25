@@ -11,7 +11,7 @@
     Task<List<Product>> SearchAsync(string term, int limit);
   }
 
-  public class ProductRepository : IProductRepository
+  public sealed class ProductRepository : IProductRepository
   {
     private readonly PosgresDbContext _context;
 

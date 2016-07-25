@@ -114,7 +114,7 @@
              .HasIndex(o => o.CustomerId);
       
       builder.Entity<SaleOrder>()
-             .Property(o => o.DateCreatedUtc)
+             .Property(o => o.DateCreated)
              .IsRequired();
 
       builder.Entity<SaleOrder>()
@@ -247,7 +247,7 @@
              .HasKey(d => d.Id);
 
       builder.Entity<ProductDetail>()
-             .Property(p => p.Markup)
+             .Property(p => p.Markdown)
              .HasMaxLength(30000);
 
       #endregion product detail

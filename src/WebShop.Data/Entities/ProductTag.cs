@@ -4,7 +4,7 @@
   /// <summary>
   ///   Intermediate entity representing Product - Tag may-to-many mapping
   /// </summary>
-  public class ProductTag
+  public sealed class ProductTag
   {
     public int ProductId { get; set; }
     public Product Product { get; set; }

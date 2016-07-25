@@ -18,6 +18,8 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/distinctUntilChanged';
 
+import 'jquery';
+
 declare var ENV: any; // webpack DefinePlugin
 if ('production' === ENV) {
   // Production

@@ -1,25 +1,27 @@
-<h5>Item: {{ product.name }} (#{{ product.productNumber }})</h5>
-<br/>
+<div class="ui brown center aligned stacked segment">
+  <h4 class="ui header">Item: {{ product.name }} <small>(#{{ product.productNumber }})</small></h4>
+  <h5 class="ui dividing header">Click to add / remove</h5>
 
-<div class="container-fluid">
-  <div class="row" style="text-align: center">
-
-    <!--available tag list-->
-    <div class="col-xs-4 col-xs-offset-2">
-      <h6>Available tags</h6>
-      <div *ngFor="let tag of availableTags">
-        <a class="label" (click)="addTag(tag)" [class.label-primary]="!tag.added" [class.label-default]="tag.added">
-          {{ tag.name }}
-        </a>
+  <div class="ui two column grid">
+    <div class="column">
+      <div class="ui selection list">
+        <div class="item" *ngFor="let tag of availableTags">
+          <div class="ui horizontal label" (click)="addTag(tag)" [class.blue]="!tag.added">
+            {{ tag.name }}
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="col-xs-4">
-      <h6>Assigned tags</h6>
-      <div *ngFor="let tag of assignedTags">
-        <a class="label label-primary" (click)="removeTag(tag)">{{ tag.name }}</a>
+    <div class="column">
+      <div class="ui selection list">
+        <div class="item" *ngFor="let tag of assignedTags">
+          <div class="ui blue horizontal label" (click)="removeTag(tag)">
+            {{ tag.name }}
+            <i class="delete icon"></i>
+          </div>
+        </div>
       </div>
     </div>
-
-  </div>
+  </div> 
 </div>

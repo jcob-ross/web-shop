@@ -10,7 +10,10 @@ import { Injectable } from  '@angular/core';
 import { CategoriesComponent } from './categories';
 import { ManufacturersComponent } from './manufacruters';
 import { TagsComponent } from './tags';
-import { OrdersComponent } from './orders';
+import {
+  OrdersComponent,
+  OrdersOverviewComponent
+ } from './orders';
 import {
   ProductsComponent,
   EditDetailsComponent,
@@ -20,15 +23,17 @@ import {
 } from './products';
 
 import { Observable } from 'rxjs/Observable';
-import { ProductEditorState } from './products/shared';
+import { AdminAppState } from './shared';
 
 @Injectable()
 export class ProductAvailableGuard implements CanActivate {
-  constructor(private editorState: ProductEditorState, private router: Router) {
+  constructor(private appState: AdminAppState, private router: Router) {
   }
 
   canActivate(): Observable<boolean> | boolean {
-    if (this.editorState.hasProduct && !this.editorState.isNewProduct) {
+    // product with id < 0 is not yet created
+    // todo(backlog): redo this
+    if (this.appState.productSelected && this.appState.currentProduct.id >= 0) {
       return true;
     }
     this.router.navigate(['/products/search']);
@@ -41,7 +46,12 @@ export const routes: RouterConfig = <RouterConfig>[
   { path: 'categories', component: CategoriesComponent },
   { path: 'manufacturers', component: ManufacturersComponent },
   { path: 'tags', component: TagsComponent },
-  { path: 'orders', component: OrdersComponent },
+  { path: 'orders', component: OrdersComponent,
+    children: [
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      { path: 'overview', component: OrdersOverviewComponent }
+    ]
+  },
   {
     path: 'products', component: ProductsComponent,
     children: [

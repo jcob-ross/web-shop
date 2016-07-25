@@ -11,7 +11,7 @@ namespace WebShop.Data.Repositiories
     Task<List<Category>> ListByGroupAsync(int groupId);
   }
 
-  public class CategoryRepository : ICategoryRepository
+  public sealed class CategoryRepository : ICategoryRepository
   {
     private readonly PosgresDbContext _context;
 

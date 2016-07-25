@@ -6,19 +6,18 @@
 @section head
 {
   <environment names="Development,Staging,Production">
-    <base href="/Administration">
-    <link rel="stylesheet" href="/spa/semantic/semantic.min.css">
+    <base href="/Administration">    
     <link href="/spa/css/global.css" rel="stylesheet">
   </environment>
 }
 
-<admin-main></admin-main>
+<admin-main><div class="ui active text loader">Loading</div></admin-main>
 
 @section scripts
 {
   <environment names="Development,Staging,Production">
-    <script type="text/javascript" src="/spa/jquery-3.1.0.slim.min.js"></script>
-    <script type="text/javascript" src="/spa/semantic/semantic.min.js"></script>
+    <!--<script type="text/javascript" src="/spa/jquery-3.1.0.slim.min.js"></script>-->
+    <!--<script type="text/javascript" src="/spa/semantic/semantic.min.js"></script>-->
   </environment>
   
   <environment names="Development">    

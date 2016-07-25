@@ -1,22 +1,37 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, REACTIVE_FORM_DIRECTIVES } from '@angular/forms';
+import { SEMANTIC_COMPONENTS, SEMANTIC_DIRECTIVES } from 'ng-semantic';
 
 import { Subscription } from 'rxjs/Subscription';
 
 import { ApiService, Category, Manufacturer } from '../../shared';
 
+
+const fieldRules = {
+  name: { minLength: 3, maxLength: 50 },
+  urlSegment: { minLength: 3, maxLength: 50 }
+};
+
 @Component({
   selector: 'j-manufacturers',
   templateUrl: './manufacturers.component.html',
-  directives: [ REACTIVE_FORM_DIRECTIVES ]
+  directives: [ REACTIVE_FORM_DIRECTIVES, SEMANTIC_COMPONENTS, SEMANTIC_DIRECTIVES ]
 })
 export class ManufacturersComponent implements OnInit, OnDestroy {
-  private sub: Subscription;
-  errors: string[];
+  private xhrSub: Subscription;
+  private xhrNotificationTimeoutHandle = null;
+  xhrNotificationVisible: boolean = false;
+  xhrSucceeded: boolean = true;
+  xhrNotificationMessage: string = '';
+  xhrPending: boolean = false;
 
   categories: Category[] = null;
   selectedCategory: Category = null;
   selectedManufacturer: Manufacturer = null;
+  showConfirmDelete: boolean = false;
+
+  // view helper for error messages
+  fieldRules = fieldRules;
 
   form: FormGroup;
 
@@ -34,8 +49,16 @@ export class ManufacturersComponent implements OnInit, OnDestroy {
     this.selectedCategory = category;
 
     this.id = new FormControl(-1);
-    this.name = new FormControl('', Validators.required);
-    this.urlSegment = new FormControl('', Validators.required);
+    this.name = new FormControl('', Validators.compose([
+      Validators.required, 
+      Validators.minLength(fieldRules.name.minLength),
+      Validators.maxLength(fieldRules.name.maxLength),
+    ]));
+    this.urlSegment = new FormControl('', Validators.compose([
+      Validators.required, 
+      Validators.minLength(fieldRules.urlSegment.minLength),
+      Validators.maxLength(fieldRules.urlSegment.maxLength),
+    ]));
     this.showInMainMenu = new FormControl(false, Validators.required);
     this.parentCategoryId = new FormControl(category.id, Validators.required);
 
@@ -56,72 +79,106 @@ export class ManufacturersComponent implements OnInit, OnDestroy {
     });
   }
 
-  onCategoryClick(category: Category) {
+  onNewManufacturerClick(category: Category) {
     this.onManufacturerClick(category, null);
   }
 
   onFormSubmit(formValue) {
+    this.ensureXhrCancelled();    
+    this.xhrPending = true;
+
     if (formValue.id >= 0) {
-      this.api.updateManufacturer(formValue).subscribe((res: any) => {
-        if (res.ok) {
-          let updatedManufacturer: Manufacturer = res.json();
-          let category = this.categories.find(c => c.id === updatedManufacturer.parentCategoryId);
-          let manufacturerIndex = category.manufacturers.findIndex(m => m.id === updatedManufacturer.id);
-          category.manufacturers[manufacturerIndex] = updatedManufacturer;
-          this.onManufacturerClick(this.selectedCategory, updatedManufacturer);
-        }
-      }, (err: any) => this.addErrors(err));
+      this.xhrSub = this.api.updateManufacturer(formValue).subscribe((res: any) => {
+        let updatedManufacturer: Manufacturer = res.json();
+        let category = this.categories.find(c => c.id === updatedManufacturer.parentCategoryId);
+        let manufacturerIndex = category.manufacturers.findIndex(m => m.id === updatedManufacturer.id);
+        category.manufacturers[manufacturerIndex] = updatedManufacturer;
+        this.onManufacturerClick(this.selectedCategory, updatedManufacturer);
+        this.xhrPending = false;
+        this.notifyCompleted('Manufacturer updated');
+      }, (err: any) => {
+        this.notifyCompleted('Failed to update manufacturer', false);
+        this.addErrors(err);
+      });
     } else {
-      this.api.createManufacturer(formValue).subscribe((res: any) => {
-        if (res.ok) {
-          let createdManufacturer: Manufacturer = res.json();
-          let category = this.categories.find(c => c.id === createdManufacturer.parentCategoryId);
-          category.manufacturers.push(createdManufacturer);
-          this.onManufacturerClick(this.selectedCategory, createdManufacturer);
-        }
-      }, (err: any) => this.addErrors(err));
+      this.xhrSub = this.api.createManufacturer(formValue).subscribe((res: any) => {
+        let createdManufacturer: Manufacturer = res.json();
+        let category = this.categories.find(c => c.id === createdManufacturer.parentCategoryId);
+        category.manufacturers.push(createdManufacturer);
+        this.onManufacturerClick(this.selectedCategory, createdManufacturer);
+        this.xhrPending = false;
+        this.notifyCompleted('Manufacturer created');
+      }, (err: any) => {
+        this.notifyCompleted('Failed to create manufacturer', false);
+        this.addErrors(err);
+      });
     }
   }
 
-  onDeleteClick(id: number) {
-    this.api.deleteManufacturer(id).subscribe((res: any) => {
-      if (res.ok) {
-        let idx = this.selectedCategory.manufacturers.findIndex(m => m.id === id);
-        this.selectedCategory.manufacturers.splice(idx, 1);
-        this.selectedCategory = null;
-        this.selectedManufacturer = null;
-        this.form = null;
-      }
-    }, (err: any) => this.addErrors(err));
+  onDeleteClick() {
+    this.showConfirmDelete = true;
   }
 
-  addErrors(errorResponse) {
-    this.errors = [];
-    console.warn(errorResponse);
-    for (let prop in errorResponse) {
-      if (errorResponse.hasOwnProperty(prop)) {
-        this.errors.push(errorResponse[prop]);
-      }
-    }
+  onConfirmDeleteOk() {
+    this.ensureXhrCancelled();
+    this.xhrPending = true;
+    this.showConfirmDelete = false;
+    let id = this.id.value;
+
+    this.xhrSub = this.api.deleteManufacturer(id).subscribe((res: any) => {
+      let idx = this.selectedCategory.manufacturers.findIndex(m => m.id === id);
+      this.selectedCategory.manufacturers.splice(idx, 1);
+      this.selectedCategory = null;
+      this.selectedManufacturer = null;
+      this.form = null;
+      this.xhrPending = false;
+      this.notifyCompleted('Manufacturer deleted');
+    }, (err: any) => {
+      this.notifyCompleted('Failed to delete manufacturer', false);
+      this.addErrors(err);
+    });
   }
 
-  clearErrors(index: number) {
-    if (typeof index === 'undefined') {
-      this.errors = [];
-    } else {
-      this.errors.splice(index, 1);
-    }
+  onConfirmDeleteCancel() {
+    this.showConfirmDelete = false;
   }
 
   ngOnInit() {
-    this.sub = this.api.getCategories(/* include manufacturers */true, /* include tags */false)
+    this.xhrPending = true;
+    this.xhrSub = this.api.getCategories(/* include manufacturers */true, /* include tags */false)
       .map(res => res.json())
       .subscribe(res => {
         this.categories = res;
-      });
+        this.xhrPending = false;
+      }, (err: any) => this.addErrors(err));
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
+    this.ensureXhrCancelled();
+  }
+
+  private notifyCompleted(message: string, success: boolean = true, durationMs: number = 2500) {
+    this.xhrNotificationVisible = true;
+    this.xhrSucceeded = success;
+    this.xhrNotificationMessage = message;
+
+    if (this.xhrNotificationTimeoutHandle) { 
+      clearTimeout(this.xhrNotificationTimeoutHandle);
+      this.xhrNotificationTimeoutHandle = null;
+    }
+    this.xhrNotificationTimeoutHandle = setTimeout(() => {
+        this.xhrNotificationVisible = false;
+      }, durationMs);
+  }
+
+  private ensureXhrCancelled() {
+    if (this.xhrSub && this.xhrSub.unsubscribe && !this.xhrSub.isUnsubscribed) {
+      this.xhrSub.unsubscribe();
+    }
+  }
+
+  private addErrors(errorResponse) {
+    console.warn(errorResponse);
+    this.xhrPending = false;
   }
 }

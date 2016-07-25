@@ -9,13 +9,13 @@ import {
   URLSearchParams
 } from '@angular/http';
 
-import { Product, ProductDetail, Category, Tag, Manufacturer } from '../models';
+import { Product, ProductDetail, Category, Tag, Manufacturer, ProductOrder, OrderLine, UserInfo } from '../models';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+
 import 'rxjs/add/Observable/of';
 import 'rxjs/add/Observable/throw';
 import 'rxjs/add/operator/catch';
-
-import { Subject } from 'rxjs/Subject';
 
 interface IRequestOptions {
   method: RequestMethod;
@@ -29,7 +29,37 @@ const BASE_URL: string = 'http://localhost:8080';
 
 @Injectable()
 export class ApiService {
+
   constructor(private http: Http) {
+  }
+
+  /**
+   * User
+   */
+
+  /**
+   * Searches users by email,
+   * Minimum length is 3, maximum length is 20
+   */
+  searchUserByEmail(term: string): Observable<UserInfo[]> {
+    let params = new URLSearchParams();
+    params.set('term', `${term}`);
+
+    return this.jsonRequest({
+      method: RequestMethod.Get,
+      url: `${BASE_URL}/api/user/search`,
+      search: params
+    }).catch(err => this.handleError(err));
+  }
+
+  /**
+   * Fetches user info by user ID.
+   */
+  getUserInfo(userId: string): Observable<UserInfo> {
+    return this.jsonRequest({
+      method: RequestMethod.Get,
+      url: `${BASE_URL}/api/user/${userId}`
+    }).catch(err => this.handleError(err));
   }
 
   /**
@@ -147,7 +177,7 @@ export class ApiService {
       method: RequestMethod.Get,
       url: `${BASE_URL}/api/category/list`,
       search: queryParams
-    });
+    }).catch(err => this.handleError(err));
   }
 
   createCategory(model: Category): any {
@@ -155,7 +185,7 @@ export class ApiService {
       method: RequestMethod.Post,
       url: `${BASE_URL}/api/category`,
       body: model
-    });
+    }).catch(err => this.handleError(err));
   }
 
   updateCategory(model: Category): any {
@@ -163,14 +193,14 @@ export class ApiService {
       method: RequestMethod.Put,
       url: `${BASE_URL}/api/category/${model.id}`,
       body: model
-    });
+    }).catch(err => this.handleError(err));
   }
 
   deleteCategory(id: number): any {
     return this.jsonRequest({
       method: RequestMethod.Delete,
       url: `${BASE_URL}/api/category/${id}`
-    });
+    }).catch(err => this.handleError(err));
   }
 
   /**
@@ -182,7 +212,7 @@ export class ApiService {
       method: RequestMethod.Post,
       url: `${BASE_URL}/api/manufacturer`,
       body: model
-    });
+    }).catch(err => this.handleError(err));
   }
 
   updateManufacturer(model: Manufacturer): any {
@@ -190,14 +220,14 @@ export class ApiService {
       method: RequestMethod.Put,
       url: `${BASE_URL}/api/manufacturer/${model.id}`,
       body: model
-    });
+    }).catch(err => this.handleError(err));
   }
 
   deleteManufacturer(id: number): any {
     return this.jsonRequest({
       method: RequestMethod.Delete,
       url: `${BASE_URL}/api/manufacturer/${id}`
-    });
+    }).catch(err => this.handleError(err));
   }
 
   /**
@@ -216,7 +246,7 @@ export class ApiService {
       method: RequestMethod.Post,
       url: `${BASE_URL}/api/tag`,
       body: model
-    });
+    }).catch(err => this.handleError(err));
   }
 
   updateTag(model: Tag): any {
@@ -224,14 +254,77 @@ export class ApiService {
       method: RequestMethod.Put,
       url: `${BASE_URL}/api/tag/${model.id}`,
       body: model
-    });
+    }).catch(err => this.handleError(err));
   }
 
   deleteTag(id: number): any {
     return this.jsonRequest({
       method: RequestMethod.Delete,
       url: `${BASE_URL}/api/tag/${id}`
-    });
+    }).catch(err => this.handleError(err));
+  }
+
+  /**
+   * Orders
+   */
+
+  getOrders(maxAgeDays: number, onlyShipped: boolean): any {
+    let queryParams = new URLSearchParams();
+    queryParams.set('maxAgeDays', JSON.stringify(maxAgeDays));
+    queryParams.set('onlyShipped', JSON.stringify(onlyShipped));
+
+    return this.jsonRequest({
+      method: RequestMethod.Get,
+      url: `${BASE_URL}/api/order/list`,
+      search: queryParams
+    }).catch(err => this.handleError(err));
+  }
+
+  getOrdersByUserId(userId: number, maxAgeDays: number): any {
+    let queryParams = new URLSearchParams();
+    queryParams.set('maxAgeDays', JSON.stringify(maxAgeDays));
+
+    return this.jsonRequest({
+      method: RequestMethod.Get,
+      url: `${BASE_URL}/api/order/user/${userId}`,
+      search: queryParams
+    }).catch(err => this.handleError(err));
+  }
+
+  getOrderById(orderId: number): any {
+    return this.jsonRequest({
+      method: RequestMethod.Get,
+      url: `${BASE_URL}/api/order/${orderId}`,
+    }).catch(err => this.handleError(err));
+  }
+
+  createOrder(model: ProductOrder) {
+    return this.jsonRequest({
+      method: RequestMethod.Post,
+      url: `${BASE_URL}/api/order`,
+      body: model
+    }).catch(err => this.handleError(err));
+  }
+
+  acceptOrder(orderId: number): any {
+    return this.jsonRequest({
+      method: RequestMethod.Put,
+      url: `${BASE_URL}/api/order/${orderId}/accept`
+    }).catch(err => this.handleError(err));
+  }
+
+  cancelOrder(orderId: number): any {
+    return this.jsonRequest({
+      method: RequestMethod.Put,
+      url: `${BASE_URL}/api/order/${orderId}/cancel`
+    }).catch(err => this.handleError(err));
+  }
+
+  markOrderAsShipped(orderId: number): any {
+    return this.jsonRequest({
+      method: RequestMethod.Put,
+      url: `${BASE_URL}/api/order/${orderId}/ship`
+    }).catch(err => this.handleError(err));
   }
 
   private jsonRequest(options: IRequestOptions): any {
@@ -264,6 +357,7 @@ export class ApiService {
     return Observable.throw(errorMessage);
   }
 }
+
 
 export interface IErrorObject {
   error: string;

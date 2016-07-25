@@ -1,21 +1,35 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, REACTIVE_FORM_DIRECTIVES } from '@angular/forms';
+import { SEMANTIC_COMPONENTS, SEMANTIC_DIRECTIVES } from 'ng-semantic';
 
 import { Subscription } from 'rxjs/Subscription';
 import { ApiService, Category, Tag } from '../../shared';
 
+const fieldRules = {
+  name: { minLength: 3, maxLength: 50 },
+  urlSegment: { minLength: 3, maxLength: 50 }
+};
+
 @Component({
   selector: 'j-tags',
   templateUrl: './tags.component.html',
-  directives: [ REACTIVE_FORM_DIRECTIVES ]
+  directives: [ REACTIVE_FORM_DIRECTIVES, SEMANTIC_COMPONENTS, SEMANTIC_DIRECTIVES ]
 })
 export class TagsComponent implements OnInit, OnDestroy {
-  private sub: Subscription;
-  errors: string[];
+  private xhrSub: Subscription;
+  private xhrNotificationTimeoutHandle = null;
+  xhrNotificationVisible: boolean = false;
+  xhrSucceeded: boolean = true;
+  xhrNotificationMessage: string = '';
+  xhrPending: boolean = false;
 
   categories: Category[] = null;
   selectedCategory: Category = null;
   selectedTag: Tag = null;
+  showConfirmDelete: boolean = false;
+
+  // view helper for error messages
+  fieldRules = fieldRules;
 
   form: FormGroup;
 
@@ -33,8 +47,16 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.selectedCategory = category;
 
     this.id = new FormControl(-1);
-    this.name = new FormControl('', Validators.required);
-    this.urlSegment = new FormControl('', Validators.required);
+    this.name = new FormControl('', Validators.compose([
+      Validators.required, 
+      Validators.minLength(fieldRules.name.minLength),
+      Validators.maxLength(fieldRules.name.maxLength),
+    ]));
+    this.urlSegment = new FormControl('', Validators.compose([
+      Validators.required, 
+      Validators.minLength(fieldRules.urlSegment.minLength),
+      Validators.maxLength(fieldRules.urlSegment.maxLength),
+    ]));
     this.showInMainMenu = new FormControl(false, Validators.required);
     this.parentCategoryId = new FormControl(category.id, Validators.required);
 
@@ -55,72 +77,107 @@ export class TagsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onCategoryClick(category: Category) {
+  onNewTagClick(category: Category) {
     this.onTagClick(category, null);
   }
 
   onFormSubmit(formValue) {
+    this.ensureXhrCancelled();    
+    this.xhrPending = true;
+
     if (formValue.id >= 0) {
-      this.api.updateTag(formValue).subscribe((res: any) => {
-        if (res.ok) {
-          let updatedTag: Tag = res.json();
-          let category = this.categories.find(c => c.id === updatedTag.parentCategoryId);
-          let tagIndex = category.tags.findIndex(m => m.id === updatedTag.id);
-          category.tags[tagIndex] = updatedTag;
-          this.onTagClick(this.selectedCategory, updatedTag);
-        }
-      }, (err: any) => this.addErrors(err));
+      this.xhrSub = this.api.updateTag(formValue).subscribe((res: any) => {
+        let updatedTag: Tag = res.json();
+        let category = this.categories.find(c => c.id === updatedTag.parentCategoryId);
+        let tagIndex = category.tags.findIndex(m => m.id === updatedTag.id);
+        category.tags[tagIndex] = updatedTag;
+        this.onTagClick(this.selectedCategory, updatedTag);
+        this.xhrPending = false;
+        this.notifyCompleted('Tag updated');
+      }, (err: any) => {
+        this.notifyCompleted('Failed to update tag', false);
+        this.addErrors(err);
+      });
     } else {
-      this.api.createTag(formValue).subscribe((res: any) => {
-        if (res.ok) {
-          let createdTag: Tag = res.json();
-          let category = this.categories.find(c => c.id === createdTag.parentCategoryId);
-          category.tags.push(createdTag);
-          this.onTagClick(this.selectedCategory, createdTag);
-        }
-      }, (err: any) => this.addErrors(err));
+      this.xhrSub = this.api.createTag(formValue).subscribe((res: any) => {
+        let createdTag: Tag = res.json();
+        let category = this.categories.find(c => c.id === createdTag.parentCategoryId);
+        category.tags.push(createdTag);
+        this.onTagClick(this.selectedCategory, createdTag);
+        this.xhrPending = false;
+        this.notifyCompleted('Tag created');
+
+      }, (err: any) => {
+        this.notifyCompleted('Failed to create tag', false);
+        this.addErrors(err);
+      });
     }
   }
 
-  onDeleteClick(id: number) {
-    this.api.deleteTag(id).subscribe((res: any) => {
-      if (res.ok) {
-        let idx = this.selectedCategory.tags.findIndex(t => t.id === id);
-        this.selectedCategory.tags.splice(idx, 1);
-        this.selectedCategory = null;
-        this.selectedTag = null;
-        this.form = null;
-      }
-    }, (err: any) => this.addErrors(err));
+  onDeleteClick() {
+    this.showConfirmDelete = true;
   }
 
-  addErrors(errorResponse) {
-    this.errors = [];
-    console.warn(errorResponse);
-    for (let prop in errorResponse) {
-      if (errorResponse.hasOwnProperty(prop)) {
-        this.errors.push(errorResponse[prop]);
-      }
-    }
+  onConfirmDeleteOk() {
+    this.ensureXhrCancelled();
+    this.xhrPending = true;
+    this.showConfirmDelete = false;
+    let id = this.id.value;
+
+    this.xhrSub = this.api.deleteTag(id).subscribe((res: any) => {
+      let idx = this.selectedCategory.tags.findIndex(t => t.id === id);
+      this.selectedCategory.tags.splice(idx, 1);
+      this.selectedCategory = null;
+      this.selectedTag = null;
+      this.form = null;
+      this.xhrPending = false;
+      this.notifyCompleted('Tag deleted');
+    }, (err: any) => {
+      this.notifyCompleted('Failed to delete tag', false);
+      this.addErrors(err);
+    });
   }
 
-  clearErrors(index: number) {
-    if (typeof index === 'undefined') {
-      this.errors = [];
-    } else {
-      this.errors.splice(index, 1);
-    }
+  onConfirmDeleteCancel() {
+    this.showConfirmDelete = false;
   }
 
   ngOnInit() {
-    this.sub = this.api.getCategories(/* include manufacturers */false, /* include tags */true)
+    this.xhrPending = true;
+    this.xhrSub = this.api.getCategories(/* include manufacturers */false, /* include tags */true)
       .map(res => res.json())
       .subscribe(res => {
         this.categories = res;
-      });
+        this.xhrPending = false;
+      }, (err: any) => this.addErrors(err));
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
+    this.ensureXhrCancelled();
+  }
+  
+  private notifyCompleted(message: string, success: boolean = true, durationMs: number = 2500) {
+    this.xhrNotificationVisible = true;
+    this.xhrSucceeded = success;
+    this.xhrNotificationMessage = message;
+
+    if (this.xhrNotificationTimeoutHandle) { 
+      clearTimeout(this.xhrNotificationTimeoutHandle);
+      this.xhrNotificationTimeoutHandle = null;
+    }
+    this.xhrNotificationTimeoutHandle = setTimeout(() => {
+        this.xhrNotificationVisible = false;
+      }, durationMs);
+  }
+
+  private ensureXhrCancelled() {
+    if (this.xhrSub && this.xhrSub.unsubscribe && !this.xhrSub.isUnsubscribed) {
+      this.xhrSub.unsubscribe();
+    }
+  }
+
+  private addErrors(errorResponse) {
+    console.warn(errorResponse);
+    this.xhrPending = false;
   }
 }

@@ -11,7 +11,7 @@ namespace WebShop.Data.Repositiories
     Task<Manufacturer> GetManufacturerByIdAsync(int id);
   }
 
-  public class ManufacturerRepository : IManufacturerRepository
+  public sealed class ManufacturerRepository : IManufacturerRepository
   {
     private readonly PosgresDbContext _context;
 

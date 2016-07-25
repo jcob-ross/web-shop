@@ -1,1 +1,13 @@
-<p>orders</p>
+<div class="ui grid container">
+  <!--left column-->
+  <div class="three wide column">
+    <div class="ui secondary fluid vertical menu">
+      <a class="item" [routerLink]=" ['./overview'] " routerLinkActive="active">Overview</a>      
+    </div>
+  </div> <!--end left column-->
+
+  <!--content column-->
+  <div class="thirteen wide stretched column">
+    <router-outlet></router-outlet>
+  </div> <!--end content column-->
+</div>

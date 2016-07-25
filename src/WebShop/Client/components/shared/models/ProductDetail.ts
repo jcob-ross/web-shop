@@ -1,5 +1,5 @@
 export class ProductDetail {
   id: number;
-  markup: string;
+  markdown: string;
   parentProductId: number;
 }

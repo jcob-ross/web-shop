@@ -3,7 +3,7 @@ namespace WebShop.Data.Entities
   using System.Collections.Generic;
   using System.ComponentModel.DataAnnotations;
 
-  public class Manufacturer
+  public sealed class Manufacturer
   {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -16,7 +16,7 @@ namespace WebShop.Data.Entities
     public List<Product> Products { get; set; } = new List<Product>();
   }
 
-  public class ManufacturerDto
+  public sealed class ManufacturerDto
   {
     public int Id { get; set; }
     [Required]

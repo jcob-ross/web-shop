@@ -13,7 +13,7 @@
     Task<Tag> GetTagByIdAsync(int id);
   }
 
-  public class TagRepository : ITagRepository
+  public sealed class TagRepository : ITagRepository
   {
     private readonly PosgresDbContext _context;
 

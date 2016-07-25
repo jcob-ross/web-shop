@@ -71,8 +71,9 @@ module.exports = {
       chunks: ['app', 'app_vendor', 'app_polyfills']
     }),
     new webpack.ProvidePlugin({
-      $: 'jQuery',
-      jQuery: 'jQuery'
+      jQuery: 'jquery',
+      $: 'jquery',
+      jquery: 'jquery'
     }),
     GlobalStyles,
     new ExtractTextPlugin('css/[name].css'),

@@ -1,24 +1,16 @@
-<div class="container-fluid">
-  <div class="row">
+<div class="ui grid container">
+  <!--left column-->
+  <div class="four wide column">
+    <div class="ui secondary fluid vertical menu">
+      <a class="item" [routerLink]=" ['./search'] " routerLinkActive="active">Search</a>
+      <a class="item" [routerLink]=" ['./edit'] " routerLinkActive="active">Create / Edit</a>
+      <a class="item" [routerLink]=" ['./tags'] " routerLinkActive="active" [class.disabled]="noneOrNonexistentProduct">Tags</a>
+      <a class="item" [routerLink]=" ['./detail'] " routerLinkActive="active" [class.disabled]="noneOrNonexistentProduct">Details</a>
+    </div>
+  </div>
 
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]=" ['./search'] " routerLinkActive="active">Search</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]=" ['./edit'] " routerLinkActive="active">Create / Edit</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]=" ['./tags'] " routerLinkActive="active" [class.disabled]="noProductSelected">Manage tags</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]=" ['./detail'] " routerLinkActive="active" [class.disabled]="noProductSelected">Edit details page</a>
-      </li>
-
-    </ul>
-
-    <br/>
-
+  <!--content column-->
+  <div class="twelve wide stretched column">
     <router-outlet></router-outlet>
   </div>
 </div>

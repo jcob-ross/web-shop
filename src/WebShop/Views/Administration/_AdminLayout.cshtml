@@ -6,36 +6,34 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1" />
   <title>@ViewBag.Title - @AppSettings.Value.SiteTitle</title>
 
-  <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet">  
+  <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">  
+  <link rel="stylesheet" href="/spa/semantic/semantic.min.css">
 
   @RenderSection("head", required: false)
 </head>
+<body>
+  <div class="ui compact mini top fixed inverted black menu" style="height: 2.5rem;">  
+      <a href="/" class="header item"><i class="arrow left icon"></i>Back to shop</a>
+      <div class="right compact mini menu">
+        @await Html.PartialAsync("_AdminLoginPartial")
+      </div>  
+  </div>
 
-<nav class="navbar navbar-fixed-top navbar-light bg-faded">
-  <a class="navbar-brand" href="/">Home</a>
-  
-  <ul class="nav navbar-nav">
-    <li class="nav-item"></li>
-    @await Html.PartialAsync("_AdminLoginPartial")
-  </ul>
+  <div class="body-wrapper">
+    @RenderBody()
+  </div>
 
-</nav>
-<div class="body-wrapper container">
-  @RenderBody()
-</div>
+  <environment names="Development">
+  </environment>
+  <environment names="Staging,Production">
+  </environment>
 
-<environment names="Development">
-</environment>
-<environment names="Staging,Production">
-</environment>
+  @RenderSection("scripts", required: false)
 
-@RenderSection("scripts", required: false)
-
-</body>
+  </body>
 </html>
 
 <cache>
