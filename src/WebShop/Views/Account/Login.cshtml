@@ -5,6 +5,21 @@
 @model WebShop.Models.Account.LoginViewModel
 @inject SignInManager<ShopUser> SignInManager
 
+@section head
+{
+  <environment names="Development">
+    <base href="/">
+    <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">
+    <link href="/spa/css/app.css" rel="stylesheet">
+  </environment>
+
+  <environment names="Staging,Production">
+    <base href="/">
+    <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">
+    <link href="/spa/css/app.css" rel="stylesheet">
+  </environment>
+}
+
 @{
   ViewData["Title"] = "Log in";
 }
