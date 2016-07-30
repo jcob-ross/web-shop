@@ -44,11 +44,13 @@
       var osArch = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture;
       OS = $"{osDesc} {osArch}";
 
-      string envCommitSha = config["HEROKU_SLUG_COMMIT"]; // env variable on heroku via dyno metadata
+      // env variable on heroku via dyno metadata
+      // heroku labs:enable runtime-dyno-metadata -a <app name>
+      string envCommitSha = config["HEROKU_SLUG_COMMIT"];
       if (!String.IsNullOrWhiteSpace(envCommitSha) && envCommitSha.Length > 0)
       {
         _logger.LogInformation($"Commit sha loaded from enviromental variable ({envCommitSha})");
-        DeploymentSha = envCommitSha;
+        DeploymentSha = envCommitSha + "(heroku)";
       }
       else
       {
