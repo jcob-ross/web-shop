@@ -103,7 +103,7 @@
           using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
                                       .CreateScope())
           {
-            serviceScope.ServiceProvider.GetService<IDbInitializer>().Initialize();
+            serviceScope.ServiceProvider.GetService<IDbInitializer>().Initialize(env);
           }
         }
       }
@@ -115,7 +115,7 @@
           using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
                                       .CreateScope())
           {
-            serviceScope.ServiceProvider.GetService<IDbInitializer>().Initialize();
+            serviceScope.ServiceProvider.GetService<IDbInitializer>().Initialize(env);
           }
         }
         app.UseExceptionHandler("/Home/Error");

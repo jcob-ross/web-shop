@@ -1,29 +1,40 @@
 namespace WebShop.Data.Context
 {
-  using System;
-  using System.Threading.Tasks;
-  using Entities;
-  using Microsoft.AspNetCore.Identity;
+    using System;
+    using System.Threading.Tasks;
+    using Entities;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.Extensions.Logging;
 
-  public sealed class PosgresDbInitializer : IDbInitializer
+    public sealed class PosgresDbInitializer : IDbInitializer
   {
+    private readonly ILogger _logger;
     private readonly PosgresDbContext _dbContext;
     private readonly UserManager<ShopUser> _userManager;
 
-    public PosgresDbInitializer(PosgresDbContext dbContext, UserManager<ShopUser> userManager)
+    public PosgresDbInitializer(PosgresDbContext dbContext, UserManager<ShopUser> userManager, ILogger<PosgresDbInitializer> logger)
     {
       if (null == dbContext)
         throw new ArgumentNullException(nameof(dbContext));
       if (null == userManager)
         throw new ArgumentNullException(nameof(userManager));
+      if (null == logger)
+        throw new ArgumentNullException(nameof(logger));
       
       _dbContext = dbContext;
       _userManager = userManager;
+      _logger = logger;
     }
 
-    public void Initialize()
+    public void Initialize(IHostingEnvironment env)
     {
-      _dbContext.Database.EnsureDeleted();
+      if (env.IsDevelopment())
+      {
+        _logger.LogInformation("Recreating database");
+        _dbContext.Database.EnsureDeleted();
+      }
+
       _dbContext.Database.EnsureCreated();
 
       _userManager.CreateAsync(new ShopUser

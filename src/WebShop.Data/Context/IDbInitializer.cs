@@ -1,9 +1,10 @@
 namespace WebShop.Data.Context
 {
-  using System.Threading.Tasks;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Hosting;
 
-  public interface IDbInitializer
+    public interface IDbInitializer
   {
-    void Initialize();
+    void Initialize(IHostingEnvironment env);
   }
 }
