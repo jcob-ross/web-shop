@@ -1,24 +1,25 @@
 ﻿namespace WebShop
 {
-  using Data;
-  using Data.Context;
-  using Data.Repositiories;
-  using Infrastructure;
-  using Infrastructure.Authentication;
-  using Infrastructure.Authorization;
-  using Infrastructure.DeploymentEnvironment;
-  using Infrastructure.MarkdownSanitizer;
-  using Infrastructure.PipelineExtensions;
-  using Microsoft.AspNetCore.Authorization;
-  using Microsoft.AspNetCore.Builder;
-  using Microsoft.AspNetCore.Hosting;
-  using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-  using Microsoft.EntityFrameworkCore;
-  using Microsoft.Extensions.Configuration;
-  using Microsoft.Extensions.DependencyInjection;
-  using Microsoft.Extensions.Logging;
+    using System;
+    using Data;
+    using Data.Context;
+    using Data.Repositiories;
+    using Infrastructure;
+    using Infrastructure.Authentication;
+    using Infrastructure.Authorization;
+    using Infrastructure.DeploymentEnvironment;
+    using Infrastructure.MarkdownSanitizer;
+    using Infrastructure.PipelineExtensions;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
 
-  public class Startup
+    public class Startup
   {
     private IHostingEnvironment _env;
     public IConfigurationRoot Configuration { get; }
@@ -44,9 +45,18 @@
       // infrastructure / pipeline extensions / spa mvc
       services.AddSpaMvc(_env);
 
+      string dbConnectionString;
+      if (_env.IsDevelopment())
+        dbConnectionString = Configuration.GetConnectionString("PosgreSqlConnection");
+      else
+        dbConnectionString = Configuration["PostgreSqlConnection"]; // ENV valiable
+
+      if (String.IsNullOrWhiteSpace(dbConnectionString))
+        throw new Exception("Connection string cannot be empty");
+
       services.AddDbContext<PosgresDbContext>(options =>
         {
-          options.UseNpgsql(Configuration.GetConnectionString("PosgreSqlConnection"));
+          options.UseNpgsql(dbConnectionString);
         });
 
       services.AddIdentity<ShopUser, IdentityRole>(options =>
@@ -78,32 +88,42 @@
 
     public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
     {
+      var logger = loggerFactory.CreateLogger("Startup");
       loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-      loggerFactory.AddDebug();
-
+      
       var deploymentEnv = app.ApplicationServices.GetService<IDeploymentEnvironment>();
       deploymentEnv.Initialize();
 
-      if (Configuration.GetValue<bool>("SeedDb"))
-      {
-        using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
-                                     .CreateScope())
-        {
-          serviceScope.ServiceProvider.GetService<IDbInitializer>().Initialize();
-        }
-      }
-
-      app.UseSwagger();
-      app.UseSwaggerUi();
-
       if (env.IsDevelopment())
       {
+        loggerFactory.AddDebug();
         app.UseDeveloperExceptionPage();
+        if (Configuration.GetValue<bool>("SeedDb"))
+        {
+          using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                                      .CreateScope())
+          {
+            serviceScope.ServiceProvider.GetService<IDbInitializer>().Initialize();
+          }
+        }
       }
       else
       {
+        if (Configuration.GetValue<bool>("DO_SEED_DB")) // ENV variable
+        {
+          logger.LogInformation("About to seed db");
+          using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                                      .CreateScope())
+          {
+            serviceScope.ServiceProvider.GetService<IDbInitializer>().Initialize();
+          }
+        }
         app.UseExceptionHandler("/Home/Error");
       }
+      
+
+      app.UseSwagger();
+      app.UseSwaggerUi();
 
       // infrastructure / pipeline extensions / gzip static files
       app.UseStaticFilesWithGzip();
