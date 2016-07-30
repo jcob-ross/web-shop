@@ -121,7 +121,6 @@
         app.UseExceptionHandler("/Home/Error");
       }
       
-
       app.UseSwagger();
       app.UseSwaggerUi();
 
