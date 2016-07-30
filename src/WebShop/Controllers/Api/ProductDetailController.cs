@@ -12,9 +12,11 @@ namespace WebShop.Controllers.Api
   using Infrastructure.MarkdownSanitizer;
   using System;
   using Microsoft.Extensions.Logging;
+  using Microsoft.AspNetCore.Authorization;
 
   [Route("api/product")]
   [Produces("application/json")]
+  [Authorize("ContentEditors")]
   public class ProductDetailController : Controller
   {
     private ILogger _logger;
@@ -88,10 +90,8 @@ namespace WebShop.Controllers.Api
       return Ok(dto);
     }
 
-
     [HttpPost]
     [Route("{id:int}/detail")]
-    [NoCache]
     public async Task<IActionResult> Create(int id, [FromBody] ProductDetailDto model)
     {
 
@@ -126,7 +126,6 @@ namespace WebShop.Controllers.Api
 
     [HttpPut]
     [Route("{id:int}/detail")]
-    [NoCache]
     public async Task<IActionResult> Update(int id, [FromBody] ProductDetailDto model)
     {
       if (!ModelState.IsValid)
@@ -156,7 +155,6 @@ namespace WebShop.Controllers.Api
 
     [HttpDelete]
     [Route("{id:int}/detail")]
-    [NoCache]
     public async Task<IActionResult> Delete(int id)
     {
       var product = await StoreContext.Products

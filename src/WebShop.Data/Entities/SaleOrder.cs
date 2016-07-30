@@ -2,6 +2,7 @@ namespace WebShop.Data.Entities
 {
   using System;
   using System.Collections.Generic;
+  using System.ComponentModel.DataAnnotations;
 
   public sealed class SaleOrder
   {
@@ -26,6 +27,7 @@ namespace WebShop.Data.Entities
     public DateTimeOffset? ShippedOn { get; set; }
     public DateTimeOffset? DeliveredOn { get; set; }
     public DateTimeOffset? CancelledOn { get; set; }
+    [Required]    
     public HashSet<OrderLineDto> OrderLines { get; set; } = new HashSet<OrderLineDto>();
   }
 }

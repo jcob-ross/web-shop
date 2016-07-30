@@ -8,12 +8,14 @@
   using Data.Context;
   using Data.Entities;
   using Infrastructure.Attributes;
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Caching.Memory;
 
   [Route("api/category")]
   [Produces("application/json")]
+  [Authorize("ContentEditors")]
   public class CategoryController : Controller
   {
     public CategoryController(PosgresDbContext storeContext, IMapper mapper, IMemoryCache cache)
@@ -30,8 +32,11 @@
     [HttpGet]
     [Route("{categoryUrlSegment}/metadata")]
     [NoCache]
+    [AllowAnonymous]
     public async Task<IActionResult> Metadata(string categoryUrlSegment)
     {
+      throw new NotImplementedException();
+
       if (String.IsNullOrWhiteSpace(categoryUrlSegment))
       {
         ModelState.AddModelError(nameof(categoryUrlSegment), "Category must be specified");
@@ -106,6 +111,7 @@
     [HttpGet]
     [Route("list")]
     [NoCache]
+    [AllowAnonymous]
     public async Task<IActionResult> List([FromQuery] bool includeTags = false,
                                           [FromQuery] bool includeManufacturers = false)
     {

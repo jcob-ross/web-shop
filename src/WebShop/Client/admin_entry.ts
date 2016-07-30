@@ -1,4 +1,5 @@
 import 'ts-helpers';
+import './styles/admin.scss';
 
 import { bootstrap } from '@angular/platform-browser-dynamic';
 import { enableDebugTools, disableDebugTools } from '@angular/platform-browser';

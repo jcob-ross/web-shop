@@ -13,9 +13,11 @@
   using Microsoft.AspNetCore.Identity;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
+  using Infrastructure.Attributes;
 
   [Route("api/order")]
   [Produces("application/json")]
+  [Authorize("ContentEditors")]
   public class SaleOrderController : Controller
   {
     private readonly ILogger<SaleOrderController> _logger;
@@ -34,6 +36,7 @@
 
     [HttpGet]
     [Route("list")]
+    [NoCache]
     public async Task<IActionResult> ListOrders(
       [FromQuery] int maxAgeDays = 7,
       [FromQuery] bool onlyShipped = false)
@@ -55,6 +58,7 @@
 
     [HttpGet]
     [Route("user/{userId}")]
+    [NoCache]
     public async Task<IActionResult> GetOrdersByUserId(string userId, [FromQuery] int maxAgeDays = 7)
     {
       maxAgeDays = Math.Abs(maxAgeDays);
@@ -70,6 +74,7 @@
 
     [HttpGet]
     [Route("{id:int}", Name = nameof(GetOrderById))]
+    [NoCache]
     public async Task<IActionResult> GetOrderById(int id)
     {
       var item = await StoreContext.SaleOrders.Include(o => o.OrderLines)
@@ -85,7 +90,14 @@
     {
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
-      
+
+      var user = await UserManager.GetUserAsync(User);
+      if (user == null)
+      {
+        _logger.LogError("Could not extract user from claims principal.");
+        ModelState.AddModelError(nameof(User), "User not found");
+      }
+
       var lines = new HashSet<OrderLine>();
 
       foreach(var line in model.OrderLines)
@@ -99,7 +111,7 @@
       }
       StoreContext.OrderLines.AddRange(lines);
 
-      var userId = "e7686347-63bc-4bde-b135-725f16c6e16d";
+      var userId = user.Id;
       var item = new SaleOrder {
         CustomerId = userId,
         DateCreated = DateTimeOffset.UtcNow,
@@ -194,6 +206,27 @@
       }
 
       order.ShippedOn = DateTimeOffset.UtcNow;
+      StoreContext.SaleOrders.Update(order);
+      await StoreContext.SaveChangesAsync();
+
+      return Ok(Mapper.Map<SaleOrderDto>(order));
+    }
+
+    [HttpPut]
+    [Route("{id:int}/mark-as-delivered")]
+    public async Task<IActionResult> MarkAsDelivered(int id)
+    {
+      var order = await StoreContext.SaleOrders.FirstOrDefaultAsync(o => o.Id == id && !o.Deleted);
+      if (order == null)
+        return NotFound();
+
+      if (!order.AcceptedOn.HasValue)
+      {
+        ModelState.AddModelError(nameof(id), $"Cannot mark non-accepted order as delivered.");
+        return BadRequest(ModelState);
+      }
+
+      order.DeliveredOn = DateTimeOffset.UtcNow;
       StoreContext.SaleOrders.Update(order);
       await StoreContext.SaveChangesAsync();
 

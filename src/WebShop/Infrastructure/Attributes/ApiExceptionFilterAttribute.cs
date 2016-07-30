@@ -25,7 +25,7 @@
 
     private void CreateResult(ExceptionContext context)
     {
-      if (context.HttpContext.Request.GetTypedHeaders().Accept.Any(header => header.MediaType == "application/json"))
+      if (context.HttpContext.Request.GetTypedHeaders().Accept.Any(header => header.MediaType.StartsWith("application/json")))
       {
         var jsonResult = new JsonResult(new { message = context.Exception.Message });
         jsonResult.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;

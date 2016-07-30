@@ -7,7 +7,8 @@ const autoprefixer = require('autoprefixer');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const GlobalStyles = new ExtractTextPlugin('css/global.css')
+const AppStyles = new ExtractTextPlugin('css/app.css')
+const AdminStyles = new ExtractTextPlugin('css/admin.css')
 
 module.exports = {
   entry: {
@@ -48,7 +49,8 @@ module.exports = {
         loaders: ['awesome-typescript', 'angular2-template'],
         exclude: [/\.(spec|e2e)\.ts$/]
       },
-      { test: /global.scss$/, loader: GlobalStyles.extract(['css?sourceMap', 'postcss', 'sass?sourceMap']), include: path.resolve('Client/styles') },
+      { test: /admin.scss$/, loader: AdminStyles.extract(['css?sourceMap', 'postcss', 'sass?sourceMap']), include: path.resolve('Client/styles') },
+      { test: /app.scss$/, loader: AppStyles.extract(['css?sourceMap', 'postcss', 'sass?sourceMap']), include: path.resolve('Client/styles') },
       { test: /\.json$/, loader: 'json' },
       { test: /\.css$/, loader: 'to-string!css' },
       { test: /\.scss$/, loader: 'to-string!css?sourceMap!postcss!sass?sourceMap', exclude: path.resolve('Client/styles') },
@@ -75,7 +77,8 @@ module.exports = {
       $: 'jquery',
       jquery: 'jquery'
     }),
-    GlobalStyles,
+    AdminStyles,
+    AppStyles,
     new ExtractTextPlugin('css/[name].css'),
     new CopyWebpackPlugin([{
       from: 'Client/public',
@@ -85,7 +88,7 @@ module.exports = {
   
   postcss: [
     autoprefixer({
-      browsers: ['last 2 version']
+      browsers: ['last 7 version']
     })
   ],
 

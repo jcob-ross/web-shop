@@ -8,8 +8,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1" />
   <title>@ViewBag.Title - @AppSettings.Value.SiteTitle</title>
+  
+  <!--[if IE]>
+  <meta HTTP-EQUIV="REFRESH" content="0; url=https://browser-update.org/update.html">
+  <![endif]-->
 
-  <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">  
   <link rel="stylesheet" href="/spa/semantic/semantic.min.css">
 
   @RenderSection("head", required: false)

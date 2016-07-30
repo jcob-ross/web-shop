@@ -3,17 +3,20 @@
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Text.RegularExpressions;
   using System.Threading.Tasks;
   using AutoMapper;
   using Data.Context;
   using Data.Entities;
   using Infrastructure.Attributes;
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
   [Route("api/product")]
   [Produces("application/json")]
+  [Authorize("ContentEditors")]
   public class ProductController : Controller
   {
     private readonly ILogger<ProductController> _logger;
@@ -40,11 +43,13 @@
 
       term = term.Trim();
 
+      // todo(research): regex sanitization
       var items = await StoreContext.Products
                                     .Include(p => p.Manufacturer)
                                     .Include(p => p.ParentCategory)
                                     .Include(p => p.ProductTags).ThenInclude(pt => pt.Tag)
-                                    .Where(p => p.Name.Contains(term) || p.Description.Contains(term))
+                                    .Where(p => Regex.IsMatch(p.Name, term, RegexOptions.IgnoreCase) || 
+                                                Regex.IsMatch(p.Description, term, RegexOptions.IgnoreCase))
                                     .Take(count)                                    
                                     .ToListAsync();
 
@@ -71,7 +76,6 @@
     }
 
     [HttpPost]
-    [NoCache]
     public async Task<IActionResult> Create([FromBody] ProductDto model)
     {
       if (! ModelState.IsValid)
@@ -114,7 +118,6 @@
     }
 
     [HttpPut]
-    [NoCache]
     [Route("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] ProductDto model)
     {
@@ -147,7 +150,6 @@
     }
 
     [HttpDelete]
-    [NoCache]
     [Route("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -164,7 +166,6 @@
     }
 
     [HttpPut]
-    [NoCache]
     [Route("{id:int}/add-tag/{tagId:int}")]
     public async Task<IActionResult> AddTag(int id, int tagId)
     {
@@ -197,7 +198,6 @@
     }
 
     [HttpDelete]
-    [NoCache]
     [Route("{id:int}/remove-tag/{tagId:int}")]
     public async Task<IActionResult> RemoveTag(int id, int tagId)
     {

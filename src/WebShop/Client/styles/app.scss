@@ -1,0 +1,38 @@
+// app.scss is included in app_entry and extracted ('extract-text-webpack-plugin') to /spa/css/app.css
+
+$break-small: 480px;
+$break-large: 1024px;
+
+@mixin respond-to($media) {
+  @if $media == handhelds {
+    @media only screen and (max-width: $break-small) { @content; }
+  }
+  @else if $media == medium-screens {
+    @media only screen and (min-width: $break-small + 1) and (max-width: $break-large - 1) { @content; }
+  }
+  @else if $media == wide-screens {
+    @media only screen and (min-width: $break-large) { @content; }
+  }
+}
+
+.body-wrapper {
+    margin-top: 6rem;
+}
+
+.login-form {
+    margin: auto;
+    width: 80%;
+    @include respond-to(handhelds) { width: 80% ;}
+    @include respond-to(medium-screens) { width: 50%; }
+    @include respond-to(wide-screens) { width: 35%; }
+}
+
+.card {
+  box-shadow: 2px 2px 30px -10px;
+  background-color: white;
+}
+
+code {
+  background-color: #333;
+  color: #3f3;
+}

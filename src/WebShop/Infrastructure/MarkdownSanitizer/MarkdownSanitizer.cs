@@ -134,16 +134,7 @@ namespace WebShop.Infrastructure.MarkdownSanitizer
 
     public string StripHtml(string text)
     {
-      text = SanitizeHtml(text);
-      if (String.IsNullOrWhiteSpace(text))
-        return String.Empty;
-
-      var document = CreateHtmlDocument(text);
-      _sb.Clear();
-      foreach (var node in document.DocumentNode.ChildNodes)
-        _sb.Append(node.InnerHtml);
-
-      return _sb.ToString();
+      throw new NotImplementedException();
     }
 
     /// <summary>

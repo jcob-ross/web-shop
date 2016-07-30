@@ -15,9 +15,6 @@
       <button class="btn btn-warning-outline" type="submit">Logout</button>
     </form>
   </li>
-  @*<a asp-controller="Manage" asp-action="Index" title="Account">
-    @UserManager.GetUserName(User)
-  </a>*@
 
   if (await AuthorizationService.AuthorizeAsync(User, "ContentEditors"))
   {

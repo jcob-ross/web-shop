@@ -4,26 +4,38 @@
 @{
   ViewData["Title"] = "Sign up";
 }
-
-<h2>@ViewData["Title"]</h2>
-
-<form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
-  <input asp-for="UserName" type="text" placeholder="User name">
-  <br />
-  <input asp-for="Email" type="text" placeholder="E-mail">
-  <br />
-  <input asp-for="Password" type="password" placeholder="Password">
-  <br />
-  <input asp-for="ConfirmPassword" placeholder="Confirm password" />
-  <br />
-  <input type="submit" value="Register" />
-</form>
+<style>
+  body {
+    background-color: #eee;
+  }
+</style>
 
 
-<span asp-validation-for="UserName"></span>
-<br />
-<span asp-validation-for="Email"></span>
-<br />
-<span asp-validation-for="Password"></span>
-<br />
-<span asp-validation-for="ConfirmPassword"></span>
+<div class="login-form">
+  <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+    <h2 class="form-signin-heading">@ViewData["Title"]</h2>
+
+    <input class="form-control" asp-for="UserName" type="text" placeholder="User name">
+    <span asp-validation-for="UserName" class="text-danger"></span>
+
+    <input class="form-control" asp-for="Email" type="text" placeholder="E-mail">
+    <span asp-validation-for="Email" class="text-danger"></span>
+
+    <br/>
+    <input class="form-control" asp-for="Password" type="password" placeholder="Password">
+    <span asp-validation-for="Password" class="text-danger"></span>
+
+    <input class="form-control" asp-for="ConfirmPassword" placeholder="Confirm password" />
+    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+    <br/>
+    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Register" />
+  </form>
+</div>
+
+@section scripts
+{
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+  <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
+}

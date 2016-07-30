@@ -8,9 +8,12 @@
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using System.Linq;
+  using Infrastructure.Attributes;
+  using Microsoft.AspNetCore.Authorization;
 
   [Route("api/tag")]
   [Produces("application/json")]
+  [Authorize("ContentEditors")]
   public class TagController : Controller
   {
     public PosgresDbContext Context { get; }
@@ -24,6 +27,7 @@
 
     [HttpGet]
     [Route("{id:int}", Name = nameof(GetTagById))]
+    [NoCache]
     public async Task<IActionResult> GetTagById(int id)
     {
       var item = await Context.Tags
@@ -40,6 +44,7 @@
 
     [HttpGet]
     [Route("list/category/{categoryId:int}")]
+    [NoCache]
     public async Task<IActionResult> GetTagsByCategory(int categoryId)
     {
       var items = await Context.Categories

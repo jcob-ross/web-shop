@@ -1,8 +1,5 @@
 ﻿namespace WebShop
 {
-  using System;
-  using System.Security.Claims;
-  using System.Threading.Tasks;
   using Data;
   using Data.Context;
   using Data.Repositiories;
@@ -12,37 +9,31 @@
   using Infrastructure.DeploymentEnvironment;
   using Infrastructure.MarkdownSanitizer;
   using Infrastructure.PipelineExtensions;
-  using Microsoft.AspNetCore.Authentication.Cookies;
   using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
-  using Microsoft.AspNetCore.Identity;
   using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Configuration;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
 
-  // todo: resource based authorization
-  // https://docs.asp.net/en/latest/security/authorization/views.html
-
   public class Startup
   {
     private IHostingEnvironment _env;
+    public IConfigurationRoot Configuration { get; }
 
     public Startup(IHostingEnvironment env)
     {
       IConfigurationBuilder builder = new ConfigurationBuilder()
         .SetBasePath(env.ContentRootPath)
-        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)                
-        .AddUserSecrets();
+        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+        .AddEnvironmentVariables();
 
       _env = env;
 
       Configuration = builder.Build();
     }
-
-    public IConfigurationRoot Configuration { get; }
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -67,7 +58,9 @@
           options.Password.RequiredLength = 4;
 
           options.Cookies.ApplicationCookie.AutomaticAuthenticate = true;
-          options.Cookies.ApplicationCookie.AutomaticChallenge = false;
+          options.Cookies.ApplicationCookie.AutomaticChallenge = true;
+          // todo(auth): forbidden redirect handling
+          options.Cookies.ApplicationCookie.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Forbidden");
           options.Cookies.ApplicationCookie.Events = ShopCookieAuthentication.CreateCookieEvents();
         })
         .AddEntityFrameworkStores<PosgresDbContext>()

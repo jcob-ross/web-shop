@@ -8,9 +8,12 @@
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using System.Linq;
+  using Infrastructure.Attributes;
+  using Microsoft.AspNetCore.Authorization;
 
   [Route("api/manufacturer")]
   [Produces("application/json")]
+  [Authorize("ContentEditors")]
   public class ManufacturerController : Controller
   {
     public PosgresDbContext StoreContext { get; }
@@ -24,6 +27,7 @@
 
     [HttpGet]
     [Route("{id:int}", Name = nameof(GetManufacturerById))]
+    [NoCache]
     public async Task<IActionResult> GetManufacturerById(int id)
     {
       var item = await StoreContext.Manufacturers
@@ -38,6 +42,7 @@
 
     [HttpGet]
     [Route("list/category/{categoryId:int}")]
+    [NoCache]
     public async Task<IActionResult> GetManufacturersBySubcategory(int categoryId)
     {
       var items = await StoreContext.Manufacturers

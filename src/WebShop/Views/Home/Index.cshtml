@@ -4,26 +4,51 @@
 
 @section head
 {
-  <environment names="Development,Staging,Production">
+  <environment names="Staging,Production">
     <base href="/">
     <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">
-    <link href="/spa/css/global.css" rel="stylesheet">
+    <link href="/spa/css/app.css" rel="stylesheet">
+  </environment>
+
+  <environment names="Development">
+    <base href="/">
+    <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">
+    <link href="/spa/css/app.css.gz" rel="stylesheet">
   </environment>
 }
 
-<app-main></app-main>
+<style>
+  body {
+    background-color: #eee;
+  }
+</style>
 
+<div class="row">
+  <div class="col-xs-8 col-xs-offset-2">
+    <div class="card card-block">
+      <h4 class="card-title">Notice</h4>
+      <p class="card-text">Use following credentials to log in and navigate to administration <br/>(link will be visible in top-right corner).</p>
+      <code>
+        admin/admin (full access)
+      </code>
+      <br/>
+      <code>
+        user/user (no access)
+      </code>
+    </div>
+  </div>
+</div>
 @section scripts
 {
-  <environment names="Development">
+  <environment names="Staging,Production">
     <script type="text/javascript" src="/spa/app_commons.bundle.js"></script>
     <script type="text/javascript" src="/spa/app_polyfills.bundle.js"></script>
     <script type="text/javascript" src="/spa/app_vendor.bundle.js"></script>
     <script type="text/javascript" src="/spa/app.bundle.js"></script>
   </environment>
-  <environment names="Staging,Production">
+  <environment names="Development">
     <script type="text/javascript" src="/spa/app_commons.bundle.js.gz"></script>
-    <script type="text/javascript" src="/spa/app_polyfills.bundle.js.gz"></script>
+    <script type="text/javascript" src="/spa/app_polyfills.bundle.js"></script>
     <script type="text/javascript" src="/spa/app_vendor.bundle.js.gz"></script>
     <script type="text/javascript" src="/spa/app.bundle.js.gz"></script>
   </environment>

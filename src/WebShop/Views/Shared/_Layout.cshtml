@@ -9,12 +9,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@ViewBag.Title - @AppSettings.Value.SiteTitle</title>
 
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet">
+  <!--[if IE]>
+  <meta HTTP-EQUIV="REFRESH" content="0; url=https://browser-update.org/update.html">
+  <![endif]-->
 
-  <environment names="Development">
-  </environment>
-  <environment names="Staging,Production">
-  </environment>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet">
 
   @RenderSection("head", required: false)
 </head>
@@ -31,11 +30,6 @@
 <div class="body-wrapper container">
   @RenderBody()
 </div>
-
-<environment names="Development">
-</environment>
-<environment names="Staging,Production">
-</environment>
 
 @RenderSection("scripts", required: false)
 

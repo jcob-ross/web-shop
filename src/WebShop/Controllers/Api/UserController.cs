@@ -3,12 +3,14 @@ namespace WebShop.Controllers.Api
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Text.RegularExpressions;
   using System.Threading.Tasks;
   using AutoMapper;
   using Data;
   using Data.Context;
   using Data.Entities;
   using Infrastructure.Attributes;
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Identity;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,7 @@ namespace WebShop.Controllers.Api
 
   [Route("api/user")]
   [Produces("application/json")]
+  [Authorize("ContentEditors")]
   public class UserController : Controller
   {
     private readonly ILogger<UserController> _logger;
@@ -37,6 +40,7 @@ namespace WebShop.Controllers.Api
 
     [HttpGet]
     [Route("{userId}", Name = nameof(GetUserById))]
+    [NoCache]
     public async Task<IActionResult> GetUserById(string userId)
     {
       // todo: permissions, logging
@@ -58,6 +62,7 @@ namespace WebShop.Controllers.Api
 
     [HttpGet]
     [Route("search")]
+    [NoCache]
     public async Task<IActionResult> SearchByEmail([FromQuery]string term)
     {
       if (String.IsNullOrWhiteSpace(term))
@@ -78,7 +83,7 @@ namespace WebShop.Controllers.Api
         return BadRequest(ModelState);
       }
 
-      var users = await StoreContext.Users.Where(u => u.Email.Contains(term)).ToListAsync();
+      var users = await StoreContext.Users.Where(u => Regex.IsMatch(u.Email, term, RegexOptions.IgnoreCase)).ToListAsync();
 
       var dto = new List<UserInfoDto>();
       foreach(var user in users)

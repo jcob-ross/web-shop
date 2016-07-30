@@ -1,5 +1,5 @@
 ﻿{
-  "userSecretsId": "web-sho-secrets",
+  "userSecretsId": "web-shop-secrets",
 
   "dependencies": {
     "Microsoft.NETCore.App": {
@@ -92,7 +92,5 @@
   },
 
   "scripts": {
-    "prepublish": [ "bower install", "dotnet bundle" ],
-    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }

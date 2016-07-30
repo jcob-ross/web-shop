@@ -1,14 +1,10 @@
 namespace WebShop.Data.Repositiories
 {
   using System;
-  using System.Collections.Generic;
-  using System.Threading.Tasks;
   using Context;
-  using Entities;
 
   public interface ICategoryRepository
   {
-    Task<List<Category>> ListByGroupAsync(int groupId);
   }
 
   public sealed class CategoryRepository : ICategoryRepository
@@ -19,13 +15,8 @@ namespace WebShop.Data.Repositiories
     {
       if (null == context)
         throw new ArgumentNullException(nameof(context));
-      
-      _context = context;
-    }
 
-    public Task<List<Category>> ListByGroupAsync(int groupId)
-    {
-      throw new NotImplementedException();
+      _context = context;
     }
   }
 }
