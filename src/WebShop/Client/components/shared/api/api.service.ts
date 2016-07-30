@@ -25,7 +25,14 @@ interface IRequestOptions {
   search?: any;
 }
 
-const BASE_URL: string = 'http://localhost:8080';
+let BASE_URL: string;
+
+declare var ENV: any; // webpack DefinePlugin
+if ('production' === ENV) {
+  BASE_URL = 'https://murmuring-fjord-94419.herokuapp.com'
+} else {
+  BASE_URL = 'http://localhost:8080';
+}
 
 @Injectable()
 export class ApiService {
