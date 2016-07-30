@@ -1,6 +1,4 @@
 ﻿{
-  "userSecretsId": "web-shop-secrets",
-
   "dependencies": {
     "Microsoft.NETCore.App": {
       "version": "1.0.0",
@@ -8,7 +6,7 @@
     },
 
     "WebShop.Data": {
-      "version": "1.0.0-*",
+      "version": "0.0.0-*",
       "target": "project"
     },
 
@@ -60,8 +58,8 @@
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [
-        "dotnet5.6",
-        "portable-net45+win8"
+        "netcore45",
+        "dotnet5.6"
       ]
     }
   },

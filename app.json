@@ -1,6 +1,6 @@
 {
   "name": "WebShop",
-  "description": "Angular 2 & ASP.Net Core something",
+  "description": "Angular 2 & ASP.Net Core Web Shop",
   "env": {
     "BUILDPACK_URL": "https://github.com/noliar/dotnet-buildpack.git"
   }
