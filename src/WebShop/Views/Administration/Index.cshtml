@@ -5,13 +5,13 @@
 
 @section head
 {
-  <environment names="Staging,Production">
+  <environment names="Development">
     <base href="/Administration">
     <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">
     <link href="/spa/css/admin.css" rel="stylesheet">
   </environment>
 
-  <environment names="Development">
+  <environment names="Staging,Production">
     <base href="/Administration">
     <link rel="icon" type="image/x-icon" href="/spa/img/favicon.ico">
     <link href="/spa/css/admin.css" rel="stylesheet">
@@ -22,14 +22,14 @@
 
 @section scripts
 {
-  <environment names="Staging,Production">    
+  <environment names="Development">    
     <script type="text/javascript" src="/spa/admin_commons.bundle.js"></script>
     <script type="text/javascript" src="/spa/admin_polyfills.bundle.js"></script>
     <script type="text/javascript" src="/spa/admin_vendor.bundle.js"></script>
     <script type="text/javascript" src="/spa/admin.bundle.js"></script>
   </environment>
   
-  <environment names="Development">    
+  <environment names="Staging,Production">
     <script type="text/javascript" src="/spa/admin_commons.bundle.js.gz"></script>
     <script type="text/javascript" src="/spa/admin_polyfills.bundle.js.gz"></script>
     <script type="text/javascript" src="/spa/admin_vendor.bundle.js.gz"></script>
