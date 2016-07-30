@@ -1,15 +1,16 @@
 ﻿namespace WebShop.Infrastructure.DeploymentEnvironment
 {
-  using System;
-  using System.Diagnostics;
-  using Microsoft.AspNetCore.Hosting;
-  using Microsoft.Extensions.Logging;
-  using Microsoft.Extensions.PlatformAbstractions;
+    using System;
+    using System.Diagnostics;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.PlatformAbstractions;
 
-  /// <summary>
-  ///   Represents metadata about deployment environment
-  /// </summary>
-  public class DeploymentEnvironment : IDeploymentEnvironment
+    /// <summary>
+    ///   Represents metadata about deployment environment
+    /// </summary>
+    public class DeploymentEnvironment : IDeploymentEnvironment
   {
     private readonly IHostingEnvironment _hostingEnv;
     private readonly ILogger<DeploymentEnvironment> _logger;
@@ -26,7 +27,7 @@
     public string Framework { get; private set; } = String.Empty;
     public string OS { get; private set; } = String.Empty;
 
-    public void Initialize()
+    public void Initialize(IConfigurationRoot config)
     {
       Environment = _hostingEnv.EnvironmentName;
 
@@ -43,11 +44,23 @@
       var osArch = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture;
       OS = $"{osDesc} {osArch}";
 
-      LoadCommitSha();
+      string envCommitSha = config["HEAD_HASH"]; // env variable on heroku
+      if (!String.IsNullOrWhiteSpace(envCommitSha) && envCommitSha.Length > 0)
+      {
+        _logger.LogInformation($"Commit sha loaded from enviromental variable ({envCommitSha})");
+        DeploymentSha = envCommitSha;
+      }
+      else
+      {
+        // todo(cleanup): pure, no side effects
+        LoadCommitSha();
+      }
     }
 
     private void LoadCommitSha()
     {
+      _logger.LogInformation("Trying to get commit sha from git.");
+
       try
       {
         var git = Process.Start(new ProcessStartInfo
