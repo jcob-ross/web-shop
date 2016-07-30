@@ -92,7 +92,7 @@
       loggerFactory.AddConsole(Configuration.GetSection("Logging"));
       
       var deploymentEnv = app.ApplicationServices.GetService<IDeploymentEnvironment>();
-      deploymentEnv.Initialize();
+      deploymentEnv.Initialize(Configuration);
 
       if (env.IsDevelopment())
       {
