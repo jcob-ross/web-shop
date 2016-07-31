@@ -83,10 +83,10 @@
     <!--manufacturer radio-->
     <div class="field grouped fields">
       <label>Select manufacturer...</label>
-      <div class="field" *ngFor="let man of manufacturers; trackBy:man?.id">
+      <div class="field" *ngFor="let man of manufacturers">
         <div class="ui radio checkbox" (click)="onManufacturerSelect(man)">
           <input type="radio" name="manufacturer" [attr.checked]="(manufacturerId.value === man.id) ? '' : null" class="hidden">
-          <label>{{ man.id }} - {{ man.name }}</label>
+          <label>{{ man.name }}</label>
         </div>
       </div>        
     </div>
